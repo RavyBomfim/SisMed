@@ -55,54 +55,40 @@
 
 {% block content %}
 
-    <!-- <div class="form-container">
-        <div>
-            <h1>Login</h1> 
-            <p>Digite os seus dados de acesso nos campos abaixo.</p> <br><br>
-
-            <form action="" method="POST">
-
-                {% csrf_token %}
-
-                <table>
-                    {{ form.as_table }}
-                </table>
-
-                <button type="submit" class="btn">Login</button>
-
-            </form>
-        </div>
-    </div> -->
-
     <div class="form-container">
         <div class="form-box"> 
-            {% block titulo-form %}
-                <h1>Login</h1>
-                <p>Digite os seus dados de acesso nos campos abaixo.</p> <br><br>
-            {% endblock%}
-    
-            <form action="" method="POST">
 
-                {% csrf_token %}
+            {% if request.user.is_authenticated %}
+                <h4>Você não tem permissão para acessar esta página!</h4>
+            {% else %}
 
-                {% block campos %}
-                <div class="input-field">
-                    {{ form.username }}
-                    <label for="{{ form.username.id_for_label }}">Usuario</label>
-                </div>
-
-                <div class="input-field">
-                    {{ form.password }}
-                    <label for="{{ form.password.id_for_label }}">Senha</label>
-                </div>
-
-                <button type="submit" class="btn">Login</button>
+                {% block titulo-form %}
+                    <h1>Login</h1>
+                    <p>Digite os seus dados de acesso nos campos abaixo.</p> <br><br>
                 {% endblock%}
+    
+                <form action="" method="POST">
 
-            </form>
+                    {% csrf_token %}
+
+                    {% block campos %}
+                    <div class="input-field">
+                        {{ form.username }}
+                        <label for="{{ form.username.id_for_label }}">Usuario</label>
+                    </div>
+
+                    <div class="input-field">
+                        {{ form.password }}
+                        <label for="{{ form.password.id_for_label }}">Senha</label>
+                    </div>
+
+                    <button type="submit" class="btn">Login</button>
+                    {% endblock%}
+
+                </form>
+            {% endif %}
         </div>
     </div>
-
     <!-- <div class="page">
         <form method="POST" class="formLogin">
             <h1>Login</h1>

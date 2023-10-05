@@ -28,6 +28,8 @@ class Funcionario(models.Model):
     endereco = models.OneToOneField(Endereco, null=True, on_delete=models.PROTECT)
     telefone = models.CharField(max_length=15, unique=True) 
     email = models.CharField(max_length=50, unique=True) 
+    """data_admissao = models.DateField(verbose_name='Data de Admissão')
+    data_demissao = models.DateField(null=True, blank=True, verbose_name='Data de Demissão')"""
     data_cadastro = models.DateField(verbose_name='Data de Cadastro')
     cargo = models.ForeignKey(Cargo, on_delete=models.PROTECT) 
     foto =  models.ImageField(upload_to='fotos_funcionarios', blank=True, null=True)
@@ -64,7 +66,6 @@ class Paciente(models.Model):
     rg = models.CharField(max_length=13, verbose_name='RG', unique=True)
     cpf = models.CharField(max_length=14, verbose_name='CPF', unique=True)
     endereco = models.OneToOneField(Endereco, null=True, on_delete=models.PROTECT)
-    endereco = models.OneToOneField(Endereco, on_delete=models.PROTECT)
     telefone = models.CharField(max_length=15) 
     email = models.CharField(max_length=50) 
     data_cadastro = models.DateField(verbose_name='Data de Cadastro') 
@@ -75,38 +76,40 @@ class Paciente(models.Model):
         return f'{self.nome_completo} {self.data_nascimento} {self.rg} {self.cpf} {self.endereco} {self.telefone} {self.email} {self.data_cadastro} {self.informacoes_medicas}'
 
 
-class Tipo_procedimento(models.Model):
-    nome_procedimento = models.CharField(max_length=50, verbose_name='Nome do Procedimento'),
-    valor = models.DecimalField(decimal_places=2, max_digits=8)
-
-    def __str__(self):
-        return f'{self.nome_procedimento} {self.valor}'
-
-
-class Anotacao(models.Model):
+"""class Anotacao(models.Model):
     nota_medico = models.TextField(verbose_name="Nota")
 
     def __str__(self):
         return f'{self.nota_medico}'
-
+"""
 
 class Prontuario(models.Model):
     data_criacao = models.DateField()
-    pertence = models.OneToOneField(Paciente, on_delete=models.PROTECT)
+    paciente = models.OneToOneField(Paciente, on_delete=models.PROTECT)
 
     def __str__(self):
         return f'{self.data_criacao} {self.pertence}'
 
+
 class Procedimento(models.Model):
-    prontuario = models.ForeignKey(Prontuario, on_delete=models.PROTECT)
-    tipo_procedimento = models.ForeignKey(Tipo_procedimento, verbose_name='Tipo de Procedimento', on_delete=models.PROTECT)
-    data = models.DateField()
-    hora = models.TimeField()
-    medico =  models.CharField(max_length=100, verbose_name='Médico')
-    nome_paciente = models.CharField(max_length=100, verbose_name='Nome do Paciente')
     codigo = models.CharField(max_length=15)
-    cpf = models.CharField(max_length=14, verbose_name='CPF')
-    observacao = models.OneToOneField(Anotacao, null=True, blank=True, on_delete=models.PROTECT)
+    descricao = models.CharField(max_length=50, null=True, verbose_name='Descricão')
+    valor = models.DecimalField(decimal_places=2, max_digits=8, null=True)
+    observacao = models.TextField(null=True, verbose_name='Observações Gerais Sobre o Procedimento')
 
     def __str__(self):
-        return f'{self.tipo_procedimento} {self.data} {self.hora} {self.nome_paciente} {self.medico} {self.codigo} {self.observacao}'
+        return f'{self.codigo} {self.descricao} {self.valor} {self.observacao}' 
+    
+
+class Agendamento_Consulta(models.Model):
+    tipo_opcoes = (('Plano', 'Plano'), ('Particular', 'Particular'))
+
+    codigo = models.CharField(max_length=15)
+    agendamento = models.DateTimeField()
+    paciente = models.ForeignKey(Paciente, on_delete=models.PROTECT)
+    medico = models.ForeignKey(Medico, on_delete=models.PROTECT)
+    tipo_consulta = models.CharField(max_length=10, choices=tipo_opcoes)
+    retorno = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.codigo} {self.agendamento} {self.paciente} {self.medico} {self.tipo_consulta} {self.retorno}' 

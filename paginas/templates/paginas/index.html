@@ -74,10 +74,12 @@
                             <span id="view_list" class="icons material-symbols-outlined">view_list</span>
                             Listar cadastros
                     </li>
+                    {% if is_admin or request.user.is_superuser %}
                     <li class="dropdown-trigger black-text" data-target="dropdown2">
                             <span class="icons material-symbols-outlined">add_box</span>
                             Cadastros
                     </li>
+                    {% endif %}
                     <li id="drop-user" class="dropdown-trigger black-text" data-target="dropdown3"> {{ request.user }}
                         <span class="material-symbols-outlined">arrow_drop_down</span>
                     </li>
@@ -106,6 +108,9 @@
 
     <ul id="dropdown3" class="dropdown-content">
         <li><a href="{% url 'inicio' %}">Início</a></li>
+        {% if request.user.is_superuser %}
+            <li><a href="/admin">Painel Administrativo</a></li> 
+        {% endif %}
         <li><a href="{% url 'logout' %}">Sair</a></li>
     </ul>
 

@@ -6,11 +6,13 @@ from django.views.generic.list import  ListView
 from django.contrib.auth.models import User, Group
 from .forms import UsuarioForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from braces.views import GroupRequiredMixin
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
-class UsuarioCreate(LoginRequiredMixin, CreateView):
+class UsuarioCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     form_class = UsuarioForm
     template_name = 'usuarios/form_usuario.html'
     success_url = reverse_lazy('listar-usuarios')

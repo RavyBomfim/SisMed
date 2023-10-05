@@ -2,7 +2,7 @@ from typing import Any
 from .forms import EnderecoForm, FuncionarioForm, MedicoForm, PacienteForm
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.list import  ListView
+from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from .models import Cargo, Funcionario, Especialidade, Medico, Paciente, Endereco
 from django.urls import reverse_lazy
@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 
 # --------------- Views de Cadastro ---------------
 
-class CargoCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
+class CargoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Cargo
@@ -30,7 +30,7 @@ class CargoCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
         return context
 
 
-class FuncionarioCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
+class FuncionarioCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Funcionario
@@ -58,7 +58,7 @@ class FuncionarioCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
         return context
 
 
-class EspecialidadeCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
+class EspecialidadeCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Especialidade
@@ -74,7 +74,9 @@ class EspecialidadeCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
         return context
 
 
-class MedicoCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
+class MedicoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+    login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     model = Medico
     form_class = MedicoForm
     template_name = 'cadastros/form_medico.html'
@@ -105,7 +107,7 @@ class MedicoCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
         return context
     
 
-class PacienteCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
+class PacienteCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Paciente
@@ -138,7 +140,7 @@ class PacienteCreate(CreateView, LoginRequiredMixin, GroupRequiredMixin):
 
 # --------------- Views de Edição ---------------
 
-class CargoUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
+class CargoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Cargo
@@ -154,7 +156,7 @@ class CargoUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
         return context
 
 
-class FuncionarioUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
+class FuncionarioUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Funcionario
@@ -202,7 +204,7 @@ class FuncionarioUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
         return context
 
 
-class EspecialidadeUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
+class EspecialidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Especialidade
@@ -217,7 +219,7 @@ class EspecialidadeUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
 
         return context
 
-class MedicoUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
+class MedicoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Medico
@@ -266,7 +268,7 @@ class MedicoUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
         return context
 
 
-class PacienteUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
+class PacienteUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Paciente
@@ -315,14 +317,15 @@ class PacienteUpdate(UpdateView, LoginRequiredMixin, GroupRequiredMixin):
 
 # --------------- Views para excluir  ---------------
 
-class CargoDelete(DeleteView, LoginRequiredMixin, GroupRequiredMixin):
+class CargoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Cargo
     template_name = 'cadastros/form_excluir.html'
     success_url = reverse_lazy('listar-cargos')
 
-class FuncionarioDelete(DeleteView, LoginRequiredMixin, GroupRequiredMixin):
+
+class FuncionarioDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Funcionario
@@ -330,7 +333,7 @@ class FuncionarioDelete(DeleteView, LoginRequiredMixin, GroupRequiredMixin):
     success_url = reverse_lazy('listar-funcionarios')
 
 
-class EspecialidadeDelete(DeleteView,LoginRequiredMixin, GroupRequiredMixin):
+class EspecialidadeDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Especialidade
@@ -338,7 +341,7 @@ class EspecialidadeDelete(DeleteView,LoginRequiredMixin, GroupRequiredMixin):
     success_url = reverse_lazy('listar-especialidades')
 
 
-class MedicoDelete(DeleteView, LoginRequiredMixin, GroupRequiredMixin):
+class MedicoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Medico
@@ -346,24 +349,27 @@ class MedicoDelete(DeleteView, LoginRequiredMixin, GroupRequiredMixin):
     success_url = reverse_lazy('listar-medicos')
 
 
-class PacienteDelete(DeleteView, LoginRequiredMixin, GroupRequiredMixin):
+class PacienteDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     login_url = reverse_lazy('login')
     group_required = u"Administrador"
     model = Paciente
     template_name = 'cadastros/form_excluir.html'
     success_url = reverse_lazy('listar-pacientes')
 
+
 # --------------- Views para Listar ---------------
 
-class CargoList(ListView, LoginRequiredMixin, GroupRequiredMixin):
+class CargoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     model = Cargo
     template_name = 'cadastros/listas/cargo.html'
     success_url = reverse_lazy('inicio')
 
 
-class FuncionarioList(ListView, LoginRequiredMixin):
+class FuncionarioList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     model = Funcionario
     template_name = 'cadastros/listas/funcionario.html'
     success_url = reverse_lazy('inicio')
@@ -376,15 +382,17 @@ class FuncionarioList(ListView, LoginRequiredMixin):
         return context
 
 
-class EspecialidadeList(ListView, LoginRequiredMixin, GroupRequiredMixin):
+class EspecialidadeList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     model = Especialidade
     template_name = 'cadastros/listas/especialidade.html'
     success_url = reverse_lazy('listar-especialidades')
 
 
-class MedicoList(ListView, LoginRequiredMixin):
+class MedicoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     model = Medico
     template_name = 'cadastros/listas/medico.html'
     success_url = reverse_lazy('listar-medicos')
@@ -397,8 +405,9 @@ class MedicoList(ListView, LoginRequiredMixin):
         return context
 
 
-class PacienteList(ListView, LoginRequiredMixin):
+class PacienteList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     model = Paciente
     template_name = 'cadastros/listas/paciente.html'
     success_url = reverse_lazy('listar-pacientes')
@@ -406,26 +415,31 @@ class PacienteList(ListView, LoginRequiredMixin):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-
         context['titulo'] = 'Pacientes'
 
         return context
 
 
 # --------------- Views para Detalhar dados ---------------
-class FuncionarioDetail(DetailView):
+class FuncionarioDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+    login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     model = Funcionario
     template_name = 'cadastros/listas/dados_funcionario.html'
     context_object_name = 'funcionario'
 
 
-class MedicoDetail(DetailView):
+class MedicoDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+    login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     model = Medico
     template_name = 'cadastros/listas/dados_medico.html'
     context_object_name = 'medico'
 
 
-class PacienteDetail(DetailView):
+class PacienteDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+    login_url = reverse_lazy('login')
+    group_required = u"Administrador"
     model = Paciente
     template_name = 'cadastros/listas/dados_paciente.html'
     context_object_name = 'paciente'
