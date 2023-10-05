@@ -1,0 +1,54 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <h4>{{titulo}}</h4> 
+
+    {% block btn_add %}
+    <a class="btn btn-add btn-sm" href="{% url 'cadastrar-funcionario' %}">
+        <!-- <i class="fas fa-plus"></i> -->
+        <i class="material-symbols-outlined">add</i>
+        Cadastrar Funcionário
+    </a>
+    {% endblock %} <hr>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Foto</th>
+                <th>Nome Completo</th>
+                {% block campo3 %}
+                <th>Cargo</th>
+                {% endblock %}
+                <th>Opção</th>
+            </tr>
+
+            {% block lista %}
+                {% for funcionario in object_list %}
+                <tr> {% if funcionario.foto %}
+                    <td><img class="lista-foto" src="/media/{{funcionario.foto}}"></td>
+                    {% else %}
+                    <td><img class="lista-foto" src="{% static 'img/perfil-generico.jpg' %}"></td>
+                    {% endif %}
+                    <td>{{funcionario.nome_completo}}</td>
+                    <td>{{funcionario.cargo.nome_cargo}}</td>
+                    <td>
+                        <a href="{% url 'dados-funcionario' funcionario.pk %}" class="btn btn-small btn-dados">Ver Todos os Dados</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="12">Ainda não há funcionários cadastrados</td>
+                </tr>
+                {% endfor %}
+            {% endblock %}
+        </table>
+    </div>
+
+{% endblock %}

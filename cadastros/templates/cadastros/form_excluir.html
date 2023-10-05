@@ -1,0 +1,25 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+
+{% block content %}
+    
+    <div class="form-container">
+        <h3>Excluir Registro</h3> 
+    
+        <p>Clique no botão para confirmar a exclusão do registro.</p> <hr>
+
+        <form action="" method="POST">
+
+            {% csrf_token %}
+    
+            <p>Deseja excluir este registro definitivamente?</p>
+    
+            {{ form.as_p }}
+    
+            <button type="submit" style="background-color: #db8e8e;" class="btn">Excluir</button>
+    
+        </form>
+    </div>
+
+{% endblock %}

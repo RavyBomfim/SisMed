@@ -1,0 +1,43 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <h3>Especialidades</h3> 
+
+    <a class="btn btn-add btn-sm" href="{% url 'cadastrar-especialidade' %}">
+        <!-- <i class="fas fa-plus"></i> -->
+        <i class="material-symbols-outlined">add</i>
+        Adicionar Especialidade
+    </a> <hr>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Especialidade</th>
+                <th>Opções</th>
+            </tr>
+
+            {% for especialidade in object_list %}
+            <tr>
+                <td>{{especialidade.especialidade}}</td>
+                <td>
+                    <a href="{% url 'editar-especialidade' especialidade.pk %}" class="btn btn-sm btn-editar">Editar</a>
+                    <a href="{% url 'excluir-especialidade' especialidade.pk %}" class="btn btn-sm btn-excluir">Excluir</a> 
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">Ainda não há especialidades cadastradas</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+{% endblock %}

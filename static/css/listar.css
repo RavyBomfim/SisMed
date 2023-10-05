@@ -1,0 +1,44 @@
+.container {
+    padding-block: 40px;
+}
+
+h4 {
+    color: #096661;
+}
+
+.btn-sm {
+    font-weight: 500;
+}
+
+.btn-add {
+    background-color: #b3c4b7;
+    border-color: #096661;
+    color: #096661;
+    font-size: 15px;
+}
+
+.lista-foto {
+    width: 55px;
+}
+
+.dados-foto {
+    width: 130px;  
+}
+
+.btn-editar {
+    background-color: #a8ccb6;
+    color: #096661;
+}
+
+.btn-add:hover, .btn-editar:hover {
+    color: #064642;
+}
+
+.btn-excluir {
+    background-color: #db8e8e;
+    color: #912c39;
+}
+
+.btn-excluir:hover {
+    color: #791f2b;
+}

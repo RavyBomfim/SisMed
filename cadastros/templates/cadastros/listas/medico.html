@@ -1,0 +1,35 @@
+{% extends 'cadastros/listas/funcionario.html' %}
+
+{% load static %}
+    
+{% block btn_add %}
+    <a class="btn btn-add btn-sm" href="{% url 'cadastrar-medico' %}">
+        <!-- <i class="fas fa-plus"></i> -->
+        <i class="material-symbols-outlined">add</i>
+        Cadastrar Médico
+    </a>
+{% endblock %}
+
+{% block campo3 %}
+    <th>Especialidade</th>
+{% endblock %}
+
+{% block lista %}
+    {% for medico in object_list %}
+    <tr> {% if medico.foto %}
+        <td><img class="lista-foto" src="/media/{{medico.foto}}"></td>
+        {% else %}
+        <td><img class="lista-foto" src="{% static 'img/perfil-generico.jpg' %}"></td>
+        {% endif %}
+        <td>{{medico.nome_completo}}</td>
+        <td>{{medico.especialidade}}</td>
+        <td>
+            <a href="{% url 'dados-medico' medico.pk %}" class="btn btn-small btn-dados">Ver Todos os Dados</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="12">Ainda não há médicos cadastrados</td>
+    </tr>
+    {% endfor %}
+{% endblock %}

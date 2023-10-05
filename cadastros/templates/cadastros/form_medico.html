@@ -1,0 +1,236 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    {% block estilo_form %}
+    
+    {% endblock %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="card">
+
+        <div class="card-content" style="text-align: center">
+        <span class="card-title">{{titulo}}</span >
+            
+            <!-- Adicione um elemento <img> para exibir a imagem -->
+        <div id="imagem-preview" class="center-align">
+            <img id="imagem-selecionada" src="{% static 'img/perfil-generico.jpg' %}" alt="Imagem do Paciente" style="max-width: 130px; max-height: 130px; margin-right: 900px;">
+        </div>
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% block campos %}
+            <div class="input-field">
+                {{ form.nome_completo }}
+                <label for="{{ form.nome_completo.id_for_label }}">Nome completo</label>
+            </div>
+            
+            <div class="row">
+                <div class="input-field col s4">
+                    {{ form.data_nascimento }}
+                    <label for="{{ form.data_nascimento.id_for_label }}">Data de Nascimento</label>
+                </div>
+
+                <div class="input-field col s4">
+                    {{ form.rg }}
+                    <label for="{{ form.rg.id_for_label }}">RG</label>
+                </div>
+                
+                <div class="input-field col s4">
+                    {{ form.cpf }}
+                    <label for="{{ form.cpf.id_for_label }}">CPF</label>
+                </div>
+
+                <div class="input-field col s4">
+                    {{ form.endereco.rua }}
+                    <label for="{{ form.rua.id_for_label }}">Rua</label>
+                </div>
+                
+                <div class="input-field col s4">
+                    {{ form.endereco.numero }}
+                    <label for="{{ form.numero.id_for_label }}">Número</label>
+                </div>
+                
+                <div class="input-field col s4">
+                    {{ form.endereco.bairro }}
+                    <label for="{{ form.bairro.id_for_label }}">bairro</label>
+                </div>
+                
+                <div class="input-field col s4">
+                    {{ form.endereco.cidade }}
+                    <label for="{{ form.cidade.id_for_label }}">Cidade</label>
+                </div>
+
+                <div class="input-field col s4">
+                    {{ form.telefone }}
+                    <label for="{{ form.telefone.id_for_label }}">Telefone</label>
+                </div>
+                
+                <div class="input-field col s4">
+                    {{ form.email }}
+                    <label for="{{ form.email.id_for_label }}">E-mail</label>
+                </div>
+
+        
+                <div class="input-field col s4">
+                    {{ form.data_cadastro }}
+                    <label for="{{ form.data_cadastro.id_for_label }}">Data de Cadastro</label>
+                </div>
+
+                <div class="select-field col s4">
+                    {% block campo_direfente %}
+                        {{ form.especialidade }}
+                    {% endblock %}
+                </div>
+            </div>  
+            
+            <div class="card-action">
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>Foto</span>
+                        {{ form.foto }}
+                    </div>
+                    <div class="file-path-wrapper" >
+                        <input class="file-path validate" type="text" style="width: 200px; margin-right: 1000px;">
+                    </div>
+                </div>
+            </div>
+            {% endblock%} 
+            <div class="card-action">
+                <button class="btn waves-effect waves-light" type="submit">Salvar</button>
+                <button class="btn waves-effect waves-light" type="reset">Cancelar</button>
+            </div>
+        </form> 
+    </div>
+</div>
+
+{% if endereco_inicial %}
+<script>
+    var modoEdicao = true;
+</script>  
+{% else %} 
+<script>
+    var modoEdicao = false;
+</script>
+{% endif %}
+
+{% endblock %}
+
+
+    <div class="container" style="text-align: center; max-width: 1000px;">
+        <div class="card style="text-align: center; max-width: 1000px;>
+        <div class="card-content" style="text-align: center; max-width: 1000px;">
+        <span class="card-title">Histórico de consultas / Prontuário</span >
+    
+    <table class="striped">
+        <thead>
+            <tr>
+                <th>Data/Hora</th>
+                <th>Médico</th>
+                <th>Nome do Paciente</th>
+                <th>Código</th>
+                <th>CPF</th>
+                <th>Anotações do Médico</th>
+                <th>Descrição do Procedimento</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aqui você pode adicionar as linhas da tabela com os dados -->
+            <tr>
+                <td>01/09/2023 10:00</td>
+                <td>Dr. Silva</td>
+                <td>João da Silva</td>
+                <td>12345</td>
+                <td>123.456.789-00</td>
+                <td>Anotações sobre a consulta...</td>
+                <td>Descrição do procedimento realizado...</td>
+            </tr>
+            <tr>
+                <td>02/09/2023 14:30</td>
+                <td>Dra. Santos</td>
+                <td>Maria Santos</td>
+                <td>54321</td>
+                <td>987.654.321-00</td>
+                <td>Outras anotações sobre a consulta...</td>
+                <td>Outra descrição do procedimento realizado...</td>
+            </tr>
+            <!-- Adicione mais linhas conforme necessário -->
+        </tbody>
+    </table>
+    </div>
+    </div>
+
+{% block scripts %}
+    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+    
+    <!-- Inclua os scripts do Materialize JavaScript -->
+    
+    <script>
+        // Inicialize os elementos do Materialize, se necessário
+        M.AutoInit();
+    </script>
+    <script>
+        // Inicialize os elementos do Materialize, se necessário
+        M.AutoInit();
+
+        // Função para mostrar a imagem selecionada
+
+        const foto = document.getElementById('id_foto');
+
+        foto.addEventListener('change', function() {
+            const inputFoto = document.getElementById('id_foto');
+            const imagemPreview = document.getElementById('imagem-preview');
+            const imagemSelecionada = document.getElementById('imagem-selecionada');
+
+            if (inputFoto.files && inputFoto.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imagemSelecionada.src = e.target.result;
+                    imagemPreview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(inputFoto.files[0]);
+            } else {
+                imagemSelecionada.src = '#';
+                imagemPreview.style.display = 'none';
+            }
+        })
+    </script> 
+
+    <script>
+        $(document).ready(function() {
+
+            $('.data-mask').mask('00/00/0000');
+            $('.rg-mask').mask('00.000.000-00');
+            $('.cpf-mask').mask('000.000.000-00');
+            var telefoneMask = function (val) {
+                return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+            }, 
+            telOptions = {
+                onKeyPress: function(val, e, field, options) {
+                    field.mask(telefoneMask.apply({}, arguments), options);
+                    }
+                };
+
+                $('.telefone-mask').mask(telefoneMask, telOptions);
+        })
+
+        if (modoEdicao) {
+            $('#id_rua').val('{{ endereco_inicial.rua }}');
+            $('#id_numero').val('{{ endereco_inicial.numero }}');
+            $('#id_bairro').val('{{ endereco_inicial.bairro }}');
+            $('#id_cidade').val('{{ endereco_inicial.cidade }}');
+        }
+
+    </script>
+
+{%endblock %}
+
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'css/login.css' %}"> -->
+
+    <!-- <style>
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-right: 7px;
+            font-weight: 500;
+        }
+
+        label, input {
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            margin-top: 10px;
+            width: 100px;
+        }
+
+        td {
+            width: 100%;
+        }
+
+    </style>  -->
+
+    <style>
+
+        .btn {
+            min-width: 100px;
+            margin-top: 15px;
+        }
+
+        .form-box {
+            width: fit-content;
+        }
+
+    </style> 
+    {% block styles-form %}
+
+    {% endblock %}
+
+{% endblock %}
+
+{% block content %}
+
+    <!-- <div class="form-container">
+        <div>
+            <h1>Login</h1> 
+            <p>Digite os seus dados de acesso nos campos abaixo.</p> <br><br>
+
+            <form action="" method="POST">
+
+                {% csrf_token %}
+
+                <table>
+                    {{ form.as_table }}
+                </table>
+
+                <button type="submit" class="btn">Login</button>
+
+            </form>
+        </div>
+    </div> -->
+
+    <div class="form-container">
+        <div class="form-box"> 
+            {% block titulo-form %}
+                <h1>Login</h1>
+                <p>Digite os seus dados de acesso nos campos abaixo.</p> <br><br>
+            {% endblock%}
+    
+            <form action="" method="POST">
+
+                {% csrf_token %}
+
+                {% block campos %}
+                <div class="input-field">
+                    {{ form.username }}
+                    <label for="{{ form.username.id_for_label }}">Usuario</label>
+                </div>
+
+                <div class="input-field">
+                    {{ form.password }}
+                    <label for="{{ form.password.id_for_label }}">Senha</label>
+                </div>
+
+                <button type="submit" class="btn">Login</button>
+                {% endblock%}
+
+            </form>
+        </div>
+    </div>
+
+    <!-- <div class="page">
+        <form method="POST" class="formLogin">
+            <h1>Login</h1>
+            <p>Digite os seus dados de acesso nos campos abaixo.</p>
+            <label for="email">Usuário</label>
+            {{form.username}}
+            <label for="password">Senha</label>
+            {{form.password}}
+            <a href="mailto:suporte@sismed.com.br?subject=Recuperação de senha&cc=ti@sismed.com.br&bcc=admin@sismed.com.br&body=Conteúdo do email que será preenchido automaticamente">Esqueci minha senha</a>
+          
+            <input type="submit" value="Acessar" class="btn" />
+        </form>
+    </div> -->
+{% endblock %}

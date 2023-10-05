@@ -1,0 +1,40 @@
+h3 {
+    color: #11918a;
+}
+
+.titulo-form {
+    color: #096661;
+}
+
+input, textarea {
+    outline: 0;
+    padding-inline: 5px;
+    padding-block: 3px;
+}
+
+input:focus, textarea:focus {
+    box-shadow: none;
+    outline: 0;
+}
+
+textarea {
+    width: 208%;
+    height: 80px;
+    resize: none;
+    padding: 8px;
+} 
+
+.btn-form {
+    min-width: 100px;
+    background-color: #a8ccb6;
+    border-color: #096661;
+    color: #096661;
+    transition: all 0.2s;
+    justify-self: center;
+}
+
+.btn-form:hover {
+    background-color: #a1cab1;
+    border-color: #064642;
+    color: #064642;
+}

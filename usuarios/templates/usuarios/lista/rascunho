@@ -1,0 +1,24 @@
+<!-- <td>
+    <a href="{% url 'editar-usuario' usuario.pk %}" class="btn btn-sm btn-editar">Editar</a>
+    <a href="{% url 'excluir-usuario' usuario.pk %}" class="btn btn-sm btn-excluir">Excluir</a> 
+</td> -->
+
+<!-- <div class="input-field col s4">
+    {{ form.rua }}
+    <label for="{{ form.rua.id_for_label }}">Rua</label>
+</div>
+
+<div class="input-field col s4">
+    {{ form.numero }}
+    <label for="{{ form.numero.id_for_label }}">Número</label>
+</div>
+
+<div class="input-field col s4">
+    {{ form.bairro }}
+    <label for="{{ form.bairro.id_for_label }}">bairro</label>
+</div>
+
+<div class="input-field col s4">
+    {{ form.cidade }}
+    <label for="{{ form.cidade.id_for_label }}">Cidade</label>
+</div> -->

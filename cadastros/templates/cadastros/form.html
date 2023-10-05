@@ -1,0 +1,54 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="form-container">
+
+        <h3 class="titulo-form">{{titulo}}</h3> <hr>
+
+        <form action="" method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+    
+            <table>
+                {{ form|crispy }}
+            </table>
+    
+            <button type="submit" class="btn btn-form">Salvar</button>
+    
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.data-mask').mask('00/00/0000');
+            $('.rg-mask').mask('00.000.000-00');
+            $('.cpf-mask').mask('000.000.000-00');
+
+            var telefoneMask = function (val) {
+                return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+            }, 
+            telOptions = {
+                onKeyPress: function(val, e, field, options) {
+                    field.mask(telefoneMask.apply({}, arguments), options);
+                    }
+                };
+
+                $('.telefone-mask').mask(telefoneMask, telOptions);
+        })
+    </script>
+
+{%endblock %}

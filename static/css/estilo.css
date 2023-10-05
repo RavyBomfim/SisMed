@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #f2f2f2;
+}
+
+header {
+    height: 64px;
+    background-color: #a8ccb6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 50px;
+    padding-right: 65px;
+}
+
+header #logo {
+    width: 110px;
+}
+
+.dropdown-toggle {
+    color: black;
+    font-weight: 500;
+}
+
+.navbar-nav {
+    background-color: #a8ccb6;
+    box-shadow: none;
+    justify-content: space-between;
+}
+
+/* .dropdown {
+    padding-left: 30px;
+} */
+
+
+/*Materialize*/
+.dropdown-trigger {
+    display: flex;
+    align-items: center;
+    margin-left: 30px;
+} 
+
+
+/*Materialize*/
+.icons {
+    margin-right: 4px;
+    font-size: 18px;
+}
+
+/*Materialize*/
+#view_list {
+    font-size: 19px;
+}
+
+/*Materialize*/
+#drop-user {
+    font-weight: 500;
+}
+
+.dropdown-item:hover {
+    background-color: transparent;
+}
+
+#login-option {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+#login-option:hover {
+    background-color: transparent;
+}
+
+#login-option:hover a {
+    color: #096661;
+}
+
+.add-cadastro {
+    font-size: 15px;
+}
+
+main {
+    min-height: 80vh;
+}
+
+.container {
+    padding-block: 20px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    color: #096661;
+}
+
+footer {
+    background-color: #a8ccb6;
+    padding-inline: 40px;
+    padding-block: 30px;
+}
+
+#copyright {
+    display: flex;
+    justify-content: space-between;
+}

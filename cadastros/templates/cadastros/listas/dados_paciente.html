@@ -1,0 +1,48 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    {% if paciente.foto %}
+    <img class="dados-foto" src="/media/{{paciente.foto}}"> <br>
+    {% else %}
+    <img class="dados-foto" src="{% static 'img/perfil-generico.jpg' %}">
+    {% endif %}
+    <p>{{paciente.nome_completo}}</p>
+
+    <div id="dados-pessoais">
+        <h4>Dados Pessoais</h4>
+        <p>Nascimento: {{paciente.data_nascimento|date:'d/m/Y'}}</p>
+        <p>RG: {{paciente.rg}}</p>
+        <p>CPF: {{paciente.cpf}}</p>
+    </div>
+
+    <div id="contato">
+        <h4>Contato</h4>
+        <p>Telefone: {{paciente.telefone}}</p>
+        <p>Email: {{paciente.email}}</p>
+    </div>
+
+    <div id="endereco">
+        <h4>Endereço</h4>
+        <p>Rua: {{paciente.endereco.rua}}</p>
+        <p>Número: {{paciente.endereco.numero}}</p>
+        <p>Bairro: {{paciente.endereco.bairro}}</p>
+        <p>Cidade: {{paciente.endereco.cidade}}</p>
+    </div>
+
+    <div id="inform-medicas">
+        <h4>Informações Médicas</h4>
+        <p>{{paciente.informacoes_medicas}}</p>
+    </div>
+
+    <br><br>
+    <a href="{% url 'editar-paciente' paciente.pk %}" class="btn btn-sm btn-editar">Editar</a> &nbsp;
+    <a href="{% url 'excluir-paciente' paciente.pk %}" class="btn btn-sm btn-excluir">Excluir</a>
+    
+{% endblock %}

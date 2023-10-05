@@ -1,0 +1,43 @@
+{% extends 'usuarios/login.html' %}
+
+{% load static %}
+
+{% block styles-form %}
+    <style>
+
+        .form-box {
+            background-color: #fff;
+            padding-inline: 40px;
+            padding-bottom: 40px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block titulo-form %}
+    <h4>Cadastro de usuário</h4> <br>
+{% endblock %}
+
+{% block campos %}
+    <div class="input-field">
+        {{ form.username }}
+        <label for="{{ form.username.id_for_label }}">Usuário</label>
+    </div>
+
+    <div class="input-field">
+        {{ form.email }}
+        <label for="{{ form.email.is_for_label }}">Email</label>
+    </div>
+
+    <div class="input-field">
+        {{ form.password1 }}
+        <label for="{{ form.password1.id_for_label }}">Senha</label>
+    </div>
+
+    <div class="input-field">
+        {{ form.password2 }}
+        <label for="{{ form.password2.id_for_label }}">Confirmar Senha</label>
+    </div>
+
+    <button type="submit" class="btn">Confirmar</button>
+{% endblock %}
