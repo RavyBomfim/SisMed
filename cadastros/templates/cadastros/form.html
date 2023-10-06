@@ -11,20 +11,34 @@
 {% block content %}
 
     <div class="form-container">
+        <div class="form-box"> 
 
-        <h3 class="titulo-form">{{titulo}}</h3> <hr>
+            <h4 class="titulo-form">{{titulo}}</h4> <br>
 
-        <form action="" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST" enctype="multipart/form-data">
 
-            {% csrf_token %}
-    
-            <table>
-                {{ form|crispy }}
-            </table>
-    
-            <button type="submit" class="btn btn-form">Salvar</button>
-    
-        </form>
+                {% csrf_token %}
+        
+                {% if 'Especialidades' in titulo %}
+                <div class="input-field">
+                    {{ form.especialidade }}
+                    <label for="{{ form.especialidade.id_for_label }}">Especialidade</label>
+                </div>
+                {% elif 'Cargos' in titulo %}
+                    <div class="input-field">
+                        {{ form.nome_cargo }}
+                        <label for="{{ form.nome_cargo.id_for_label }}">Cargo</label>
+                    </div>
+                    <div class="input-field">
+                        {{ form.salario }}
+                        <label for="{{ form.salario.id_for_label }}">Salário</label>
+                    </div>
+                {% endif %}
+        
+                <button type="submit" class="btn btn-form">Salvar</button>
+        
+            </form>
+        </div>
     </div>
 
 {% endblock %}
