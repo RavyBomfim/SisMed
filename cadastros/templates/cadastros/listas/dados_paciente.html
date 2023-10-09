@@ -15,30 +15,32 @@
     {% endif %}
     <p>{{paciente.nome_completo}}</p>
 
-    <div id="dados-pessoais">
-        <h4>Dados Pessoais</h4>
-        <p>Nascimento: {{paciente.data_nascimento|date:'d/m/Y'}}</p>
-        <p>RG: {{paciente.rg}}</p>
-        <p>CPF: {{paciente.cpf}}</p>
-    </div>
+    <div class="dados">
+        <div id="dados-pessoais">
+            <h4>Dados Pessoais</h4>
+            <p>Nascimento: {{paciente.data_nascimento|date:'d/m/Y'}}</p>
+            <p>RG: {{paciente.rg}}</p>
+            <p>CPF: {{paciente.cpf}}</p>
+        </div>
 
-    <div id="contato">
-        <h4>Contato</h4>
-        <p>Telefone: {{paciente.telefone}}</p>
-        <p>Email: {{paciente.email}}</p>
-    </div>
+        <div id="contato">
+            <h4>Contato</h4>
+            <p>Telefone: {{paciente.telefone}}</p>
+            <p>Email: {{paciente.email}}</p>
+        </div>
 
-    <div id="endereco">
-        <h4>Endereço</h4>
-        <p>Rua: {{paciente.endereco.rua}}</p>
-        <p>Número: {{paciente.endereco.numero}}</p>
-        <p>Bairro: {{paciente.endereco.bairro}}</p>
-        <p>Cidade: {{paciente.endereco.cidade}}</p>
-    </div>
+        <div id="endereco">
+            <h4>Endereço</h4>
+            <p>Rua: {{paciente.endereco.rua}}</p>
+            <p>Número: {{paciente.endereco.numero}}</p>
+            <p>Bairro: {{paciente.endereco.bairro}}</p>
+            <p>Cidade: {{paciente.endereco.cidade}}</p>
+        </div>
 
-    <div id="inform-medicas">
-        <h4>Informações Médicas</h4>
-        <p>{{paciente.informacoes_medicas}}</p>
+        <div id="inform-medicas">
+            <h4>Informações Médicas</h4>
+            <p>{{paciente.informacoes_medicas}}</p>
+        </div>
     </div>
 
     <br><br>
