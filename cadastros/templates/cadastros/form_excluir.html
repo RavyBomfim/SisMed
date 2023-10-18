@@ -2,22 +2,47 @@
 
 {% load static %}
 
+{% block styles %}
+    <style>
+
+        h4 {
+            margin-bottom: 5px;
+        }
+
+        p {
+            font-size: 17px;
+        }
+
+        #registro {
+            color: #df8080;
+            font-weight: 500;
+        }
+
+        .btn {
+            background-color: #e48d8d;
+        }
+        
+        .btn:hover {
+            background-color: #df8686;
+        }
+
+    </style>
+{% endblock %}
+
 {% block content %}
     
     <div class="form-container">
-        <h3>Excluir Registro</h3> 
+        <h4>Excluir Registro</h4> <br>
     
-        <p>Clique no botão para confirmar a exclusão do registro.</p> <hr>
+        <p>Deseja excluir {{objeto}} <span id="registro">{{registro}}</span> definitivamente?</p> <hr> <br>
 
         <form action="" method="POST">
 
             {% csrf_token %}
     
-            <p>Deseja excluir este registro definitivamente?</p>
-    
             {{ form.as_p }}
     
-            <button type="submit" style="background-color: #db8e8e;" class="btn">Excluir</button>
+            <button type="submit" class="btn">Excluir</button>
     
         </form>
     </div>

@@ -1,0 +1,58 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <style>
+        .input-box {
+            display: flex;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="form-container">
+        <div class="form-box"> 
+
+            <h5 class="titulo-form">Disponibilidade do médico na semana</h5> <br>
+
+            <form action="" method="POST">
+                {% csrf_token %}
+
+                <div class="input-field">
+                    {{ form.dia_semana }}
+                    <label for="{{ form.dia_semana.id_for_label }}">Especialidade</label>
+                </div>
+                <div class="input-box">
+                    <div class="input-field">
+                        {{ form.horario_inicial_manha }}
+                        <label for="{{ horario_inicial_manha.id_for_label }}">Das</label>
+                    </div>
+                    <div class="input-field">
+                        {{ form.horario_final_manha }}
+                        <label for="{{ form.horario_final_manha.id_for_label }}">Até às</label>
+                    </div>
+                </div>
+                Período: Tarde
+                <div class="input-box">
+                    <div class="input-field">
+                        {{ form.horario_inicial_tarde }}
+                        <label for="{{ form.horario_inicial_tarde.id_for_label }}">Das</label>
+                    </div>
+                    <div class="input-field">
+                        {{ form.horario_final_tarde }}
+                        <label for="{{ form.horario_final_tarde.id_for_label }}">Até às</label>
+                    </div>
+                </div>
+        
+                <button type="submit" class="btn btn-form">Salvar</button>
+        
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

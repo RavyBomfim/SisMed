@@ -21,6 +21,15 @@
             <p>Nascimento: {{funcionario.data_nascimento|date:'d/m/Y'}}</p>
             <p>RG: {{funcionario.rg}}</p>
             <p>CPF: {{funcionario.cpf}}</p>
+            {% if funcionario.sexo == Null %}
+                <p>Sexo: Não definido</p>
+            {% else %}
+                {% if funcionario.sexo == 'F' %}
+                    <p>Sexo: Feminino</p>
+                {% else %}
+                    <p>Sexo: Masculino</p>
+                {% endif %}
+            {% endif %}
         </div>
     
         <div id="contato">
@@ -41,7 +50,10 @@
             <h4>Profissionais</h4>
             <p>Cargo: {{funcionario.cargo.nome_cargo}}</p>
             <p>Salário: {{funcionario.cargo.salario}}</p>
-            <p>Data de cadastro: {{funcionario.data_cadastro|date:'d/m/Y'}}</p>
+            <p>Data de Admissão: {{funcionario.data_admissao|date:'d/m/Y'}}</p>
+            {% if funcionario.data_demissao %}
+                <p>Data de Demissão: {{funcionario.data_demissao|date:'d/m/Y'}}</p>
+            {% endif %}
         </div>
     </div>
 

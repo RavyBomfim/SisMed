@@ -1,0 +1,89 @@
+a {
+    color: #202020;
+}
+
+.custom-card {
+    background-color: #80cbc4;
+    /* background-color: #7be7d0; */
+    height: 200px;
+    transition: background-color 0.3s ease;
+}
+
+.custom-card:hover {
+    background-color: #4f9a94;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer; /* Altera o ponteiro do mouse no hover */
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.card-content p {
+    font-size: 40px;
+    margin: 0;
+}
+
+.dynamic-card {
+    background-color: #80cbc4;
+    /* background-color: #7be7d0; */
+    transition: background-color 0.3s ease;
+    overflow: hidden; /* Evita a barra de rolagem horizontal */
+}
+
+.dynamic-card:hover {
+    background-color: #4f9a94;
+    cursor: pointer;
+}
+
+.specialties-table {
+    width: 100%;
+}
+
+.specialties-table th,
+.specialties-table td {
+    padding: 8px;
+    text-align: left;
+    transition: background-color 0.3s ease;
+}
+
+.specialties-table tr:hover {
+    background-color: #4f9a94;
+    cursor: pointer;
+}
+
+
+/* ----------------------------------------------------------------*/
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.specialties-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.specialties-table th,
+.specialties-table td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd; /* Linhas de grade */
+}
+
+.specialties-table th {
+    background-color: #f2f2f2; /* Cor de fundo do cabeçalho */
+}
+
+.specialties-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Cor de fundo para linhas pares */
+}
+
+.specialties-table tbody tr:hover {
+    background-color: #7e827e; /* Cor de fundo no hover */
+}

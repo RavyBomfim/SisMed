@@ -13,18 +13,22 @@
     <div class="form-container">
         <div class="form-box"> 
 
-            <h4 class="titulo-form">{{titulo}}</h4> <br>
+            <h5 class="titulo-form">{{titulo}}</h5> <br>
 
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST">
 
                 {% csrf_token %}
         
-                {% if 'Especialidades' in titulo %}
-                <div class="input-field">
-                    {{ form.especialidade }}
-                    <label for="{{ form.especialidade.id_for_label }}">Especialidade</label>
-                </div>
-                {% elif 'Cargos' in titulo %}
+                {% if 'Especialidade' in titulo %}
+                    <div class="input-field">
+                        {{ form.especialidade }}
+                        <label for="{{ form.especialidade.id_for_label }}">Especialidade</label>
+                    </div>
+                    <div class="input-field">
+                        {{ form.valor_consulta }}
+                        <label for="{{ form.especialidade.id_for_label }}">Valor da Consulta</label>
+                    </div>
+                {% elif 'Cargo' in titulo %}
                     <div class="input-field">
                         {{ form.nome_cargo }}
                         <label for="{{ form.nome_cargo.id_for_label }}">Cargo</label>
@@ -42,27 +46,3 @@
     </div>
 
 {% endblock %}
-
-{% block scripts %}
-    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
-
-    <script>
-        $(document).ready(function() {
-            $('.data-mask').mask('00/00/0000');
-            $('.rg-mask').mask('00.000.000-00');
-            $('.cpf-mask').mask('000.000.000-00');
-
-            var telefoneMask = function (val) {
-                return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
-            }, 
-            telOptions = {
-                onKeyPress: function(val, e, field, options) {
-                    field.mask(telefoneMask.apply({}, arguments), options);
-                    }
-                };
-
-                $('.telefone-mask').mask(telefoneMask, telOptions);
-        })
-    </script>
-
-{%endblock %}

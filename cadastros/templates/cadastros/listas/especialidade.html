@@ -20,12 +20,14 @@
         <table class="table">
             <tr>
                 <th>Especialidade</th>
+                <th>Valor da consulta</th>
                 <th>Opções</th>
             </tr>
 
             {% for especialidade in object_list %}
             <tr>
                 <td>{{especialidade.especialidade}}</td>
+                <td>R$ {{especialidade.valor_consulta}}</td>
                 <td>
                     <a href="{% url 'editar-especialidade' especialidade.pk %}" class="btn btn-sm btn-editar">Editar</a> &nbsp;
                     <a href="{% url 'excluir-especialidade' especialidade.pk %}" class="btn btn-sm btn-excluir">Excluir</a> 

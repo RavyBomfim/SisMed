@@ -90,6 +90,20 @@ main {
     padding-block: 20px;
 }
 
+.flex {
+    display: flex;
+}
+
+.align-center {
+    align-items: center;
+}
+
+#bem-vindo {
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+}
+
 .form-container {
     display: flex;
     flex-direction: column;

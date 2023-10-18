@@ -20,12 +20,14 @@
             <tr>
                 <th>Usuário</th>
                 <th>Email</th>
+                <th>Opção</th>
             </tr>
 
             {% for usuario in object_list %}
             <tr>
                 <td>{{usuario.username}}</td>
                 <td>{{usuario.email}}</td>
+                <td><a href="{% url 'excluir-usuario' usuario.pk %}" class="btn btn-sm btn-excluir">Excluir</a></td>
             </tr>
             {% empty %}
             <tr>

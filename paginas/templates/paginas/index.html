@@ -17,42 +17,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+    
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style_dash.css' %}">
 
     {% block styles %}
 
     {% endblock %}
-
-    <style>
-        /* Defina a cor verde para o menu */
-        /*.navbar-nav {
-            background-color: #A8CCB6;
-            box-shadow: none;
-        }
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: A8CCB6;
-        }
-        li {
-            float: left;
-        }
-        li a {
-            display: block;
-            color: rgb(0, 0, 0);
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-        li a:hover {
-            background-color: #d40b0b;
-        } */
-     
-    </style>
-
 
 </head>
 <body>
@@ -92,18 +63,21 @@
 
     <ul id="dropdown1" class="dropdown-content">
         <li><a href="{% url 'listar-cargos' %}">Listar Cargos</a></li>
-        <li><a href="{% url 'listar-funcionarios' %}">Listar Funcionário</a></li>
-        <li><a href="{% url 'listar-medicos' %}">Listar Médico</a></li>
-        <li><a href="{% url 'listar-pacientes' %}">Listar Paciente</a></li>
-        <li><a href="{% url 'listar-especialidades' %}">Listar Especialidade</a></li>
+        <li><a href="{% url 'listar-especialidades' %}">Listar Especialidades</a></li>
+        <li><a href="{% url 'listar-funcionarios' %}">Listar Funcionários</a></li>
+        <li><a href="{% url 'listar-medicos' %}">Listar Médicos</a></li>
+        <li><a href="{% url 'listar-pacientes' %}">Listar Pacientes</a></li>
+        <li><a href="{% url 'listar-usuarios' %}">Listar Usuarios</a></li>
     </ul>
 
     <ul id="dropdown2" class="dropdown-content">
         <li><a href="{% url 'cadastrar-cargo' %}">Cargo</a></li>
-        <li><a href="{% url 'cadastrar-funcionario' %}">Funcionário</a></li>
         <li><a href="{% url 'cadastrar-especialidade' %}">Especialidade</a></li>
+        <li><a href="{% url 'cadastrar-funcionario' %}">Funcionário</a></li>
         <li><a href="{% url 'cadastrar-medico' %}">Médico</a></li>
+        <li><a href="#">Agenda</a></li>
         <li><a href="{% url 'cadastrar-paciente' %}">Paciente</a></li>
+        <li><a href="{% url 'cadastrar-usuario' %}">Usuario</a></li>
     </ul>
 
     <ul id="dropdown3" class="dropdown-content">
@@ -123,9 +97,85 @@
 <main>
     <div class="container">
         {% block content %}
-        <div class="form-container">
-            <h1>Bem Vindo ao Sistema!</h1>
-        </div>
+            <div class="row">
+                <div class="col s12 flex align-center" id="bem-vindo">
+                    <h4>Bem-vindo, {{request.user}}!</h4> &nbsp; <a class="btn" href="#">Agendar Consulta</a>
+                </div>
+            </div>
+        
+            <div class="row">
+                <a href="{% url 'listar-medicos' %}">
+                <div class="col s12 m6 l4">
+                    <div class="card custom-card">
+                        <div class="card-content">
+                            <i class="fas fa-user-md fa-3x"></i>
+                            <span class="card-title">Médicos Cadastrados</span>
+                            <p>{{qtd_medicos}}</p>
+                        </div>
+                    </div>
+                </div>
+                </a>
+        
+                <a href="{% url 'listar-pacientes' %}"></a>
+                <div class="col s12 m6 l4">
+                    <div class="card custom-card">
+                        <div class="card-content">
+                            <i class="fas fa-user fa-3x"></i>
+                            <span class="card-title">Pacientes Cadastrados</span>
+                            <p>{{qtd_pacientes}}</p>
+                        </div>
+                    </div>
+                </div>
+                </a>
+        
+                <!-- <div class="col s12 m6 l4">
+                    <div class="card custom-card">
+                        <div class="card-content">
+                            <i class="fas fa-user-tie fa-3x"></i>
+                            <span class="card-title">Funcionários Cadastrados</span>
+                            <p>50</p>
+                        </div>
+                    </div>
+                </div> -->
+        
+                <div class="col s12 m6 l4">
+                    <div class="card custom-card">
+                        <div class="card-content">
+                            <i class="fas fa-user-injured fa-3x"></i>
+                            <span class="card-title">Pacientes do Dia</span>
+                            <p style="font-size: 20px;">Data: {{data_atual|date:'d/m/Y'}}</p>
+                            <p>{{qtd_consultas}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s12 m6 l6">
+                <div class="card dynamic-card">
+                    <div class="card-content">
+                        <i class="fas fa-list-ul fa-3x"></i>
+                        <span class="card-title">Especialidades Mais Requisitadas</span>
+                        <table class="specialties-table">
+                            <thead>
+                                <tr>
+                                    <th>Especialidade</th>
+                                    <th>Número de médicos</th>
+                                    <th>Médicos disponíveis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for especialidade in especialidades_mais_requisitadas %}
+                                <tr>
+                                    <td>{{especialidade.especialidade}}</td>
+                                    <td>{{especialidade.medico_set.all|length}}</td>
+                                    <td>{{especialidade.medico_set.all|length}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         {% endblock %}
     </div>
 </main>
@@ -141,6 +191,7 @@
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
     // Inicialização do menu dropdown

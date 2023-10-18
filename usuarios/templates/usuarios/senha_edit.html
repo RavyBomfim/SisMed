@@ -1,0 +1,14 @@
+{% extends 'usuarios/form_usuario.html' %}
+
+{% load static %}
+
+{% block user_email %}
+
+{% endblock %}
+
+{% block senha1 %}
+    <div class="input-field">
+        {{ form.password1 }}
+        <label for="{{ form.password1.id_for_label }}">Nova Senha</label>
+    </div>
+{% endblock %}

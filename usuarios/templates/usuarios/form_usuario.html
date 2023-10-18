@@ -1,43 +1,59 @@
-{% extends 'usuarios/login.html' %}
+{% extends 'paginas/index.html' %}
 
 {% load static %}
 
-{% block styles-form %}
+{% load crispy_forms_tags %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
     <style>
 
-        .form-box {
-            background-color: #fff;
-            padding-inline: 40px;
-            padding-bottom: 40px;
+        .btn {
+            width: 100%;
+            height: fit-content;
+            margin-top: 25px;
+            padding: 3px;
         }
 
     </style>
 {% endblock %}
 
-{% block titulo-form %}
-    <h4>Cadastro de usuário</h4> <br>
-{% endblock %}
+{% block content %}
 
-{% block campos %}
-    <div class="input-field">
-        {{ form.username }}
-        <label for="{{ form.username.id_for_label }}">Usuário</label>
+    <div class="form-container">
+        <div class="form-box">
+
+            <h4>{{titulo}}</h4> <br>
+
+            <form action="" method="POST">
+                {% csrf_token %}
+    
+                {% block user_email %}
+                    <div class="input-field">
+                        {{ form.username }}
+                        <label for="{{ form.username.id_for_label }}">Usuário</label>
+                    </div>
+                {% endblock %}
+
+                {% block senhas %}
+                    {% block senha1 %}
+                        <div class="input-field">
+                            {{ form.password1 }}
+                            <label for="{{ form.password1.id_for_label }}">Senha</label>
+                        </div>
+                    {% endblock %}
+
+                    <div class="input-field">
+                        {{ form.password2 }}
+                        <label for="{{ form.password2.id_for_label }}">Confirmar Senha</label>
+                        {% for error in form.password2.errors %}
+                            <p class="error"> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endblock %}
+
+                <button type="submit" class="btn">Confirmar</button>
+            </form> 
+        </div>
     </div>
-
-    <div class="input-field">
-        {{ form.email }}
-        <label for="{{ form.email.is_for_label }}">Email</label>
-    </div>
-
-    <div class="input-field">
-        {{ form.password1 }}
-        <label for="{{ form.password1.id_for_label }}">Senha</label>
-    </div>
-
-    <div class="input-field">
-        {{ form.password2 }}
-        <label for="{{ form.password2.id_for_label }}">Confirmar Senha</label>
-    </div>
-
-    <button type="submit" class="btn">Confirmar</button>
 {% endblock %}

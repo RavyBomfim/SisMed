@@ -6,10 +6,46 @@ h3 {
     color: #096661;
 }
 
+form {
+    position: relative;
+}
+
+.form-box {
+    width: fit-content;
+    min-width: 320px;
+    background-color: #fff;
+    padding-top: 10px;
+    padding-inline: 40px;
+    padding-bottom: 50px;
+    border-radius: 2px;
+}
+
+#imagem-preview {
+    max-width: 130px;
+    max-height: 130px;
+    cursor: pointer;
+}
+
+#add-photo {
+    position: absolute;
+    left: 115px;
+    top: 155px;
+    font-size: 25px;
+    color: #096661;
+    background-color: #a8ccb6;
+    padding: 7px;
+    border-radius: 5px;
+}
+
 input, textarea {
     outline: 0;
     padding-inline: 5px;
     padding-block: 3px;
+}
+
+textarea {
+    resize: none;
+    padding: 8px;
 }
 
 input:focus, textarea:focus {
@@ -17,12 +53,14 @@ input:focus, textarea:focus {
     outline: 0;
 }
 
-textarea {
+#id_informacoes_medicas {
     width: 208%;
     height: 80px;
-    resize: none;
-    padding: 8px;
 } 
+
+.file-field {
+    display: none;
+}
 
 .btn-form {
     min-width: 100px;
@@ -31,6 +69,7 @@ textarea {
     color: #096661;
     transition: all 0.2s;
     justify-self: center;
+    margin-top: 5px;
 }
 
 .btn-form:hover {
@@ -38,3 +77,12 @@ textarea {
     border-color: #064642;
     color: #064642;
 }
+
+.error {
+    font-size: 15px;
+    color: #d84343;
+    position: absolute;
+}
+
+
+

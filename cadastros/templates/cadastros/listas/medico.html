@@ -14,6 +14,12 @@
     <th>Especialidade</th>
 {% endblock %}
 
+{% block opcao %}
+    {% if is_admin %}
+        <th>Opção</th>
+    {% endif %}
+{% endblock %}
+
 {% block lista %}
     {% for medico in object_list %}
     <tr> {% if medico.foto %}
@@ -24,7 +30,10 @@
         <td>{{medico.nome_completo}}</td>
         <td>{{medico.especialidade}}</td>
         <td>
-            <a href="{% url 'dados-medico' medico.pk %}" class="btn btn-small btn-dados">Ver Detalhes</a>
+            {% if is_admin %}
+            <a href="{% url 'dados-medico' medico.pk %}" class="btn btn-small btn-dados">Ver Detalhes</a> &nbsp;
+            {% endif %}
+            <!-- <a href="{% url 'dados-agenda' medico.agendamedico.pk %}" class="btn btn-small btn-agenda">Agenda</a> -->
         </td>
     </tr>
     {% empty %}

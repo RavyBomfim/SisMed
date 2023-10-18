@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CargoCreate, CargoList, CargoUpdate, CargoDelete, EspecialidadeCreate, EspecialidadeDelete, EspecialidadeList, EspecialidadeUpdate, FuncionarioCreate, FuncionarioDelete, FuncionarioDetail, FuncionarioList, FuncionarioUpdate, MedicoCreate, MedicoDelete, MedicoDetail, MedicoList, MedicoUpdate, PacienteCreate, PacienteDelete, PacienteDetail, PacienteList, PacienteUpdate 
+from .views import AgendaDetail, CargoCreate, CargoList, CargoUpdate, CargoDelete, DiponibilidadeHorario, EspecialidadeCreate, EspecialidadeDelete, EspecialidadeList, EspecialidadeUpdate, FuncionarioCreate, FuncionarioDelete, FuncionarioDetail, FuncionarioList, FuncionarioUpdate, MedicoCreate, MedicoDelete, MedicoDetail, MedicoList, MedicoUpdate, PacienteCreate, PacienteDelete, PacienteDetail, PacienteList, PacienteUpdate 
 
 urlpatterns = [
     path('cadastrar/cargo', CargoCreate.as_view(), name='cadastrar-cargo'),
@@ -7,6 +7,7 @@ urlpatterns = [
     path('cadastrar/especialidade', EspecialidadeCreate.as_view(), name='cadastrar-especialidade'),
     path('cadastrar/medico', MedicoCreate.as_view(), name='cadastrar-medico'),
     path('cadastrar/paciente', PacienteCreate.as_view(), name='cadastrar-paciente'),
+    path('cadastrar-horario', DiponibilidadeHorario.as_view(), name='cadastrar-horario'),
 
     path('editar/cargo/<int:pk>', CargoUpdate.as_view(), name='editar-cargo'),
     path('editar/funcionario/<int:pk>', FuncionarioUpdate.as_view(), name='editar-funcionario'),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('excluir/especialidade/<int:pk>', EspecialidadeDelete.as_view(), name='excluir-especialidade'),
     path('excluir/medico/<int:pk>', MedicoDelete.as_view(), name='excluir-medico'),
     path('excluir/paciente/<int:pk>', PacienteDelete.as_view(), name='excluir-paciente'),
+    #path('excluir/endereco/<int:pk>', EnderecoDelete.as_view(), name='excluir-endereco'),
 
     path('listar/cargos', CargoList.as_view(), name='listar-cargos'),
     path('listar/funcionarios', FuncionarioList.as_view(), name='listar-funcionarios'),
@@ -29,4 +31,5 @@ urlpatterns = [
     path('dados/funcionario/<int:pk>', FuncionarioDetail.as_view(), name='dados-funcionario'),
     path('dados/medico/<int:pk>', MedicoDetail.as_view(), name='dados-medico'),
     path('dados/paciente/<int:pk>', PacienteDetail.as_view(), name='dados-paciente'),
+    path('dados/agenda/<int:pk>', AgendaDetail.as_view(), name='dados-agenda'),
 ]

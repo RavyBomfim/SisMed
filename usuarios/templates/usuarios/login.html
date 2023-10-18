@@ -6,51 +6,23 @@
 
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/form.css' %}">
-    <!-- <link rel="stylesheet" href="{% static 'css/login.css' %}"> -->
-
-    <!-- <style>
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin-right: 7px;
-            font-weight: 500;
-        }
-
-        label, input {
-            margin-bottom: 10px;
-        }
-
-        .btn {
-            margin-top: 10px;
-            width: 100px;
-        }
-
-        td {
-            width: 100%;
-        }
-
-    </style>  -->
-
     <style>
+        
+        .form-box {
+            padding-top: 0;
+        }
+
+        .error {
+            position: absolute;
+            bottom: 52px;
+        }
 
         .btn {
             min-width: 100px;
-            margin-top: 15px;
-        }
-
-        .form-box {
-            width: fit-content;
+            margin-top: 25px;
         }
 
     </style> 
-    {% block styles-form %}
-
-    {% endblock %}
-
 {% endblock %}
 
 {% block content %}
@@ -62,16 +34,12 @@
                 <h4>Você não tem permissão para acessar esta página!</h4>
             {% else %}
 
-                {% block titulo-form %}
-                    <h1>Login</h1>
-                    <p>Digite os seus dados de acesso nos campos abaixo.</p> <br><br>
-                {% endblock%}
+                <h2 class="titulo-form">Login</h2>
+                <p>Digite os seus dados de acesso nos campos abaixo.</p> <br>
     
                 <form action="" method="POST">
-
                     {% csrf_token %}
 
-                    {% block campos %}
                     <div class="input-field">
                         {{ form.username }}
                         <label for="{{ form.username.id_for_label }}">Usuario</label>
@@ -82,9 +50,11 @@
                         <label for="{{ form.password.id_for_label }}">Senha</label>
                     </div>
 
-                    <button type="submit" class="btn">Login</button>
-                    {% endblock%}
+                    {% if form.non_field_errors %}
+                        <p class="error">{{ form.non_field_errors.as_text|slice:":52"  }}</p>
+                    {% endif %}
 
+                    <button type="submit" class="btn">Login</button>
                 </form>
             {% endif %}
         </div>

@@ -21,6 +21,15 @@
             <p>Nascimento: {{medico.data_nascimento|date:'d/m/Y'}}</p>
             <p>RG: {{medico.rg}}</p>
             <p>CPF: {{medico.cpf}}</p>
+            {% if funcionario.sexo == Null %}
+                <p>Sexo: Não definido</p>
+            {% else %}
+                {% if funcionario.sexo == 'F' %}
+                    <p>Sexo: Feminino</p>
+                {% else %}
+                    <p>Sexo: Masculino</p>
+                {% endif %}
+            {% endif %}
         </div>
 
         <div id="contato">

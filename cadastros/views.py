@@ -1,10 +1,9 @@
-from typing import Any
-from .forms import EnderecoForm, FuncionarioForm, MedicoForm, PacienteForm
-from django.shortcuts import render
+from paginas.views import GrupoMixin
+from .forms import EnderecoForm, FuncionarioForm, HorarioMedicoForm, MedicoForm, PacienteForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from .models import Cargo, Funcionario, Especialidade, Medico, Paciente, Endereco
+from .models import AgendaMedico, Cargo, Funcionario, Especialidade, HorarioMedico, Medico, Paciente, Endereco
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from braces.views import GroupRequiredMixin
@@ -13,26 +12,27 @@ from django.shortcuts import get_object_or_404
 # Create your views here.
 
 # --------------- Views de Cadastro ---------------
-
-class CargoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class CargoCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Cargo
     fields = ['nome_cargo', 'salario']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-cargos')
+    
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
+        context['form'].fields['salario'].widget.attrs['class'] = 'preco'
         context['titulo'] = 'Cadastro de Cargos'
 
         return context
 
 
-class FuncionarioCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class FuncionarioCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Funcionario
     form_class = FuncionarioForm
     template_name = 'cadastros/form_funcionario.html'
@@ -58,29 +58,30 @@ class FuncionarioCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         return context
 
 
-class EspecialidadeCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class EspecialidadeCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Especialidade
-    fields = ['especialidade']
+    fields = ['especialidade', 'valor_consulta']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-especialidades')
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
+        context['form'].fields['valor_consulta'].widget.attrs['class'] = 'preco'
         context['titulo'] = 'Cadastro de Especialidades'
 
         return context
 
 
-class MedicoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class MedicoCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Medico
     form_class = MedicoForm
     template_name = 'cadastros/form_medico.html'
-    success_url = reverse_lazy('listar-medicos')
+    success_url = reverse_lazy('cadastrar-usuario')
 
     def form_valid(self, form):
         # Criando o objeto Medico a partir do MedicoForm
@@ -91,11 +92,12 @@ class MedicoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         # Verificando se o EnderecoForm é válido
         if endereco_form.is_valid():
             # Salvando o objeto Endereco para obter um ID
-            endereco = endereco_form.save(commit=False)
-            endereco.save()
+            endereco = endereco_form.save()
             # Criando o objeto Endereco a partir do EnderecoForm
             medico.endereco = endereco
             medico.save()
+            # Criando uma agenda e associando ao médico recém criado
+            AgendaMedico.objects.create(medico=medico)
             return super().form_valid(form)
         
 
@@ -107,9 +109,9 @@ class MedicoCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         return context
     
 
-class PacienteCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+class PacienteCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Paciente
     form_class = PacienteForm
     template_name = 'cadastros/form_paciente.html'
@@ -135,14 +137,13 @@ class PacienteCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         context['titulo'] = 'Cadastro de Pacientes'
 
         return context
-    
 
 
 # --------------- Views de Edição ---------------
 
-class CargoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class CargoUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Cargo
     fields = ['nome_cargo', 'salario']
     template_name = 'cadastros/form.html'
@@ -151,14 +152,15 @@ class CargoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        context['titulo'] = 'Editar Dados'
+        context['form'].fields['salario'].widget.attrs['class'] = 'preco'
+        context['titulo'] = 'Editar Cargo'
 
         return context
 
 
-class FuncionarioUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class FuncionarioUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Funcionario
     form_class = FuncionarioForm
     template_name = 'cadastros/form_funcionario.html'
@@ -196,32 +198,39 @@ class FuncionarioUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
                 'bairro': funcionario.endereco.bairro if funcionario.endereco else '',
                 'cidade': funcionario.endereco.cidade if funcionario.endereco else '',
             }
+            
+            foto = {
+                'foto': funcionario.foto if funcionario.foto else '',
+            }
 
             context['endereco_inicial'] = endereco_inicial
+            context['foto'] = foto
 
         context['titulo'] = 'Editar Dados de Funcionário'
 
         return context
 
 
-class EspecialidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class EspecialidadeUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Especialidade
-    fields = ['especialidade']
+    fields = ['especialidade', 'valor_consulta']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-especialidades')
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        context['titulo'] = 'Editar Dados'
+        context['form'].fields['valor_consulta'].widget.attrs['class'] = 'preco'
+        context['titulo'] = 'Editar Especialidade'
 
         return context
 
-class MedicoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+
+class MedicoUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Medico
     form_class = MedicoForm   
     template_name = 'cadastros/form_medico.html'
@@ -260,17 +269,22 @@ class MedicoUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
                 'cidade': medico.endereco.cidade if medico.endereco else '',
             }
 
-            # Adicione o dicionário ao contexto
+            foto = {
+                'foto': medico.foto if medico.foto else '',
+            }
+
+            # Adicionando os dicionários ao contexto
             context['endereco_inicial'] = endereco_inicial
+            context['foto'] = foto
 
         context['titulo'] = 'Editar Dados de Médico'
 
         return context
 
 
-class PacienteUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+class PacienteUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Paciente
     form_class = PacienteForm
     template_name = 'cadastros/form_paciente.html'
@@ -308,7 +322,12 @@ class PacienteUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
                 'cidade': paciente.endereco.cidade if paciente.endereco else '',
             }
 
+            foto = {
+                'foto': paciente.foto if paciente.foto else '',
+            }
+
             context['endereco_inicial'] = endereco_inicial
+            context['foto'] = foto
 
         context['titulo'] = 'Editar Dados de Paciente'
 
@@ -317,62 +336,127 @@ class PacienteUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
 
 # --------------- Views para excluir  ---------------
 
-class CargoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+class CargoDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Cargo
     template_name = 'cadastros/form_excluir.html'
     success_url = reverse_lazy('listar-cargos')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['objeto'] = 'o cargo'
+        obj = self.get_object()  # Obtendo o objeto que será excluído
+        context['registro'] = obj.nome_cargo # Adicionando o campo nome_cargo do objeto ao contexto
+        return context
 
-class FuncionarioDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+
+class FuncionarioDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Funcionario
     template_name = 'cadastros/form_excluir.html'
     success_url = reverse_lazy('listar-funcionarios')
 
+    def delete(self, request, *args, **kwargs):
+        funcionario = self.get_object()
+        if funcionario.endereco:
+            funcionario.endereco.delete()
+        if funcionario.usuario:
+            funcionario.usuario.delete()
 
-class EspecialidadeDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['objeto'] = 'o funcionário'
+        obj = self.get_object()
+        context['registro'] = obj.nome_completo
+        return context
+
+
+class EspecialidadeDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Especialidade
     template_name = 'cadastros/form_excluir.html'
     success_url = reverse_lazy('listar-especialidades')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['objeto'] = 'a especialidade'
+        obj = self.get_object()
+        context['registro'] = obj.especialidade
+        return context
 
-class MedicoDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+
+class MedicoDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Medico
     template_name = 'cadastros/form_excluir.html'
     success_url = reverse_lazy('listar-medicos')
 
+    def delete(self, request, *args, **kwargs):
+        medico = self.get_object()
+        # Excluindo o endereço associado ao médico
+        if medico.endereco:
+            medico.endereco.delete()
+        # Excluindo o usuário associado ao médico
+        if medico.usuario:
+            medico.usuario.delete()
 
-class PacienteDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['objeto'] = 'o medico'
+        obj = self.get_object()
+        context['registro'] = obj.nome_completo
+        return context
+
+
+"""class EnderecoDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
+    model = Endereco
+    template_name = 'cadastros/form_excluir.html'
+    success_url = reverse_lazy('listar-medicos')"""
+
+
+class PacienteDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
     model = Paciente
     template_name = 'cadastros/form_excluir.html'
     success_url = reverse_lazy('listar-pacientes')
 
+    def delete(self, request, *args, **kwargs):
+        paciente = self.get_object()
+        if paciente.endereco:
+            paciente.endereco.delete()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['objeto'] = 'o paciente'
+        obj = self.get_object()
+        context['registro'] = obj.nome_completo
+        return context
+
 
 # --------------- Views para Listar ---------------
 
-class CargoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+class CargoList(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Cargo
     template_name = 'cadastros/listas/cargo.html'
     success_url = reverse_lazy('inicio')
 
 
-class FuncionarioList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+class FuncionarioList(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Funcionario
     template_name = 'cadastros/listas/funcionario.html'
     success_url = reverse_lazy('inicio')
+    
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -382,64 +466,100 @@ class FuncionarioList(GroupRequiredMixin, LoginRequiredMixin, ListView):
         return context
 
 
-class EspecialidadeList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+class EspecialidadeList(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Especialidade
     template_name = 'cadastros/listas/especialidade.html'
     success_url = reverse_lazy('listar-especialidades')
 
 
-class MedicoList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+class MedicoList(LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
     model = Medico
     template_name = 'cadastros/listas/medico.html'
     success_url = reverse_lazy('listar-medicos')
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-    
         context['titulo'] = 'Médicos'
-
         return context
 
 
-class PacienteList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+class PacienteList(LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
     model = Paciente
     template_name = 'cadastros/listas/paciente.html'
     success_url = reverse_lazy('listar-pacientes')
 
-
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['titulo'] = 'Pacientes'
-
         return context
 
 
 # --------------- Views para Detalhar dados ---------------
-class FuncionarioDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+class FuncionarioDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Funcionario
     template_name = 'cadastros/listas/dados_funcionario.html'
     context_object_name = 'funcionario'
 
 
-class MedicoDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+class MedicoDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Medico
     template_name = 'cadastros/listas/dados_medico.html'
     context_object_name = 'medico'
 
 
-class PacienteDetail(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+class PacienteDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailView):
     login_url = reverse_lazy('login')
-    group_required = u"Administrador"
+    group_required = u'Administrador'
     model = Paciente
     template_name = 'cadastros/listas/dados_paciente.html'
     context_object_name = 'paciente'
+
+
+"""class DataAgendaCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
+    model = DataAgenda
+    fields = ['data']
+
+
+class HorarioCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
+    model = HorarioDisponivel
+    fields = ['horario_disponivel']"""
+
+
+class AgendaDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
+    model = AgendaMedico
+    template_name = 'cadastros/listas/agenda.html'
+    context_object_name = 'agenda'
+
+
+class DiponibilidadeHorario(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
+    model = HorarioMedico
+    form_class = HorarioMedicoForm
+    template_name = 'cadastros/form_horario.html'
+    success_url = reverse_lazy('listar_medicos')
+
+    def get(self, request, *args, **kwargs):
+        agenda_id = self.agenda_id  # Acesse a variável global
+        if agenda_id:
+            form = self.get_form()
+            form.initial['agenda'] = agenda_id
+            return self.render_to_response(self.get_context_data(form=form))
+
+
+
+    

@@ -2,6 +2,22 @@
 
 {% load static %}
 
+
+{% block crm %}
+
+{% endblock %}
+
+{% block campos_extras %}
+    <div class="input-field col s4">
+        {{ form.data_admissao }}
+        <label for="{{ form.data_cadastro.id_for_label }}">Data de Admissão</label>
+    </div>
+    <div class="input-field col s4">
+        {{ form.data_demissao }}
+        <label for="{{ form.data_cadastro.id_for_label }}">Data de Demissão</label>
+    </div>
+{% endblock %}
+
 {% block campo_direfente %}
     {{ form.cargo }}
 {% endblock %}

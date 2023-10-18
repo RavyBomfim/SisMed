@@ -37,8 +37,18 @@ h4 {
 .btn-excluir {
     background-color: #db8e8e;
     color: #912c39;
+    border: 0;
 }
 
 .btn-excluir:hover {
+    background-color: #e08a8a;
     color: #791f2b;
+}
+
+.btn-agenda {
+    background-color: #69a881 !important;
+}
+
+.btn-agenda:hover {
+    background-color: #7cc297 !important;
 }

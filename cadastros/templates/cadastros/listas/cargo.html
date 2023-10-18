@@ -27,7 +27,7 @@
             {% for cargo in object_list %}
             <tr>
                 <td>{{cargo.nome_cargo}}</td>
-                <td>{{cargo.salario}}</td>
+                <td>R$ {{cargo.salario}}</td>
                 <td>
                     <a href="{% url 'editar-cargo' cargo.pk %}" class="btn btn-sm btn-editar">Editar</a> &nbsp;
                     <a href="{% url 'excluir-cargo' cargo.pk %}" class="btn btn-sm btn-excluir">Excluir</a> 
