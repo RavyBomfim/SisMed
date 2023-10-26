@@ -21,10 +21,10 @@
             <p>Nascimento: {{paciente.data_nascimento|date:'d/m/Y'}}</p>
             <p>RG: {{paciente.rg}}</p>
             <p>CPF: {{paciente.cpf}}</p>
-            {% if funcionario.sexo == Null %}
+            {% if paciente.sexo == Null %}
                 <p>Sexo: Não definido</p>
             {% else %}
-                {% if funcionario.sexo == 'F' %}
+                {% if paciente.sexo == 'F' %}
                     <p>Sexo: Feminino</p>
                 {% else %}
                     <p>Sexo: Masculino</p>

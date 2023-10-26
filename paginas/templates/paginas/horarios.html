@@ -1,0 +1,81 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+
+    <style>
+
+        #divisao {
+            display: flex;
+            flex-direction: column;
+        }
+        #dias-box {
+            display: flex;
+            gap: 20px;
+        }
+        .horarios-box {
+            display: flex;
+            gap: 20px;
+        }
+        .horarios {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .horarios_disponiveis div {
+            background-color: #a8ccb6;
+            padding: 10px;
+            border-radius: 2px;
+        }
+
+        .horarios_disponiveis {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <h4>Horários Disponíveis</h4>
+    <div class="horarios-box">
+        <div class="horarios" id="segunda">
+            <h6>{{ medico.nome_completo }}</h6>
+            <p>{{ medico.especialidade }}</p>
+            <span>{{ dia_semana }}</span>
+            
+            <div class="horarios_disponiveis">
+            {% for horario in horarios_disponiveis %}
+                <div>
+                     {{ horario }}
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    <h4>Horários Agendados</h4>
+    <div class="horarios_disponiveis">
+        {% for horario in horarios_agendados %}
+            <div>
+                 {{ horario }}
+            </div>
+        {% endfor %}
+    </div>
+    <h4>Horários Manhã</h4>
+    <div class="horarios_disponiveis">
+        {% for horario in horarios_disponiveis_manha %}
+            <div>
+                 {{ horario }}
+            </div>
+        {% endfor %}
+    </div>
+    <h4>Horários Tarde</h4>
+    <div class="horarios_disponiveis">
+        {% for horario in horarios_disponiveis_tarde %}
+            <div>
+                 {{ horario }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

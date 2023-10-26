@@ -1,0 +1,66 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+
+    <style>
+
+        #divisao {
+            display: flex;
+            flex-direction: column;
+        }
+        #dias-box {
+            display: flex;
+            gap: 20px;
+        }
+        .horarios-box {
+            display: flex;
+            gap: 20px;
+        }
+        .horarios {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .horarios div {
+            background-color: #a8ccb6;
+            padding: 10px;
+            border-radius: 2px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <h4>Horários Disponíveis</h4>
+    
+    <table>
+        <tr>
+            <th>Médico</th>
+            <th>Dia da Semana</th>
+            <th>Horários Disponíveis</th>
+        </tr>
+        
+        {% for key, horarios in horarios_disponiveis.items %}
+            <tr>
+                <td>{{ key.0 }}</td> <!-- Nome do médico -->
+                <td>{{ key.1 }}</td> <!-- Dia da semana -->
+                <td>
+                    <ul>
+                        {% for horario in horarios %}
+                            {{ horario }} &nbsp;  <!-- Horários disponíveis -->
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
+
+
+{% block scripts %}
+    
+{% endblock %}

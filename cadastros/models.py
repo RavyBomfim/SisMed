@@ -1,11 +1,12 @@
 from django.db import models
-from datetime import date
+from datetime import date, datetime, timedelta
 from django.contrib.auth.models import User
 
-# Create your models here.
 sexo_opcoes = (('M', 'Masculino'), ('F', 'Feminino'))
-boolean_opcoes = (('True', 'Sim'), ('False', 'Não'))
+boolean_opcoes = ((True, 'Sim'), (False, 'Não'))
+tipo_consulta_opcoes = (('Plano', 'Plano'), ('Particular', 'Particular'))
 
+# Create your models here.
 class Endereco(models.Model):
     rua = models.CharField(max_length=50)
     numero = models.IntegerField(null=True, blank=True, verbose_name='Número')
@@ -131,18 +132,41 @@ class AgendaMedico(models.Model):
 
 class HorarioMedico(models.Model):
     agenda = models.ForeignKey(AgendaMedico, null=True, on_delete=models.CASCADE)
-    dia_semana = models.IntegerField(choices=[(1, 'Segunda-feira'), (2, 'Terça-feira'), (3, 'Quarta-feira'), (4, 'Quinta-feira'), (5, 'Sexta-feira'), (6, 'Sábado')])
+    dia_semana = models.IntegerField(choices=[(0, 'Segunda-feira'), (1, 'Terça-feira'), (2, 'Quarta-feira'), (3, 'Quinta-feira'), (4, 'Sexta-feira'), (5, 'Sábado')])
     horario_inicial_manha = models.TimeField(null=True, blank=True)
     horario_final_manha = models.TimeField(null=True, blank=True)
     horario_inicial_tarde = models.TimeField(null=True, blank=True)
     horario_final_tarde = models.TimeField(null=True, blank=True)
 
 
+    def horarios_disponiveis(self, data):
+        horarios_ocupados = AgendamentoConsulta.objects.filter(
+            medico=self.agenda.medico,
+            data_hora__date=data
+        ).values_list('data_hora', flat=True)
+
+        horarios_manha = []
+        horario_atual_manha = self.horario_inicial_manha
+        while horario_atual_manha < self.horario_final_manha:
+            if horario_atual_manha not in horarios_ocupados:
+                horarios_manha.append(horario_atual_manha)
+            horario_atual_manha += timedelta(minutes=30)
+
+        horarios_tarde = []
+        horario_atual_tarde = self.horario_inicial_tarde
+        while horario_atual_tarde < self.horario_final_tarde:
+            if horario_atual_tarde not in horarios_ocupados:
+                horarios_tarde.append(horario_atual_tarde)
+            horario_atual_tarde += timedelta(minutes=30)
+
+        horarios_disponiveis = horarios_manha + horarios_tarde
+        return horarios_disponiveis
+
+
 class HorarioAgenda(models.Model):
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
     data = models.DateField()
     horario = models.TimeField()
-    disponivel = models.BooleanField(default=True)
 
 
 class Prontuario(models.Model):
@@ -174,15 +198,14 @@ class ProcedimentoAgendado(models.Model):
     
 
 class AgendamentoConsulta(models.Model):
-    tipo_consulta_opcoes = (('Plano', 'Plano'), ('Particular', 'Particular'))
-
-    codigo = models.CharField(max_length=15)
-    data_hora = models.DateTimeField()
+    data = models.DateField(null=True)
+    horario = models.TimeField(null=True, verbose_name='Horário')
     paciente = models.ForeignKey(Paciente, on_delete=models.PROTECT)
     medico = models.ForeignKey(Medico, on_delete=models.PROTECT)
-    tipo_consulta = models.CharField(max_length=10, choices=tipo_consulta_opcoes)
+    tipo_consulta = models.CharField(max_length=10, default='Particular', choices=tipo_consulta_opcoes, verbose_name='Tipo de Consulta')
     retorno = models.BooleanField(default=False, choices=boolean_opcoes)
-    valor_consulta = models.DecimalField(max_digits=8, decimal_places=2, editable=False)
+    valor_consulta = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Valor da Consulta')
+    consulta_realizada = models.BooleanField(default=False, null=True)
 
     def __str__(self):
-        return f'{self.codigo} {self.data_hora} {self.paciente} {self.medico} {self.tipo_consulta} {self.retorno} {self.valor_consulta}' 
+        return f'{self.id} {self.data} {self.horario} {self.paciente} {self.medico} {self.tipo_consulta} {self.retorno} {self.valor_consulta}' 

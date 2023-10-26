@@ -5,7 +5,6 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import  ListView
 from django.contrib.auth.models import User, Group
 from cadastros.models import Medico
-
 from paginas.views import GrupoMixin
 from .forms import SenhaFormEdit, UsuarioForm, UsuarioFormEdit
 from django.contrib.auth.mixins import LoginRequiredMixin

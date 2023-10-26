@@ -3,11 +3,14 @@ from .forms import EnderecoForm, FuncionarioForm, HorarioMedicoForm, MedicoForm,
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from .models import AgendaMedico, Cargo, Funcionario, Especialidade, HorarioMedico, Medico, Paciente, Endereco
+from .models import AgendaMedico, Cargo, Funcionario, Especialidade, HorarioMedico, Medico, Paciente
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from braces.views import GroupRequiredMixin
 from django.shortcuts import get_object_or_404
+from utils.agenda import GerarAgendaMedico
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # Create your views here.
 
@@ -560,6 +563,3 @@ class DiponibilidadeHorario(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, 
             form.initial['agenda'] = agenda_id
             return self.render_to_response(self.get_context_data(form=form))
 
-
-
-    

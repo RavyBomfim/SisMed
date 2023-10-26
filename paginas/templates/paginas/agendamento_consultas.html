@@ -1,0 +1,155 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-content" style="text-align: center">
+            <span class="card-title">Agendamento de Consulta</span> <br>
+            
+            <form action="" method="POST" id="agendamento-form">
+                {% csrf_token %}
+                {{ form.errors }}
+                <div class="row">
+                    <div class="input-field col s6">
+                        {{ form.paciente }}
+                    </div>
+                    <div class="input-field col s6">
+                        {{ form.medico }}
+                    </div>
+                    <div class="input-field col s3">
+                        {{ form.data }}
+                        <label for="{{ form.data.id_for_label }}">Data</label>
+                    </div>
+                    <div class="input-field col s3">
+                        {{ form.horario }}
+                    </div>
+                    <div class="input-field col s3">
+                        {{ form.tipo_consulta }}
+                    </div>
+                    <div class="input-field col s3">
+                        {{ form.retorno }}
+                    </div>
+                    <div class="input-field col s2">
+                        {{ form.valor_consulta }}
+                        <label for="{{ form.valor.id_for_label }}">Valor</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-form">Agendar Consulta</button>
+            </form>
+        </div> 
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    // Inicialize os elementos do Materialize, se necessário
+    M.AutoInit();
+</script>
+
+<!-- <script src="{% static 'js/django-ajax-setup.js' %}"></script> -->
+
+<script>
+$(document).ready(function () {
+    const horario_select = $('#id_horario');
+    horario_select.append('<option value="" selected disabled>Horário</option>');
+    horario_select.formSelect();
+
+    $('#id_medico, #id_data').change(function () {
+        var medico_id = $('#id_medico').val();
+        var data_agend = $('#id_data').val();
+        horario_select.empty();
+        horario_select.append('<option value="" selected disabled>Horário</option>');
+
+        if (medico_id && data_agend) {
+            var csrfToken = $("[name=csrfmiddlewaretoken]").val();
+            // Solicitação AJAX para obter os horários disponíveis
+            var dados = {
+                medico_id: medico_id,
+                data_agend: data_agend,
+            }
+
+            $.ajax({
+                url: '/retornar-horarios',
+                method: 'POST',
+                data: JSON.stringify(dados),
+                contentType: 'application/json',
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrfToken
+                },
+                success: function (data) {
+                    console.log('Dado recebido: ', data.horarios_disponiveis);
+                    if (data.horarios_disponiveis.length === 0) {                     
+                        horario_select.append($("<option>", {
+                            value: '',
+                            text: data.aviso
+                        }));
+                    } else {
+                        $.each(data.horarios_disponiveis, function(index, horario) {
+                            horario_select.append($("<option>", {
+                                value: horario,
+                                text: horario
+                            }));
+                        });
+                    }
+                    horario_select.formSelect();
+                },
+                error: function (xhr, status, error) {
+                    console.log('Erro na requisição AJAX:', status);
+                    console.log('Erro: ', error);
+                    // Verifique a resposta completa para obter mais detalhes, se disponível
+                    console.log('Resposta completa:', xhr.responseText);
+                }
+            });
+        };
+    });
+
+    $('#id_medico, #id_retorno').change(function () {
+        var medico_id = $('#id_medico').val()
+        var retorno = $('#id_retorno').val()
+        var valor_consulta = $('#id_valor_consulta')
+        if (medico_id && retorno) {
+            console.log(retorno);
+            if (retorno == 'True') {
+                valor_consulta.val('0.00')
+                valor_consulta.focus(); valor_consulta.blur();
+            } else {
+                var csrfToken = $("[name=csrfmiddlewaretoken]").val();
+                var dados = {
+                    medico_id: medico_id,
+                }
+                $.ajax({
+                url: '/valor-consulta',
+                method: 'POST',
+                data: JSON.stringify(dados),
+                contentType: 'application/json',
+                dataType: 'json',
+                headers: {
+                    "X-CSRFToken": csrfToken
+                },
+                success: function (data) {
+                    valor_consulta.val(data.valor_consulta)
+                    valor_consulta.focus(); valor_consulta.blur();
+                },
+                error: function (xhr, status, error) {
+                    console.log('Erro na requisição AJAX:', status);
+                    console.log('Erro: ', error);
+                    // Verifique a resposta completa para obter mais detalhes, se disponível
+                    console.log('Resposta completa:', xhr.responseText);
+                }
+            });
+            }
+        }
+    });
+
+});
+</script>
+
+{% endblock %}

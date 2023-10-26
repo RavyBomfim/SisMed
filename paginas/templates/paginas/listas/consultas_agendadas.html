@@ -1,0 +1,66 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+    <style>
+        #consultas-agend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        #consultas-agend div {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        #consultas-agend p {
+            padding-right: 20px;
+        }
+
+        hr {
+            min-width: 100%;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <h3>Especialidades</h3> 
+
+    <a class="btn btn-add btn-sm" href="{% url 'agendar-consulta' %}">
+        <!-- <i class="fas fa-plus"></i> -->
+        <i class="material-symbols-outlined">add</i>
+        Agendar Consulta
+    </a> <hr>
+    
+    <div id="consultas-agend">
+        <div>
+            {% for agendamentoconsulta in object_list %}
+            <div>
+                <p>Codigo: {{agendamentoconsulta.id}}</p>
+                <p>Data: {{agendamentoconsulta.data|date:'d/m/Y'}}</p>
+                <p>
+                <p>Hora: {{agendamentoconsulta.horario}}</p>
+                <p>Paciente{{agendamentoconsulta.paciente.nome_completo}}</p>
+                <p>
+                <p>Médico: {{agendamentoconsulta.medico.nome_completo}}</p>
+                <p>Especialidade: {{agendamentoconsulta.medico.especialidade.especialidade}}</p>
+                <p>
+                <p>Tipo de Consulta: {{agendamentoconsulta.tipo_consulta}}</p>
+                {% if agendamentoconsulta.retorno == False %}
+                    <p>Retorno: Não</p>
+                {% else %}
+                    <p>Retorno: Sim</p>
+                {% endif %}
+                <p>Valor da consulta: R$ {{agendamentoconsulta.valor_consulta}}</p>
+            </div>
+            <hr>
+            {% empty %}
+                <p colspan="2">Ainda não há nenhuma consulta agendada</p>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

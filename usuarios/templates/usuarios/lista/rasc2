@@ -1,0 +1,166 @@
+""" class VerAgendas(LoginRequiredMixin, GrupoMixin, TemplateView):
+    login_url = reverse_lazy('login')
+    template_name = 'paginas/agendas.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Obtenha os horários de atendimento da model HorarioAtendimento
+        horarios_atendimento = HorarioAtendimento.objects.all().values_list('horario_atendimento', flat=True)
+
+        # Mapeamento dos números para os nomes dos dias da semana
+        dia_semana_opcoes = {0: 'Segunda-feira', 1: 'Terça-feira', 2: 'Quarta-feira', 3: 'Quinta-feira', 4: 'Sexta-feira', 5: 'Sábado'}
+
+        # Processamento dos horários disponíveis
+        horarios_disponiveis_manha = []
+        horarios_disponiveis_tarde = []
+
+        for dia in range(6):  # 0 a 5 representa de segunda a sábado
+            # Obtenha os registros da model HorarioMedico para o dia da semana atual
+            horarios_medico_manha = HorarioMedico.objects.filter(
+                dia_semana=dia,
+                horario_inicial_manha__isnull=False,
+            )
+
+            horarios_medico_tarde = HorarioMedico.objects.filter(
+                dia_semana=dia,
+                horario_inicial_tarde__isnull=False,
+            )
+
+            for horario_medico in horarios_medico_manha:
+                medico = horario_medico.agenda.medico
+                inicio_manha = horario_medico.horario_inicial_manha
+                final_manha = horario_medico.horario_final_manha
+
+                for horario in horarios_atendimento:
+                    if inicio_manha <= horario < final_manha:
+                        horarios_disponiveis_manha.append((horario.strftime("%H:%M"), medico, dia_semana_opcoes[dia]))
+
+            for horario_medico in horarios_medico_tarde:
+                medico = horario_medico.agenda.medico
+                inicio_tarde = horario_medico.horario_inicial_tarde
+                final_tarde = horario_medico.horario_final_tarde
+
+                for horario in horarios_atendimento:
+                    if inicio_tarde <= horario < final_tarde:
+                        horarios_disponiveis_tarde.append((horario.strftime("%H:%M"), medico, dia_semana_opcoes[dia]))
+            
+        context['horarios_atendimento'] = [horario.strftime("%H:%M") for horario in horarios_atendimento]
+        context['horarios_disponiveis_manha'] = horarios_disponiveis_manha
+        context['horarios_disponiveis_tarde'] = horarios_disponiveis_tarde
+        return context"""
+
+        """horarios_segundas = []; horarios_tercas = []; horarios_quartas = []; 
+        horarios_quintas = []; horarios_sextas = []; horarios_sabados = [];
+        horarios_disponiveis = horarios_disponiveis_manha + horarios_disponiveis_tarde
+
+        for horario, medico, dia in horarios_disponiveis:
+            if dia == 'Segunda-feira':
+                horarios_segundas.append(medico, horario)
+            elif dia == 'Terça-feira': 
+                horarios_tercas.append(medico, horario)
+            elif dia == 'Quarta-feira': 
+                horarios_quartas.append(medico, horario)
+            elif dia == 'Quinta-feira': 
+                horarios_quintas.append(medico, horario)
+            elif dia == 'Sexta-feira': 
+                horarios_sextas.append(medico, horario)
+            elif dia == 'Sábado': 
+                horarios_sabados.append(medico, horario)
+        
+        qtd_medicos = 0"""
+        """context['horarios_segundas'] = horarios_segundas
+        context['horarios_tercas'] = horarios_tercas
+        context['horarios_quartas'] = horarios_quartas
+        context['horarios_quintas'] = horarios_quintas
+        context['horarios_sextas'] = horarios_sextas
+        context['horarios_sabados'] = horarios_sabados
+        context['qtd_medicos'] = Medico.objects.all().count()"""
+
+        #return context
+
+
+"""class HorariosDisponiveis(View):
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        medico_id = self.request.GET.get('medico_id')
+        data = self.request.GET.get('data_agend')
+
+        # Obtenha os horários de atendimento da model HorarioAtendimento
+        horarios_atendimento = HorarioAtendimento.objects.all().values_list('horario_atendimento', flat=True)
+
+        # Mapeamento dos números para os nomes dos dias da semana
+        dia_semana_opcoes = {0: 'Segunda-feira', 1: 'Terça-feira', 2: 'Quarta-feira', 3: 'Quinta-feira', 4: 'Sexta-feira', 5: 'Sábado'}
+
+        # Convertendo a data fornecida em um objeto de data
+        data_obj = datetime.strptime(data, '%Y-%m-%d')
+        dia_semana = data_obj.weekday()  # Obtém o número do dia da semana (0 a 6, onde 0 é segunda-feira)
+
+        horarios_disponiveis_manha = []
+        horarios_disponiveis_tarde = []
+
+        # Obtenha os registros da model HorarioMedico para o médico específico e o dia da semana correspondente
+        horarios_medico_manha = HorarioMedico.objects.filter(
+            dia_semana=dia_semana,
+            horario_inicial_manha__isnull=False,
+            agenda__medico__id=medico_id,
+        )
+
+        horarios_medico_tarde = HorarioMedico.objects.filter(
+            dia_semana=dia_semana,
+            horario_inicial_tarde__isnull=False,
+            agenda__medico__id=medico_id,
+        )
+
+        for horario_medico in horarios_medico_manha:
+            inicio_manha = horario_medico.horario_inicial_manha
+            final_manha = horario_medico.horario_final_manha
+
+            for horario in horarios_atendimento:
+                if inicio_manha <= horario < final_manha:
+                    horarios_disponiveis_manha.append((horario.strftime("%H:%M")))
+
+        for horario_medico in horarios_medico_tarde:
+            inicio_tarde = horario_medico.horario_inicial_tarde
+            final_tarde = horario_medico.horario_final_tarde
+
+            for horario in horarios_atendimento:
+                if inicio_tarde <= horario < final_tarde:
+                    horarios_disponiveis_tarde.append((horario.strftime("%H:%M")))
+
+        context['horarios_disponiveis'] = horarios_disponiveis_manha + horarios_disponiveis_tarde
+
+        return context"""
+
+"""<div class="input-field col s9">
+    <div class="row">
+        <span class="col s3">Tipo de consulta:</span> 
+        {% for radio in form.tipo_consulta %}
+            <div class="col s3">
+                <label>
+                    {{ radio.tag }}
+                    <span>{{ radio.choice_label }}</span>
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="input-field col s2">
+    {{ form.valor_consulta }}
+    <label for="{{ form.valor.id_for_label }}">Valor</label>
+</div>
+<div class="col s6">
+    <div class="row radios">
+        <span class="col s3">Retorno:</span> 
+        {% for radio in form.retorno %}
+            <div class="col s3">
+                <label>
+                    {{ radio.tag }}
+                    <span>{{ radio.choice_label }}</span>
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+</div>"""

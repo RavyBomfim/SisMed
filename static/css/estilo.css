@@ -104,6 +104,10 @@ main {
     gap: 20px;
 }
 
+#bem-vindo span {
+    text-transform: capitalize;
+}
+
 .form-container {
     display: flex;
     flex-direction: column;

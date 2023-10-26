@@ -1,0 +1,42 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <div class="form-box">
+            <form action="" method="POST">
+                <input type="text" placeholder="Nome">
+                <select id="select">
+                    <option value="">Selecionar</option>
+                </select>
+                <p>
+                    <label>
+                      <input class="with-gap" name="group1" type="radio" checked />
+                      <span>Red</span>
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                      <input class="with-gap" name="group1" type="radio" />
+                      <span>Yellow</span>
+                    </label>
+                  </p>
+                <button type="button">Atualizar</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $("#select").append('<option value="novoItemValue">Novo Item</option>');
+        });
+    </script>
+{% endblock %}

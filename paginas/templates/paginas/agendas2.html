@@ -1,0 +1,193 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+
+    <style>
+
+        #divisao {
+            display: flex;
+            flex-direction: column;
+        }
+        #dias-box {
+            display: flex;
+            gap: 20px;
+        }
+        .horarios-box {
+            display: flex;
+            gap: 20px;
+        }
+        .horarios {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .horarios div {
+            background-color: #a8ccb6;
+            padding: 10px;
+            border-radius: 2px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <h4>Horários Disponíveis</h4>
+    <div id="divisao">
+        <div id="dias-box">
+            <h5 class="dia" id="seg">Segunda</h5>
+            <h5 class="dia" id="ter">Terça</h5>
+            <h5 class="dia" id="qua">Quarta</h5>
+            <h5 class="dia" id="qui">Quinta</h5>
+            <h5 class="dia" id="sex">Sexta</h5>
+            <h5 class="dia" id="sab">Sábado</h5>
+        </div>
+        <div class="horarios-box">
+            <div class="horarios" id="segunda">
+                <h6>Manhã:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_manha %}
+                    {% if dia == 'Segunda-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <h6>Tarde:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_tarde %}
+                    {% if dia == 'Segunda-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="horarios" id="terca">
+                <h6>Manhã:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_manha %}
+                    {% if dia == 'Terça-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <h6>Tarde:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_tarde %}
+                    {% if dia == 'Terça-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="horarios" id="quarta">
+                <h6>Manhã:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_manha %}
+                    {% if dia == 'Quarta-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <h6>Tarde:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_tarde %}
+                    {% if dia == 'Quarta-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="horarios" id="quinta">
+                <h6>Manhã:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_manha %}
+                    {% if dia == 'Quinta-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <h6>Tarde:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_tarde %}
+                    {% if dia == 'Quinta-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="horarios" id="sexta">
+                <h6>Manhã:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_manha %}
+                    {% if dia == 'Sexta-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <h6>Tarde:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_tarde %}
+                    {% if dia == 'Sexta-feira' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <div class="horarios" id="sabado">
+                <h6>Manhã:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_manha %}
+                    {% if dia == 'Sábado' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <h6>Tarde:</h6>
+                {% for horario, medico, dia in horarios_disponiveis_tarde %}
+                    {% if dia == 'Sábado' %}
+                        <div>
+                            <p>{{ medico.nome_completo }}</p>
+                            <span>{{ medico.especialidade }}</span>
+                            <p>{{dia}} {{ horario }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    
+{% endblock %}

@@ -1,6 +1,7 @@
-"""from datetime import datetime, timedelta
+from datetime import datetime, timedelta
+from cadastros.models import HorarioAgenda, HorarioMedico
 
-class AgendaMedico:
+class GerarAgendaMedico:
     def __init__(self, medico, periodo_inicial, periodo_final):
         self.medico = medico
         self.periodo_inicial = periodo_inicial
@@ -55,4 +56,3 @@ class AgendaMedico:
                         horario_atual_tarde += intervalo_de_tempo
 
             data_atual += timedelta(days=1)  # Avança para a próxima data.
-"""

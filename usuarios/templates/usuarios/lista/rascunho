@@ -79,7 +79,7 @@ class UsuarioList(GroupRequiredMixin, LoginRequiredMixin, ListView):
         is_medico = user.groups.filter(name='Medico').exists
         return render(request, self.template_name, {'is_admin': is_admin, 'is_medico': is_medico}) """
 
-"""    <h1>Agenda do Médico: {{ agenda.medico }}</h1>
+<!-- <h1>Agenda do Médico: {{ agenda.medico }}</h1>
 
     <button onclick="showAddDateForm()">Adicionar Data</button>
 
@@ -87,7 +87,7 @@ class UsuarioList(GroupRequiredMixin, LoginRequiredMixin, ListView):
         <form action="{% url 'adicionar_data' %}" method="post">
             {% csrf_token %}
             <!-- Campos do formulário para adicionar data -->
-            <input type="submit" value="Adicionar Data">
+            <!--<input type="submit" value="Adicionar Data">
         </form>
     </div>
 
@@ -96,7 +96,7 @@ class UsuarioList(GroupRequiredMixin, LoginRequiredMixin, ListView):
             {% csrf_token %}
             <input type="hidden" id="date-input" name="date" value="">
             <!-- Campos do formulário para adicionar horário -->
-            <input type="submit" value="Adicionar Horário">
+            <!--<input type="submit" value="Adicionar Horário">
         </form>
     </div>
 
@@ -133,5 +133,17 @@ class UsuarioList(GroupRequiredMixin, LoginRequiredMixin, ListView):
             $('#time-form').show();
         });
     });
-</script>
-{% endblock %}"""
+</script> 
+{% endblock %}-->
+
+"""@receiver(post_save, sender=HorarioMedico)
+def horario_saved(sender, instance, created, **kwargs):
+    if created:
+        medico = instance.agenda.medico
+        periodo_inicial = '15-10-2023' 
+        periodo_final = '30-10-2023'  
+
+        agenda_medico = GerarAgendaMedico(medico, periodo_inicial, periodo_final)
+
+        # Gere a agenda automaticamente.
+        agenda_medico.gerar_agenda()"""
