@@ -51,6 +51,11 @@ header #logo {
     font-size: 18px;
 }
 
+.btn-add i {
+  margin-right: 3px; 
+  font-size: 16px; 
+}
+
 /*Materialize*/
 #view_list {
     font-size: 19px;

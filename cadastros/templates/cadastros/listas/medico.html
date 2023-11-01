@@ -4,8 +4,7 @@
     
 {% block btn_add %}
     <a class="btn btn-add btn-sm" href="{% url 'cadastrar-medico' %}">
-        <!-- <i class="fas fa-plus"></i> -->
-        <i class="material-symbols-outlined">add</i>
+        <i class="fas fa-plus"></i>
         Cadastrar Médico
     </a>
 {% endblock %}
@@ -15,7 +14,7 @@
 {% endblock %}
 
 {% block opcao %}
-    {% if is_admin %}
+    {% if is_admin or request.user.is_superuser %}
         <th>Opção</th>
     {% endif %}
 {% endblock %}
@@ -30,7 +29,7 @@
         <td>{{medico.nome_completo}}</td>
         <td>{{medico.especialidade}}</td>
         <td>
-            {% if is_admin %}
+            {% if is_admin or request.user.is_superuser %}
             <a href="{% url 'dados-medico' medico.pk %}" class="btn btn-small btn-dados">Ver Detalhes</a> &nbsp;
             {% endif %}
             <!-- <a href="{% url 'dados-agenda' medico.agendamedico.pk %}" class="btn btn-small btn-agenda">Agenda</a> -->

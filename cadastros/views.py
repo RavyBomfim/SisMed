@@ -276,7 +276,6 @@ class MedicoUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateVie
                 'foto': medico.foto if medico.foto else '',
             }
 
-            # Adicionando os dicionários ao contexto
             context['endereco_inicial'] = endereco_inicial
             context['foto'] = foto
 

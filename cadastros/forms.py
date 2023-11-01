@@ -20,7 +20,6 @@ class MedicoForm(forms.ModelForm):
             'cpf': forms.TextInput(attrs={'class': 'cpf-mask'}),
             'crm': forms.TextInput(attrs={'class': 'crm-mask'}),
             'telefone': forms.TextInput(attrs={'class': 'telefone-mask'}),
-            'foto' :forms.ClearableFileInput(attrs={'class': 'foto'})
         }
 
     endereco = EnderecoForm()
