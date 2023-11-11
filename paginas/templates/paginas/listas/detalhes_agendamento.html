@@ -1,0 +1,106 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+    <style>
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; 
+        }
+        
+        #detalha-agend {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 3px;
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
+        }
+
+        #detalha-agend h4 {
+            margin: 0;
+            background-color: #d7f5f3;
+            padding: 15px;
+            border-radius: 3px;
+            font-size: 25px;
+        }
+
+        #consultas-agend {
+            padding-inline: 2px;
+        }
+
+        .error {
+            position: relative;
+        }
+
+        .error p {
+            width: 100%;
+            position: absolute;
+            color: #d84343;
+            font-size: 15px;
+            bottom: 1px;
+        }
+
+        .botoes-box {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .botoes-box .btn {
+            width: 50%;
+        }
+
+        @media (max-width: 520px) {
+            #detalha-agend h4 {
+                font-size: 30px;
+            }
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+<div class="row" id="detalha-agend">
+    <h4>Detalhes do Agendamento</h4> <br>
+    <div class="error">
+        {% for message in messages %}
+            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {# Limpa a mensagem após a exibição #}
+        {% endfor %}
+    </div> 
+    <div id="consultas-agend">
+        <p>Codigo: {{agendamento.id}}</p>
+        <p>Paciente: {{agendamento.paciente.nome_completo}}</p>
+        <p>
+        <p>Médico: {{agendamento.medico.nome_completo}}</p>
+        <p>Especialidade: {{agendamento.medico.especialidade.especialidade}}</p>
+        <p>
+        <p>Data: {{agendamento.data|date:'d/m/Y'}}</p>
+        <p>
+        <p>Horário: {{agendamento.horario}}</p>
+        <p>Tipo de Pagamento: {{agendamento.tipo_pagamento}}</p>
+        {% if agendamento.retorno == False %}
+            <p>Retorno: Não</p>
+        {% else %}
+            <p>Retorno: Sim</p>
+        {% endif %}
+        <p>Valor da consulta: R$ {{agendamento.valor}}</p>
+        {% if agendamento.concluido == False %}
+            <p>Concluído: Não</p>
+        {% else %}
+            <p>Concluído: Sim</p>
+        {% endif %}
+    </div>
+
+    <br>
+    <div class="botoes-box">
+        <a href="{% url 'editar-agendamento' agendamento.pk %}" class="btn btn-sm btn-editar">Editar</a> &nbsp;
+        <a href="{% url 'excluir-agendamento' agendamento.pk %}" class="btn btn-sm btn-excluir">Excluir</a>
+    </div>
+</div>
+{% endblock %}

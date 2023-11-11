@@ -4,35 +4,59 @@
 
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/form.css' %}">
+
+    <style>
+
+        #imagem-preview {
+            justify-self: flex-start;
+            align-self: flex-start;
+            border-radius: 100%;
+        }
+
+        #imagem-preview img {
+            border-radius: 100%;
+        }
+
+        .card-action {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn {
+            width: 140px;
+        }
+
+    </style>
+
     {% block estilo_form %}
-    
+
     {% endblock %}
 {% endblock %}
 
 
 {% block content %}
-    <div class="card">
-
-        <div class="card-content" style="text-align: center">
+<div class="card">
+    <div class="card-content" style="text-align: center">
         <span class="card-title">{{titulo}}</span>
             
-            <!-- Adicione um elemento <img> para exibir a imagem -->
-        <label for="{{ form.foto.id_for_label }}" id="imagem-preview" class="center-align">
-            <img id="imagem-selecionada" src="{% static 'img/perfil-generico.jpg' %}" alt="Imagem do Paciente" style="max-width: 130px; max-height: 130px; margin-right: 900px;">
+        <label for="{{ form.foto.id_for_label }}" id="imagem-preview">
+            <img id="imagem-selecionada" src="{% static 'img/perfil-generico.jpg' %}" alt="Imagem do Paciente" style="max-width: 140px; max-height: 140px;">
             <span id="add-photo" class="icons material-symbols-outlined">Add_A_Photo</span>
         </label>
-        <form action="" method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
             {% block campos %}
-            <div class="input-field">
+            <div class="input-field nome-field">
                 {{ form.nome_completo }}
                 <label for="{{ form.nome_completo.id_for_label }}">Nome completo</label>
             </div>
             
             <div class="row">
                 <div class="input-field col s4">
-                    {{ form.data_nascimento }}
+                    <!-- {{ form.data_nascimento }} -->
+                    <input type="date" id="{{ form.data_nascimento.id }}" name="{{ form.data_nascimento.name }}" value="{{ form.data_nascimento.value|date:'Y-m-d' }}">
                     <label for="{{ form.data_nascimento.id_for_label }}">Data de Nascimento</label>
                 </div>
 
@@ -91,11 +115,11 @@
 
                 {% endblock %}
 
-                <div class="select-field col s4">
-                    {% block campo_direfente %}
+                {% block campo_direfente %}
+                    <div class="select-field col s4">
                         {{ form.especialidade }}
-                    {% endblock %}
-                </div>
+                    </div>
+                {% endblock %}
             </div>  
             
             <div class="file-field input-field">
@@ -124,14 +148,12 @@
 
 
 {% block scripts %}
-    <script src="{% static 'js/jquery.mask.min.js' %}"></script>
-    
-    <!-- Inclua os scripts do Materialize JavaScript -->
-    
+
     <script>
         // Inicialize os elementos do Materialize, se necessário
         M.AutoInit();
     </script>
+
     <script>
         // Inicialize os elementos do Materialize, se necessário
         M.AutoInit();

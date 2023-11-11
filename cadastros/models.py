@@ -4,7 +4,9 @@ from django.contrib.auth.models import User
 
 sexo_opcoes = (('M', 'Masculino'), ('F', 'Feminino'))
 boolean_opcoes = ((True, 'Sim'), (False, 'Não'))
-tipo_consulta_opcoes = (('Plano', 'Plano'), ('Particular', 'Particular'))
+tipo_agendamento_opcoes = (('Consulta', 'Consulta'), ('Procedimento', 'Procedimento'))
+tipo_pagamento_opcoes = (('Plano', 'Plano'), ('Particular', 'Particular'))
+dias_semana_opcoes = ((0, 'Segunda-feira'), (1, 'Terça-feira'), (2, 'Quarta-feira'), (3, 'Quinta-feira'), (4, 'Sexta-feira'), (5, 'Sábado'))
 
 # Create your models here.
 class Endereco(models.Model):
@@ -105,15 +107,6 @@ class Paciente(models.Model):
 
     """def __str__(self):
         return f'{self.nome_completo} {self.data_nascimento} {self.rg} {self.cpf} {self.endereco} {self.telefone} {self.email} {self.data_cadastro} {self.informacoes_medicas}'"""
-
-
-class Nota(models.Model):
-    nota_medico = models.TextField(verbose_name="Nota")
-    paciente = models.ForeignKey(Paciente, on_delete=models.PROTECT)
-    medico = models.ForeignKey(Medico, on_delete=models.PROTECT)
-
-    def __str__(self):
-        return f'{self.nota_medico} {self.paciente} {self.medico}'
     
 
 class HorarioAtendimento(models.Model):
@@ -132,80 +125,59 @@ class AgendaMedico(models.Model):
 
 class HorarioMedico(models.Model):
     agenda = models.ForeignKey(AgendaMedico, null=True, on_delete=models.CASCADE)
-    dia_semana = models.IntegerField(choices=[(0, 'Segunda-feira'), (1, 'Terça-feira'), (2, 'Quarta-feira'), (3, 'Quinta-feira'), (4, 'Sexta-feira'), (5, 'Sábado')])
+    dia_semana = models.IntegerField(choices=dias_semana_opcoes)
     horario_inicial_manha = models.TimeField(null=True, blank=True)
     horario_final_manha = models.TimeField(null=True, blank=True)
     horario_inicial_tarde = models.TimeField(null=True, blank=True)
     horario_final_tarde = models.TimeField(null=True, blank=True)
 
 
-    def horarios_disponiveis(self, data):
-        horarios_ocupados = AgendamentoConsulta.objects.filter(
-            medico=self.agenda.medico,
-            data_hora__date=data
-        ).values_list('data_hora', flat=True)
-
-        horarios_manha = []
-        horario_atual_manha = self.horario_inicial_manha
-        while horario_atual_manha < self.horario_final_manha:
-            if horario_atual_manha not in horarios_ocupados:
-                horarios_manha.append(horario_atual_manha)
-            horario_atual_manha += timedelta(minutes=30)
-
-        horarios_tarde = []
-        horario_atual_tarde = self.horario_inicial_tarde
-        while horario_atual_tarde < self.horario_final_tarde:
-            if horario_atual_tarde not in horarios_ocupados:
-                horarios_tarde.append(horario_atual_tarde)
-            horario_atual_tarde += timedelta(minutes=30)
-
-        horarios_disponiveis = horarios_manha + horarios_tarde
-        return horarios_disponiveis
-
-
-class HorarioAgenda(models.Model):
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
-    data = models.DateField()
-    horario = models.TimeField()
-
-
 class Prontuario(models.Model):
     data_criacao = models.DateField()
     paciente = models.OneToOneField(Paciente, on_delete=models.PROTECT)
+
+    def save(self, *args, **kwargs):
+        if not self.data_criacao:
+            self.data_criacao = date.today()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.data_criacao} {self.paciente}'
 
 
 class Procedimento(models.Model): 
-    codigo = models.CharField(max_length=15)
-    descricao = models.CharField(max_length=50, null=True, verbose_name='Descricão')
-    valor = models.DecimalField(max_digits=8, decimal_places=2, null=True)
-    observacao = models.TextField(null=True, verbose_name='Observações Gerais Sobre o Procedimento')
+    nome_procedimento = models.CharField(max_length=50, null=True)
+    especialidade_responsavel = models.ForeignKey(Especialidade, on_delete=models.PROTECT, null=True, blank=True)
+    descricao = models.TextField(null=True, verbose_name='Descricão')
+    valor_procedimento = models.DecimalField(max_digits=8, decimal_places=2, null=True)
+    observacao = models.TextField(null=True, blank=True, verbose_name='Observações Gerais Sobre o Procedimento')
 
     def __str__(self):
-        return f'{self.codigo}' 
+        return f'{self.nome_procedimento}' 
     
 
-class ProcedimentoAgendado(models.Model):
-    medico = models.ForeignKey(Medico, on_delete=models.CASCADE)
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    procedimento = models.ForeignKey(Procedimento, on_delete=models.CASCADE)
-    data_hora = models.DateTimeField()
-
-    def __str__(self):
-        return f'{self.medico} {self.paciente} {self.procedimento} {self.data_hora}' 
-    
-
-class AgendamentoConsulta(models.Model):
+class Agendamento(models.Model):
+    tipo_agendamento = models.CharField(max_length=12, default='Consulta', choices=tipo_agendamento_opcoes, verbose_name='Tipo de agendamento')
+    procedimento = models.CharField(max_length=50, null=True, blank=True)
     data = models.DateField(null=True)
     horario = models.TimeField(null=True, verbose_name='Horário')
     paciente = models.ForeignKey(Paciente, on_delete=models.PROTECT)
     medico = models.ForeignKey(Medico, on_delete=models.PROTECT)
-    tipo_consulta = models.CharField(max_length=10, default='Particular', choices=tipo_consulta_opcoes, verbose_name='Tipo de Consulta')
+    tipo_pagamento = models.CharField(max_length=10, default='Particular', choices=tipo_pagamento_opcoes, verbose_name='Tipo de pagamento')
     retorno = models.BooleanField(default=False, choices=boolean_opcoes)
-    valor_consulta = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Valor da Consulta')
-    consulta_realizada = models.BooleanField(default=False, null=True)
+    valor = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Valor')
+    concluido = models.BooleanField(default=False, null=True)
 
     def __str__(self):
-        return f'{self.id} {self.data} {self.horario} {self.paciente} {self.medico} {self.tipo_consulta} {self.retorno} {self.valor_consulta}' 
+        return f'{self.tipo} {self.data} {self.horario} {self.paciente} {self.medico} {self.concluido}' 
+
+
+class Atendimento(models.Model):
+    data = models.DateField(null=True)
+    consulta = models.OneToOneField(Agendamento, on_delete=models.PROTECT)
+    anamnese_paciente = models.TextField(verbose_name="Anamnese do paciente")
+    diagnostico = models.TextField(verbose_name="Diagnóstico")
+    receituario = models.TextField(verbose_name="Receituário/Recomendações") 
+
+    def __str__(self):
+        return f'{self.nota_medico} {self.paciente} {self.medico}'

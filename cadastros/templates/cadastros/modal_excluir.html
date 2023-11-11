@@ -1,0 +1,11 @@
+{% extends 'cadastros/modal_agenda.html' %}
+
+{% load static %}
+
+{% block form %}
+
+    <p>Deseja excluir {{objeto}} <span id="registro">{{registro}}</span> definitivamente?</p> <hr> <br>
+
+    {{form}}
+
+{% endblock %}

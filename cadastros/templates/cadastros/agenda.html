@@ -1,0 +1,108 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/agenda.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="agenda-container">
+        <div class="agenda-titulo">
+            <div id="agenda-medico"><span id="agenda-medico">{{agenda.medico}}</span></div> &nbsp; <a href="{% url 'cadastrar-horario' agenda.pk %}" id="adicionar-horario" class="btn"> <i class="fa fa-plus"></i> Adicionar horário</a>
+        </div>
+        <div id="aviso">
+            {% if horarios %}
+                <p>Clique no horário que desejar editar ou excluir.</p>
+            {% else %}
+                <p>Ainda não há nenhum horário cadastrado nesta agenda.</p>
+            {% endif %}
+        </div>
+        <div class="agenda-corpo">
+            {% for horario in horarios %}
+                <div class="horario-agenda-box" id="horario-agenda-box{{ horario.id }}">
+                    <div class="horario-agenda" data-id="{{ horario.id }}">
+                    <span class="dia">{{ horario.dia_semana }}</span>
+                    <div class="horarios">
+                        {% if horario.horario_inicial_manha %}
+                            <div><span>Das:</span> <span>{{ horario.horario_inicial_manha }}</span></div>
+                            <div><span>Às:</span> <span>{{ horario.horario_final_manha }}</span></div>
+                        {% endif %}
+                        {% if horario.horario_inicial_tarde %}
+                            <div><span>Das:</span> <span>{{ horario.horario_inicial_tarde }}</div>
+                            <div><span>Às:</span> <span>{{ horario.horario_final_tarde }}</span></div>
+                        {% endif %}
+                        {% if not horario.horario_inicial_manha or not horario.horario_inicial_tarde %}
+                            <div></div>
+                            <div></div>
+                        {% endif %}
+                    </div>
+                    </div>
+
+                    <div class="modal-alterar-container" id="alterar-horario-{{ horario.id }}">
+                        <div class="alterar-box"> 
+                            <div class="btn-fechar" id="btn-fechar{{ horario.id }}"><i class="fa-solid fa-xmark"></i></div>
+                            <h5 class="titulo-form">Horário</h5> <br>
+                            <div class="horario-agenda horario-alterar">
+                                <span class="dia">{{ horario.dia_semana }}</span>
+                                <div class="horarios">
+                                    {% if horario.horario_inicial_manha %}
+                                        <div><span>Das:</span> <span>{{ horario.horario_inicial_manha }}</span></div>
+                                        <div><span>Às:</span> <span>{{ horario.horario_final_manha }}</span></div>
+                                    {% endif %}
+                                    {% if horario.horario_inicial_tarde %}
+                                        <div><span>Das:</span> <span>{{ horario.horario_inicial_tarde }}</div>
+                                        <div><span>Às:</span> <span>{{ horario.horario_final_tarde }}</span></div>
+                                    {% endif %}
+                                    {% if not horario.horario_inicial_manha or not horario.horario_inicial_tarde %}
+                                        <div></div>
+                                        <div></div>
+                                    {% endif %}
+                                </div>
+            
+                                <div class="horarios">
+                                    {% if horario.selectedHorarioID in horarios %}
+                                        {{horario.selectedHorarioID}}
+                                    {% endif %}
+                                </div>
+                                    
+                            </div>
+                            <div class="btn-alterar-box"> 
+                                <a href="{% url 'editar-agenda' agenda.pk horario.pk %}" class="btn btn-alterar" data-id="{{ horario.id }}">Editar</a>
+                                <a href="{% url 'excluir-horario' horario.pk agenda.pk %}" class="btn btn-alterar btn-excluir" data-id="{{ horario.id }}">Excluir</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% block modal %}
+        
+    {% endblock %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+
+            $('.horario-agenda').click(function () {
+                var horario_id = $(this).data('id');
+                var horario_agenda_box = '#horario-agenda-box' + horario_id;
+                var modal_container = $(horario_agenda_box).find('.modal-alterar-container').attr('id');
+                $('#' + modal_container).css('display', 'flex');
+            });
+
+            $('.btn-fechar').click(function() {
+                var modalContainer = $(this).closest('.modal-alterar-container');
+                modalContainer.css('display', 'none');
+            });
+
+        });
+    </script>
+{% endblock %}

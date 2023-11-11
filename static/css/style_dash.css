@@ -3,14 +3,13 @@ a {
 }
 
 .custom-card {
-    background-color: #80cbc4;
-    /* background-color: #7be7d0; */
-    height: 200px;
+    background-color: #2bb9ab;
+    height: 204px;
     transition: background-color 0.3s ease;
 }
 
 .custom-card:hover {
-    background-color: #4f9a94;
+    background-color: #24a799;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     cursor: pointer; /* Altera o ponteiro do mouse no hover */
 }
@@ -19,24 +18,27 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     text-align: center;
 }
 
+.card-content i {
+    margin-bottom: 5px;
+}
+
 .card-content p {
-    font-size: 40px;
+    font-size: 30px;
     margin: 0;
 }
 
 .dynamic-card {
-    background-color: #80cbc4;
+    background-color: #2bb9ab;
     /* background-color: #7be7d0; */
     transition: background-color 0.3s ease;
     overflow: hidden; /* Evita a barra de rolagem horizontal */
 }
 
 .dynamic-card:hover {
-    background-color: #4f9a94;
+    background-color: #24a799;
     cursor: pointer;
 }
 
@@ -85,5 +87,5 @@ body {
 }
 
 .specialties-table tbody tr:hover {
-    background-color: #7e827e; /* Cor de fundo no hover */
+    background-color: #64918d; /* Cor de fundo no hover */
 }

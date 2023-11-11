@@ -1,18 +1,17 @@
 import json
-from django.http import JsonResponse
-from django.shortcuts import render
-from django.urls import reverse_lazy
-from django.views import View
+from django.http import JsonResponse, HttpResponseRedirect
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from braces.views import GroupRequiredMixin
-from cadastros.models import AgendaMedico, AgendamentoConsulta, Especialidade, HorarioAtendimento, HorarioMedico, Medico, Paciente
+from cadastros.models import AgendaMedico, Agendamento, Especialidade, HorarioAtendimento, HorarioMedico, Medico, Paciente, Procedimento
 from django.db.models import Count
 from datetime import date, datetime, time
-from paginas.forms import AgendamentoConsultaForm
+from paginas.forms import AgendamentoForm
 
 # Create your views here.
 class GrupoMixin:
@@ -26,34 +25,18 @@ class GrupoMixin:
         return context
 
 
-class IndexView(LoginRequiredMixin, GrupoMixin, TemplateView):
-    login_url = reverse_lazy('login')
-    template_name = "paginas/index.html"
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['qtd_medicos'] = Medico.objects.all().count()
-        context['qtd_pacientes'] = Paciente.objects.all().count()
-        data_atual = date.today()
-        context['data_atual'] = data_atual
-        context['qtd_consultas'] = AgendamentoConsulta.objects.filter(data=data_atual).count()
-        context['especialidades_mais_requisitadas'] = Especialidade.objects.annotate(num_consultas=Count('medico__agendamentoconsulta')).order_by('-num_consultas')[:3]
-        return context
-    
-
-class Teste(LoginRequiredMixin, GrupoMixin, TemplateView):
-    login_url = reverse_lazy('login')
-    template_name = "paginas/teste-form.html"
+def medicos_procedimento(request, procedimento_id):
+    try:
+        procedimento = Procedimento.objects.get(pk=procedimento_id)
+        especialidade = procedimento.especialidade_responsavel
+        medicos = Medico.objects.filter(especialidade=especialidade)
+        medicos_data = [{'id': medico.id, 'nome_completo': medico.nome_completo, 'especialidade': medico.especialidade.especialidade} for medico in medicos]
+        return JsonResponse({'medicos': medicos_data, 'valor_procedimento': procedimento.valor_procedimento})
+    except Procedimento.DoesNotExist:
+        return JsonResponse({'error': 'Procedimento não encontrado'}, status=404)
 
 
-class AgendarConsulta(LoginRequiredMixin, GrupoMixin, CreateView):
-    login_url = reverse_lazy('login')
-    model = AgendamentoConsulta
-    form_class = AgendamentoConsultaForm
-    template_name = 'paginas/agendamento_consultas.html'
-    success_url = reverse_lazy('consultas-agendadas')
-
-
+# -------- Funçao que retorna o valor da consulta com base na especialidade do médico --------
 def valor_consulta(request):
     if request.method == 'POST':
         try:
@@ -75,6 +58,7 @@ def valor_consulta(request):
         return JsonResponse({'erro': 'Apenas métodos POST são permitidos'})
       
 
+# -------- Funçao que retorna aviso sobre os dias que um determi nado médico atende --------
 def retornar_aviso(arg):
     aviso = ''
     for indice, dia in enumerate(arg):
@@ -90,6 +74,7 @@ def retornar_aviso(arg):
     return aviso   
 
 
+# -------- Funçao que retorna os horários disponíveis do médico em uma determinada data --------
 def get_horarios_disponiveis(medico_id, data, agendados=False):
     # Obtenha os horários de atendimento da model HorarioAtendimento
     horarios_atendimento = HorarioAtendimento.objects.all().values_list('horario_atendimento', flat=True)
@@ -118,7 +103,7 @@ def get_horarios_disponiveis(medico_id, data, agendados=False):
     )
 
     # Criando uma lista de horários já agendados para o médico e data especificados
-    horarios_agend = AgendamentoConsulta.objects.filter(
+    horarios_agend = Agendamento.objects.filter(
         medico__id=medico_id,
         data=data,
         horario__in=horarios_atendimento  # Filtrando por horários de atendimento
@@ -177,6 +162,7 @@ def get_horarios_disponiveis(medico_id, data, agendados=False):
         return horarios_disponiveis, aviso
 
 
+# -------- Funçao que recebe o id do médico e a data e retorna os horários disponíveis para a requisição json --------
 def retornar_horarios(request):
     if request.method == 'POST':
         try:
@@ -197,30 +183,26 @@ def retornar_horarios(request):
         return JsonResponse({'erro': 'Apenas métodos POST são permitidos'})
 
 
-class HorariosDisponiveis(LoginRequiredMixin, GrupoMixin, TemplateView):
+# --------------- TemplateViews ---------------
+
+class IndexView(LoginRequiredMixin, GrupoMixin, TemplateView):
     login_url = reverse_lazy('login')
-    template_name = 'paginas/horarios.html'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    template_name = "paginas/index.html"
 
-        medico_id = 4
-        data = '2023-10-24'
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['qtd_medicos'] = Medico.objects.all().count()
+        context['qtd_pacientes'] = Paciente.objects.all().count()
+        data_atual = date.today()
+        context['data_atual'] = data_atual
+        context['qtd_consultas'] = Agendamento.objects.filter(data=data_atual).count()
+        context['especialidades_mais_requisitadas'] = Especialidade.objects.annotate(num_consultas=Count('medico__agendamento')).order_by('-num_consultas')[:3]
+        return context
 
-        horarios = get_horarios_disponiveis(medico_id, data, True)
 
-        horarios_disponiveis = horarios[0]
-        horarios_agendados = horarios[1]
-        horarios_disponiveis_manha = horarios[2]
-        horarios_disponiveis_tarde = horarios[3]
-
-        context['horarios_disponiveis_manha'] = horarios_disponiveis_manha
-        context['horarios_disponiveis_tarde'] = horarios_disponiveis_tarde
-        context['horarios_disponiveis'] = horarios_disponiveis
-        context['horarios_agendados'] = horarios_agendados
-
-        return context 
-
+class Teste(LoginRequiredMixin, GrupoMixin, TemplateView):
+    login_url = reverse_lazy('login')
+    template_name = "paginas/teste-form.html"
 
 
 class VerAgendas(LoginRequiredMixin, GrupoMixin, TemplateView):
@@ -279,8 +261,89 @@ class VerAgendas(LoginRequiredMixin, GrupoMixin, TemplateView):
         context['horarios_disponiveis'] = horarios_por_medico
         return context
 
-# --------------- Views para Listar ---------------
-class AgendConsultaList(LoginRequiredMixin, GrupoMixin, ListView):
+
+# --------------- Views de Cadastro ---------------
+
+class AgendarConsulta(LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
-    model = AgendamentoConsulta
+    model = Agendamento
+    form_class = AgendamentoForm
+    template_name = 'paginas/form_agendamento.html'
+    success_url = reverse_lazy('consultas-agendadas')
+
+
+# --------------- Views para Edição ---------------
+
+class AgendamentoUpdate(LoginRequiredMixin, GrupoMixin, UpdateView):
+    login_url = reverse_lazy('login')
+    model = Agendamento
+    form_class = AgendamentoForm
+    template_name = 'paginas/form_agendamento.html'
+    success_url = reverse_lazy('consultas-agendadas')
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        agendamento = Agendamento.objects.get(pk=pk)
+        
+        if agendamento.concluido:
+            messages.error(request, 'Não é possível excluir consulta/procedimento concluído.')
+            return redirect('detalhes_agendamento', pk=agendamento.id)
+        return super().get(request, *args, **kwargs)
+
+
+# --------------- Views para excluir  ---------------
+
+class AgendamentoDelete(LoginRequiredMixin, GrupoMixin, DeleteView):
+    login_url = reverse_lazy('login')
+    model = AgendamentoForm
+    template_name = 'cadastros/form_excluir.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['objeto'] = 'esse registro de agendamento'
+        return context
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        agendamento = Agendamento.objects.get(pk=pk)
+
+        if agendamento.concluido:
+            messages.error(request, 'Não é possível editar consulta/procedimento concluído.')
+            return redirect('detalhes_agendamento', pk=agendamento.id)
+        return super().get(request, *args, **kwargs)
+    
+    def get_success_url(self):
+        pk = self.kwargs.get('pk')
+        agendamento = Agendamento.objects.get(pk=pk)
+        return redirect('detalhes_agendamento', pk=agendamento.id)
+
+# --------------- Views para Listar ---------------
+
+class AgendamentoList(LoginRequiredMixin, GrupoMixin, ListView):
+    login_url = reverse_lazy('login')
+    model = Agendamento
     template_name = 'paginas/listas/consultas_agendadas.html'
+
+class PacientesDoDia(LoginRequiredMixin, GrupoMixin, ListView):
+    login_url = reverse_lazy('login')
+    model = Agendamento
+    template_name = 'paginas/listas/pacientes_do_dia.html'
+    # context_object_name = 'agendamentos'
+    data_atual = date.today()
+
+
+    def get_queryset(self):
+        return Agendamento.objects.filter(data=self.data_atual)
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titulo'] = 'Pacientes do dia'
+        context['data_atual'] = self.data_atual
+        return context
+    
+
+# --------------- Views para Detalhar ---------------
+class Detalhes_Agendamento(LoginRequiredMixin, GrupoMixin, DetailView):
+    login_url = reverse_lazy('login')
+    model = Agendamento
+    template_name = 'paginas/listas/detalhes_agendamento.html'

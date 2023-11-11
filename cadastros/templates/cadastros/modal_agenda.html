@@ -1,0 +1,98 @@
+{% extends 'cadastros/agenda.html' %}
+
+{% load static %}
+
+{% block modal %}
+    <div id="horario-form-container" class="form-container">
+        <div id="horario-form" class="form-box"> 
+
+            <h5 class="titulo-form">{{titulo}}</h5> <br>
+
+            <form action="" method="POST" id="form-horario">
+                {% csrf_token %}
+                {% block form %}
+                    <div class="input-field">
+                        <input type="hidden" id="id_agenda" name="agenda" value="{{ agenda.id }}">
+                    </div>
+                    <div class="input-field" id="dias-select-box">
+                        <div id="nome-medico"><span>{{agenda.medico.nome_completo}}</span> <br>({{agenda.medico.especialidade}})</div>
+                        <div id="select-box">{{ form.dia_semana }}</div>
+                        <p class="error" id="day-error">{{ form.dia_semana.errors.as_text|slice:"1:" }}</p>
+                    </div>
+                    <div class="row horarios-periodo">
+                        <span class="periodo">Manhã</span>
+                        <div class="input-field col s6">
+                            {{ form.horario_inicial_manha }}
+                            <label for="{{ form.horario_inicial_manha.id_for_label }}">Horário Inicial</label>
+                        </div>
+                        <div class="input-field col s6">
+                            {{ form.horario_final_manha }}
+                            <label for="{{ form.horario_final_manha.id_for_label }}">Horário Final</label>
+                        </div>
+                        <!-- {% if form.horario_inicial_manha.errors %}
+                            <p class="error">{{ form.horario_inicial_manha.errors }}</p>
+                        {% else %}
+                            <p class="error">{{ form.horario_final_manha.errors }}</p>
+                        {% endif %} -->
+                        <p class="error">{{ form.horario_inicial_manha.errors.as_text|slice:"1:" }}</p>
+                        <p class="error">{{ form.horario_final_manha.errors.as_text|slice:"1:" }}</p>
+                    </div>
+                    <div class="row horarios-periodo">
+                        <span class="periodo">Tarde</span>
+                        <div class="input-field col s6">
+                            {{ form.horario_inicial_tarde }}
+                            <label for="{{ form.horario_inicial_tarde.id_for_label }}">Horário Inicial</label>
+                        </div>
+                        <div class="input-field col s6">
+                            {{ form.horario_final_tarde }}
+                            <label for="{{ form.horario_final_tarde.id_for_label }}">Horário Final</label>
+                        </div>
+                        <p class="error">{{ form.horario_inicial_tarde.errors.as_text|slice:"1:" }}</p>
+                        <p class="error">{{ form.horario_final_tarde.errors.as_text|slice:"1:" }}</p>
+                    </div>
+                    {% endblock %}
+                    <div id="btn-form-box">
+                        <button type="submit" class="btn btn-form">{{btn_texto}}</button>
+                        <a href="{% url 'dados-agenda' agenda.pk %}" type="button" class="btn btn-form white" id="btn-cancel">Cancelar</a>
+                    </div>
+            </form>
+        </div>
+    </div>
+
+    {% if tipo_da_view == 'CreateView' %}
+        <script>
+            var tipo_da_view = 'CreateView'
+        </script> 
+    {% elif tipo_da_view == 'UpdateView' %}
+        <script>
+            var tipo_da_view = 'UpdateView'
+        </script> 
+    {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // Inicialize os elementos do Materialize, se necessário
+        M.AutoInit();
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            console.log($('#id_agenda').val());
+
+            $('#id_dia_semana').find("option:first").prop("disabled", true);
+            $('#id_dia_semana').formSelect();
+
+            $('#adicionar-horario').click(function () {
+                $("#horario-form-container ").css('display', 'flex');
+            });
+
+            $('#btn-cancel').click(function () {
+                $("#horario-form-container ").css('display', 'none');
+            });
+        
+        });
+    </script>
+{% endblock %}

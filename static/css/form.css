@@ -4,6 +4,7 @@ h3 {
 
 .titulo-form {
     color: #096661;
+    text-align: center;
 }
 
 form {
@@ -21,8 +22,8 @@ form {
 }
 
 #imagem-preview {
-    max-width: 130px;
-    max-height: 130px;
+    max-width: 140px;
+    max-height: 140px;
     cursor: pointer;
 }
 
@@ -37,6 +38,10 @@ form {
     border-radius: 5px;
 }
 
+.nome-field {
+    margin-inline: 10px;
+}
+
 input, textarea {
     outline: 0;
     padding-inline: 5px;
@@ -46,6 +51,19 @@ input, textarea {
 textarea {
     resize: none;
     padding: 8px;
+}
+
+#text-descricao label {
+    font-size: 15px;
+}
+
+#text-descricao textarea {
+    height: 60px;
+}
+
+#info-med {
+    font-size: 16px;
+    margin-left: -120px;
 }
 
 input:focus, textarea:focus {
@@ -64,12 +82,15 @@ input:focus, textarea:focus {
 
 .btn-form {
     min-width: 100px;
-    background-color: #a8ccb6;
-    border-color: #096661;
     color: #096661;
     transition: all 0.2s;
     justify-self: center;
     margin-top: 5px;
+}
+
+.btn-form {
+    background-color: #a8ccb6;
+    border-color: #096661;
 }
 
 .btn-form:hover {

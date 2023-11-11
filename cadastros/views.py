@@ -1,14 +1,13 @@
 from paginas.views import GrupoMixin
-from .forms import EnderecoForm, FuncionarioForm, HorarioMedicoForm, MedicoForm, PacienteForm
+from .forms import EnderecoForm, FuncionarioForm, HorarioMedicoForm, MedicoForm, PacienteForm, ProcedimentoForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from .models import AgendaMedico, Cargo, Funcionario, Especialidade, HorarioMedico, Medico, Paciente
-from django.urls import reverse_lazy
+from .models import AgendaMedico, Cargo, Funcionario, Especialidade, HorarioMedico, Medico, Paciente, Procedimento, Prontuario, dias_semana_opcoes
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from braces.views import GroupRequiredMixin
 from django.shortcuts import get_object_or_404
-from utils.agenda import GerarAgendaMedico
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
@@ -99,18 +98,20 @@ class MedicoCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateVie
             # Criando o objeto Endereco a partir do EnderecoForm
             medico.endereco = endereco
             medico.save()
-            # Criando uma agenda e associando ao médico recém criado
-            AgendaMedico.objects.create(medico=medico)
             return super().form_valid(form)
-        
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-
         context['titulo'] = 'Cadastro de Médicos'
-
         return context
     
+# Signal para criação de agenda do médico
+@receiver(post_save, sender=Medico)
+def associar_usuario_a_medico(sender, instance, created, **kwargs):
+    if created:
+        # Criando uma agenda e associando ao médico recém criado
+        AgendaMedico.objects.create(medico=instance)
+
 
 class PacienteCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
@@ -142,6 +143,26 @@ class PacienteCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateV
         return context
 
 
+# Signal para criação de prontuário do paciente
+@receiver(post_save, sender=Paciente)
+def associar_usuario_a_medico(sender, instance, created, **kwargs):
+    if created:
+        Prontuario.objects.create(paciente=instance)
+
+
+class ProcedimentoCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
+    model = Procedimento
+    form_class = ProcedimentoForm
+    template_name = 'cadastros/form.html'
+    success_url = reverse_lazy('listar-procedimentos')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Cadastro de Procedimentos'
+        return context
+
 # --------------- Views de Edição ---------------
 
 class CargoUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateView):
@@ -154,10 +175,8 @@ class CargoUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateView
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-
         context['form'].fields['salario'].widget.attrs['class'] = 'preco'
         context['titulo'] = 'Editar Cargo'
-
         return context
 
 
@@ -238,11 +257,9 @@ class MedicoUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateVie
     form_class = MedicoForm   
     template_name = 'cadastros/form_medico.html'
     success_url = reverse_lazy('listar-medicos')
-    
 
     def form_valid(self, form):
         medico = get_object_or_404(Medico, pk=self.kwargs['pk'])
-
         if medico.endereco: 
             medico.endereco.rua = self.request.POST['rua']
             medico.endereco.numero = self.request.POST['numero']
@@ -280,7 +297,6 @@ class MedicoUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateVie
             context['foto'] = foto
 
         context['titulo'] = 'Editar Dados de Médico'
-
         return context
 
 
@@ -333,6 +349,20 @@ class PacienteUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateV
 
         context['titulo'] = 'Editar Dados de Paciente'
 
+        return context
+
+
+class ProcedimentoUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
+    model = Procedimento
+    form_class = ProcedimentoForm
+    template_name = 'cadastros/form.html'
+    success_url = reverse_lazy('listar-procedimentos')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Editar Procedimento'
         return context
 
 
@@ -414,14 +444,6 @@ class MedicoDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteVie
         return context
 
 
-"""class EnderecoDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
-    login_url = reverse_lazy('login')
-    group_required = u'Administrador'
-    model = Endereco
-    template_name = 'cadastros/form_excluir.html'
-    success_url = reverse_lazy('listar-medicos')"""
-
-
 class PacienteDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
     login_url = reverse_lazy('login')
     group_required = u'Administrador'
@@ -439,6 +461,21 @@ class PacienteDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteV
         context['objeto'] = 'o paciente'
         obj = self.get_object()
         context['registro'] = obj.nome_completo
+        return context
+
+
+class ProcedimentoDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
+    model = Procedimento
+    template_name = 'cadastros/form_excluir.html'
+    success_url = reverse_lazy('listar-procedimentos')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['objeto'] = 'o procedimento'
+        obj = self.get_object()  # Obtendo o objeto que será excluído
+        context['registro'] = obj.nome_procedimento # Adicionando o campo nome_cargo do objeto ao contexto
         return context
 
 
@@ -500,6 +537,17 @@ class PacienteList(LoginRequiredMixin, GrupoMixin, ListView):
         return context
 
 
+class ProcedimentoList(LoginRequiredMixin, GrupoMixin, ListView):
+    login_url = reverse_lazy('login')
+    model = Procedimento
+    template_name = 'cadastros/listas/procedimento.html'
+    success_url = reverse_lazy('listar-procedimentos')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titulo'] = 'Procedimento'
+        return context
+
 # --------------- Views para Detalhar dados ---------------
 class FuncionarioDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailView):
     login_url = reverse_lazy('login')
@@ -525,40 +573,105 @@ class PacienteDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailV
     context_object_name = 'paciente'
 
 
-"""class DataAgendaCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
-    login_url = reverse_lazy('login')
-    group_required = u'Administrador'
-    model = DataAgenda
-    fields = ['data']
-
-
-class HorarioCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
-    login_url = reverse_lazy('login')
-    group_required = u'Administrador'
-    model = HorarioDisponivel
-    fields = ['horario_disponivel']"""
-
-
 class AgendaDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailView):
     login_url = reverse_lazy('login')
     group_required = u'Administrador'
     model = AgendaMedico
-    template_name = 'cadastros/listas/agenda.html'
+    template_name = 'cadastros/agenda.html'
     context_object_name = 'agenda'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        agenda = AgendaMedico.objects.get(pk=pk)
+        horarios_ordenados = HorarioMedico.objects.filter(agenda=agenda).order_by('dia_semana')
+        dia_semana_nomes = dict(dias_semana_opcoes)
 
-class DiponibilidadeHorario(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
+        for horario in horarios_ordenados:
+            horario.dia_semana = dia_semana_nomes.get(horario.dia_semana, '').split('-')[0]
+        
+        context['horarios'] = horarios_ordenados
+        return context
+
+
+# --------------- Todas as Views de Horário ---------------
+class HorarioCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
     group_required = u'Administrador'
     model = HorarioMedico
     form_class = HorarioMedicoForm
-    template_name = 'cadastros/form_horario.html'
-    success_url = reverse_lazy('listar_medicos')
+    template_name = 'cadastros/modal_agenda.html'
 
-    def get(self, request, *args, **kwargs):
-        agenda_id = self.agenda_id  # Acesse a variável global
-        if agenda_id:
-            form = self.get_form()
-            form.initial['agenda'] = agenda_id
-            return self.render_to_response(self.get_context_data(form=form))
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        agenda = AgendaMedico.objects.get(pk=pk)
+        horarios_ordenados = HorarioMedico.objects.filter(agenda=agenda).order_by('dia_semana')
+        dia_semana_nomes = dict(dias_semana_opcoes)
+
+        for horario in horarios_ordenados:
+            horario.dia_semana = dia_semana_nomes.get(horario.dia_semana, '').split('-')[0]
+        
+        context['titulo'] = 'Adicionar Novo Horário'
+        context['btn_texto'] = 'Salvar'
+        context['horarios'] = horarios_ordenados
+        context['agenda'] = agenda
+        return context
+
+    def get_success_url(self):
+        return reverse('dados-agenda', args=[str(self.object.agenda.id)])
+
+
+class HorarioUpdate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, UpdateView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
+    model = HorarioMedico
+    form_class = HorarioMedicoForm
+    template_name = 'cadastros/modal_agenda.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        fk = self.kwargs.get('fk')
+        agenda = AgendaMedico.objects.get(pk=fk)
+        horarios_ordenados = HorarioMedico.objects.filter(agenda=agenda).order_by('dia_semana')
+        dia_semana_nomes = dict(dias_semana_opcoes)
+
+        for horario in horarios_ordenados:
+            horario.dia_semana = dia_semana_nomes.get(horario.dia_semana, '').split('-')[0]
+        
+        context['titulo'] = 'Editar Horário'
+        context['btn_texto'] = 'Salvar'
+        context['horarios'] = horarios_ordenados
+        context['agenda'] = agenda
+        return context
+
+    def get_success_url(self):
+        return reverse('dados-agenda', args=[str(self.object.agenda.id)])
+
+
+class HorarioDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
+    login_url = reverse_lazy('login')
+    group_required = u'Administrador'
+    model = HorarioMedico
+    template_name = 'cadastros/modal_excluir.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        fk = self.kwargs.get('fk')
+        agenda = AgendaMedico.objects.get(pk=fk)
+        horarios_ordenados = HorarioMedico.objects.filter(agenda=agenda).order_by('dia_semana')
+        dia_semana_nomes = dict(dias_semana_opcoes)
+
+        for horario in horarios_ordenados:
+            horario.dia_semana = dia_semana_nomes.get(horario.dia_semana, '').split('-')[0]
+        
+        context['titulo'] = 'Excluir Horário'
+        context['btn_texto'] = 'Confirmar'
+        context['horarios'] = horarios_ordenados
+        context['agenda'] = agenda
+        return context
+
+    def get_success_url(self):
+        return reverse('dados-agenda', args=[str(self.object.agenda.id)])
+
 

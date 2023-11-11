@@ -1,0 +1,52 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <h4>Procedimentos</h4> 
+
+    <a class="btn btn-add btn-sm" href="{% url 'cadastrar-procedimento' %}">
+        <i class="fas fa-plus"></i>
+        Adicionar Procedimento
+    </a> <hr>
+    
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                <th>Procedimento</th>
+                <th>Especialidade</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Opções</th>
+            </tr>
+
+            {% for procedimento in object_list %}
+            <tr>
+                <td>{{procedimento.nome_procedimento}}</td>
+                {% if procedimento.especialidade_responsavel %}
+                    <td>{{procedimento.especialidade_responsavel}}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{{procedimento.descricao}}</td>
+                <td>R$ {{procedimento.valor_procedimento}}</td>
+                <td>
+                    <a href="{% url 'editar-procedimento' procedimento.pk %}" class="btn btn-sm btn-editar">Editar</a> &nbsp;
+                    <a href="{% url 'excluir-procedimento' procedimento.pk %}" class="btn btn-sm btn-excluir">Excluir</a> 
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Ainda não há procedimentos registrados</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+{% endblock %}

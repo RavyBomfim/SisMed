@@ -147,3 +147,27 @@ def horario_saved(sender, instance, created, **kwargs):
 
         # Gere a agenda automaticamente.
         agenda_medico.gerar_agenda()"""
+
+
+        """path('horarios-disponiveis', HorariosDisponiveis.as_view(), name='horarios-disponiveis'),
+        path('teste', Teste.as_view(), name='teste'),
+    
+        #urls cadastros
+        path('agendar/consulta', AgendarConsulta.as_view(), name='agendar-consulta'),
+    
+        #urls pada edição
+        path('editar/agendamento/<int:pk>', AgendamentoUpdate.as_view(), name='editar-agendamento'),
+    
+        #urls para deletar
+        path('deletar/agendamento/<int:pk>', AgendamentoDelete.as_view(), name='excluir-agendamento'),
+    
+        #urls para listagem
+        path('consultas/agendadas', AgendamentoList.as_view(), name='consultas-agendadas'),
+        path('pacientes-do-dia', PacientesDoDia.as_view(), name='pacientes-do-dia'),
+    
+        #urls para detalhar
+        path('detalhes_agendamento/<int:pk>', Detalhes_Agendamento.as_view(), name='detalhes_agendamento'),
+    
+        # Urls para requisições json
+        path('retornar-horarios', retornar_horarios, name='retornar-horarios'),
+        path('valor-consulta', valor_consulta, name='valor-consulta'),"""

@@ -15,7 +15,7 @@
 
             <h5 class="titulo-form">{{titulo}}</h5> <br>
 
-            <form action="" method="POST">
+            <form method="POST">
 
                 {% csrf_token %}
         
@@ -37,6 +37,22 @@
                         {{ form.salario }}
                         <label for="{{ form.salario.id_for_label }}">Salário</label>
                     </div>
+                {% elif 'Procedimento' in titulo %}
+                    <div class="input-field">
+                        {{ form.nome_procedimento }}
+                        <label for="{{ form.nome_procedimento.id_for_label }}">Procedimento</label>
+                    </div>
+                    <div class="input-field">
+                        {{ form.especialidade_responsavel }}
+                    </div>
+                    <div class="text-field" id="text-descricao">
+                        <label for="{{ form.descricao.id_for_label }}">Descrição</label>
+                        {{ form.descricao }}
+                    </div>
+                    <div class="input-field">
+                        {{ form.valor_procedimento }}
+                        <label for="{{ form.valor_procedimento.id_for_label }}">Valor</label>
+                    </div>
                 {% endif %}
 
                 <div class="card-action">
@@ -47,4 +63,16 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        M.AutoInit();
+    </script>
+
+<script>
+    $(document).ready(function() {
+        
+    });
+</script>
 {% endblock %}

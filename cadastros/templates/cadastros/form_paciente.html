@@ -3,12 +3,7 @@
 {% load static %}
 
 {% block estilo_form %}
-    <style>
-        #info-med {
-            font-size: 16px;
-            margin-left: -120px;
-        }
-    </style>
+    
 {% endblock %}
 
 {% block crm %}
@@ -16,7 +11,9 @@
 {% endblock %}
 
 {% block campo_direfente %}
-    <label id="info-med" for="{{ form.informacoes_medicas.id_for_label }}">Informações Médicas</label>
-    {{ form.informacoes_medicas }}
+    <div class="text-field col s4">
+        <label id="info-med" for="{{ form.informacoes_medicas.id_for_label }}">Informações Médicas</label>
+        {{ form.informacoes_medicas }}
+    </div>
 {% endblock %}
 

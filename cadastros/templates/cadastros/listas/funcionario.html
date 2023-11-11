@@ -20,13 +20,15 @@
     <div class="table-responsive">
         <table class="table">
             <tr>
-                <th>Foto</th>
-                <th>Nome Completo</th>
-                {% block campo3 %}
-                <th>Cargo</th>
-                {% endblock %}
-                {% block opcao %}
-                    <th>Opção</th>
+                {% block campos %}
+                    <th>Foto</th>
+                    <th>Nome Completo</th>
+                    {% block campo3 %}
+                    <th>Cargo</th>
+                    {% endblock %}
+                    {% block opcao %}
+                        <th>Opção</th>
+                    {% endblock %}
                 {% endblock %}
             </tr>
 
@@ -40,7 +42,7 @@
                     <td>{{funcionario.nome_completo}}</td>
                     <td>{{funcionario.cargo.nome_cargo}}</td>
                     <td>
-                        <a href="{% url 'dados-funcionario' funcionario.pk %}" class="btn btn-small btn-dados">Ver Detalhes</a>
+                        <a href="{% url 'dados-funcionario' funcionario.pk %}" class="btn btn-small btn-dados">Detalhes</a>
                     </td>
                 </tr>
                 {% empty %}

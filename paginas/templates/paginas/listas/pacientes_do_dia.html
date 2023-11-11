@@ -1,0 +1,17 @@
+{% extends 'paginas/listas/consultas_agendadas.html' %}
+
+{% load static %}
+
+{% block titulo %}
+    <h4>{{titulo}}</h4> 
+{% endblock %}
+    
+{% block btn_add %}
+    <div class="btn btn-add btn-sm">
+        Hoje: {{data_atual|date:'d/m/Y'}}
+    </div> <hr>
+{% endblock %}
+
+{% block vazio %}
+    <p>Não há nenhum paciente agendado para hoje</p>
+{% endblock %}

@@ -30,9 +30,9 @@
         <td>{{medico.especialidade}}</td>
         <td>
             {% if is_admin or request.user.is_superuser %}
-            <a href="{% url 'dados-medico' medico.pk %}" class="btn btn-small btn-dados">Ver Detalhes</a> &nbsp;
+            <a href="{% url 'dados-medico' medico.pk %}" class="btn btn-small btn-dados">Detalhes</a> &nbsp;
             {% endif %}
-            <!-- <a href="{% url 'dados-agenda' medico.agendamedico.pk %}" class="btn btn-small btn-agenda">Agenda</a> -->
+            <a href="{% url 'dados-agenda' medico.agendamedico.pk %}" class="btn btn-small btn-agenda">Agenda</a> 
         </td>
     </tr>
     {% empty %}

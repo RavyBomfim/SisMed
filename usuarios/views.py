@@ -12,6 +12,9 @@ from braces.views import GroupRequiredMixin
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
+
+# --------------- Views de Cadastro ---------------
+
 class UsuarioCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
     group_required = u'Administrador'
@@ -38,6 +41,8 @@ def associar_usuario_a_medico(sender, instance, created, **kwargs):
             grupo_medico, _ = Group.objects.get_or_create(name='Medico')
             instance.groups.add(grupo_medico)
 
+
+# --------------- Views para Edição ---------------
 
 class UsuarioUpdate(LoginRequiredMixin, GrupoMixin, UpdateView):
     login_url = reverse_lazy('login')
@@ -69,6 +74,8 @@ class SenhaUpdate(LoginRequiredMixin, GrupoMixin, UpdateView):
         return context
     
 
+# --------------- Views para Excluir ---------------
+
 class UsuarioDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteView):
     login_url = 'login'
     group_required = u'Administrador'
@@ -84,9 +91,19 @@ class UsuarioDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteVi
         return context
     
 
+# --------------- Views para Listar ---------------
+
 class UsuarioList(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
     group_required = u'Administrador'
+    model = User
+    template_name = 'usuarios/lista/usuario.html'
+    success_url = reverse_lazy('listar-usuarios')
+
+
+class MeusPacientes(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListView):
+    login_url = reverse_lazy('login')
+    group_required = u'Medico'
     model = User
     template_name = 'usuarios/lista/usuario.html'
     success_url = reverse_lazy('listar-usuarios')

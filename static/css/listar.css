@@ -2,9 +2,13 @@
     padding-block: 40px;
 }
 
-h4 {
+/* h4 {
     color: #096661;
-}
+} */
+
+/* .table-responsive {
+    width: fit-content;
+} */
 
 .btn-sm {
     font-weight: 500;
@@ -51,4 +55,8 @@ h4 {
 
 .btn-agenda:hover {
     background-color: #7cc297 !important;
+}
+
+.opcao {
+    text-align: center;
 }

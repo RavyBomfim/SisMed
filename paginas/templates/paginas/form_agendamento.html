@@ -1,0 +1,135 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <style>
+
+        #agendamento-form {
+            padding-bottom: 10px;
+        }
+
+        .row {
+            border: 1px solid #2bb9ab;
+            margin-block: 0;
+            margin-inline: 10px;
+        }
+
+        .tipo_agendamento {
+            border-bottom: 0;
+            border-top-left-radius: 2px; 
+            border-top-right-radius: 2px; 
+            padding: 0;
+        }
+
+        .tipo_agendamento col {
+            padding: 0;
+        }
+
+        .campos-agendamento {
+            border-bottom-left-radius: 2px; 
+            border-bottom-right-radius: 2px; 
+        }
+
+        #input-radio-box {
+            display: flex;
+            gap: 15px;
+        }
+
+        #procedimento_select {
+            display: none;
+        }
+
+        #btn-box {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            width: 150px;
+            align-self: flex-end;
+            justify-self: flex-end;
+            margin-bottom: -20px;
+        }
+
+        #campo-data-box {
+            position: relative;
+        }
+
+        #erro-data {
+            display: none;
+            width: 250px;
+            font-size: 14px;
+            left: -5px;
+            bottom: -15px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-content" style="text-align: center">
+            <span class="card-title">Agendamento de Consulta/Procedimento</span> <br>
+            
+            <form action="" method="POST" id="agendamento-form">
+                {% csrf_token %}
+                {{ form.errors }}
+                <div class="row tipo_agendamento">
+                    <div class="input-field col s6" id="input-radio-box">
+                        {% for radio in form.tipo_agendamento %}
+                            <p>
+                                <label class="radio-label">
+                                    {{ radio.tag }}
+                                    <span>{{ radio.choice_label }}</span>
+                                </label>
+                            </p>
+                        {% endfor %}
+                    </div>
+                    <div class="input-field col s6" id="procedimento_select">
+                        {{ form.procedimento }}
+                    </div>
+                </div>
+                <div class="row campos-agendamento">
+                    <div class="input-field col s6">
+                        {{ form.paciente }}
+                    </div>
+                    <div class="input-field col s6">
+                        {{ form.medico }}
+                    </div>
+                    <div class="input-field col s3" id="campo-data-box">
+                        {{ form.data }}
+                        <label for="{{ form.data.id_for_label }}">Data</label>
+                        <p class="error" id="erro-data">Data inválida! Esta data já passou.</p>
+                    </div>
+                    <div class="input-field col s3">
+                        {{ form.horario }}
+                    </div>
+                    <div class="input-field col s3">
+                        {{ form.tipo_pagamento }}
+                    </div>
+                    <div class="input-field col s3">
+                        {{ form.retorno }}
+                    </div>
+                    <div class="input-field col s2">
+                        {{ form.valor }}
+                        <label for="{{ form.valor.id_for_label }}">Valor</label>
+                    </div>
+                    <div class="input-field col s10" id="btn-box">
+                        <button type="submit" class="btn btn-form">Agendar</button>
+                    </div>
+                </div>
+            </form>
+        </div> 
+{% endblock %}
+
+{% block scripts %}
+
+<script>M.AutoInit();</script>
+<script src="{% static 'js/agendamento.js' %}"></script>
+
+{% endblock %}

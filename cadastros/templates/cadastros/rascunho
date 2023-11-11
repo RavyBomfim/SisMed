@@ -1,0 +1,20 @@
+<!-- <a href="{% url 'editar-agenda' agenda.pk horario.pk %}" class="horario-agenda" data-id="{{ horario.id }}">Editar</a>
+<a href="{% url 'excluir-horario' agenda.pk horario.pk %}" class="horario-agenda" data-id="{{ horario.id }}">Excluir</a> -->
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+
+            $('.horario-agenda').click(function () {
+                var sethorario_id = $(this).data('id');
+                console.log(sethorario_id)
+                $("#modal-alterar-container").css('display', 'flex');
+            });
+
+            $('#btn-cancel').click(function () {
+                $("#modal-alterar-container").css('display', 'none');
+            });
+        
+        });
+    </script>
+{% endblock %}
