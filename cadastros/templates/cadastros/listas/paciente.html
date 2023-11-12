@@ -26,7 +26,10 @@
         <td>{{paciente.nome_completo}}</td>
         <td>{{paciente.cpf}}</td>
         <td>
-            <a href="{% url 'dados-paciente' paciente.pk %}" class="btn btn-small btn-dados">Detalhes</a>
+            &nbsp;<a href="{% url 'dados-paciente' paciente.pk %}" class="btn btn-small btn-dados">Detalhes</a> &nbsp;
+        </td>
+        <td>
+            <a href="{% url 'dados_prontuario' paciente.pk %}" class="btn btn-small btn-dados">Ver Prontuário</a>
         </td>
     </tr>
     {% empty %}

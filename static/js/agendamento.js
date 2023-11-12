@@ -1,22 +1,48 @@
 $(document).ready(function() {
 
+    const horario_select = $('#id_horario');
     var medicos_iniciais = $('#id_medico').html();
     var medico_select = $('#id_medico');
+    var procedimento_select = $('#id_procedimento');
+    var tipo_agendamento = $('#id_tipo_agendamneto');
     var procedimento = '';
     var valor_procedimento = 0.0;
     var valor_agendamento = $('#id_valor');
+
+    console.log(procedimento);
+    $('.select').find("option:first").prop("disabled", true);
+    $('.select').formSelect();
+
+    horario_select.append('<option value="" selected disabled>Horário</option>');
+    if (type_view === 'UpdateView') {
+        horario_select.append($("<option>", {value: horario_inicial, text: horario_inicial, selected:true}));
+        tipo_agendamento = $('input[name="tipo_agendamento"]:checked').val();
+        if (tipo_agendamento === 'Procedimento') {
+            $('#retorno_select').css('display', 'none');
+            $('#procedimento_select').css('display', 'block');
+            procedimento_select.val(procedimento_id);
+            procedimento_select.formSelect();
+        } else {
+            $('#procedimento_select').css('display', 'none');
+            $('#retorno_select').css('display', 'block');
+        }
+    }
+    horario_select.formSelect();
 
     $('.radio-label').change(function() {
         var valor_radio = $('input[name="tipo_agendamento"]:checked').val();
 
         if (valor_radio === 'Procedimento') {
             $('#procedimento_select').css('display', 'block');
+            $('#retorno_select').css('display', 'none');
+            $("#id_procedimento").val("");
             //
             medico_select.empty();
             medico_select.append('<option value="" selected disabled>Selecionar Médico/Especialidade</option>');
             medico_select.formSelect();
         } else {
             $('#procedimento_select').css('display', 'none');
+            $('#retorno_select').css('display', 'block');
             $("#id_procedimento").val("");
             $("#id_procedimento").formSelect();
             //
@@ -30,7 +56,9 @@ $(document).ready(function() {
         if(valor) {
             valor_agendamento.val('');
         }
+
     });
+
 
     $('#id_procedimento').on('change', function() {
         procedimento = $(this).val();
@@ -51,7 +79,8 @@ $(document).ready(function() {
                     }
                     $('#id_medico').formSelect();
                     valor_procedimento = data.valor_procedimento
-                    console.log('Valor:' + valor_procedimento);
+                    valor_agendamento.val(valor_procedimento);
+                    valor_agendamento.focus(); valor_agendamento.blur();
                 },
                 error: function() {
                     console.log('Erro ao obter médicos associados ao procedimento.');
@@ -60,17 +89,6 @@ $(document).ready(function() {
         }
     });
 
-    $('#id_medico').change(function() {
-        console.log('Valor do select: ' + $('#id_medico').val());
-    });
-
-    $('.select').find("option:first").prop("disabled", true);
-    $('.select').formSelect();
-
-    const horario_select = $('#id_horario');
-    horario_select.append('<option value="" selected disabled>Horário</option>');
-    horario_select.formSelect();
-
     $('#id_medico, #id_data').change(function () {
 
         var medico_id = $('#id_medico').val();
@@ -78,17 +96,18 @@ $(document).ready(function() {
         horario_select.empty();
         horario_select.append('<option value="" selected disabled>Horário</option>');
 
+        console.log('Data agend: ' + data_agend);
+
         var dataSelecionada = new Date(data_agend);
         var dataAtual = new Date();
 
-        if (dataSelecionada < dataAtual) {
+        if (dataSelecionada + 1 < dataAtual) {
             $('#erro-data').css('display', 'block');
             horario_select.empty();
             horario_select.append('<option value="" selected disabled>Horário</option>');
             horario_select.formSelect();
         } else {
             $('#erro-data').css('display', 'none');
-
             if (medico_id && data_agend) {
                 var csrfToken = $("[name=csrfmiddlewaretoken]").val();
                 // Solicitação AJAX para obter os horários disponíveis
@@ -122,6 +141,7 @@ $(document).ready(function() {
                             });
                         }
                         horario_select.formSelect();
+                        dados_horariosJson = data;
                     },
                     error: function (xhr, status, error) {
                         console.log('Erro na requisição AJAX:', status);
@@ -139,40 +159,38 @@ $(document).ready(function() {
         console.log(valor_radio);
         var medico_id = $('#id_medico').val();
         var retorno = $('#id_retorno').val();
-        if (medico_id && retorno) {
-            if (valor_radio === 'Consulta') {
-                if (retorno == 'True') {
-                    valor_agendamento.val('0.00')
-                    valor_agendamento.focus(); valor_agendamento.blur();
-                } else {
-                    var csrfToken = $("[name=csrfmiddlewaretoken]").val();
-                    var dados = {
-                        medico_id: medico_id,
-                    }
-                    $.ajax({
-                        url: '/valor-consulta',
-                        method: 'POST',
-                        data: JSON.stringify(dados),
-                        contentType: 'application/json',
-                        dataType: 'json',
-                        headers: {
-                            "X-CSRFToken": csrfToken
-                        },
-                        success: function (data) {
-                            valor_agendamento.val(data.valor_consulta);
-                            valor_agendamento.focus(); valor_agendamento.blur();
-                        },
-                        error: function (xhr, status, error) {
-                            console.log('Erro na requisição AJAX:', status);
-                            console.log('Erro: ', error);
-                            // Verifique a resposta completa para obter mais detalhes, se disponível
-                            console.log('Resposta completa:', xhr.responseText);
-                        }
-                    });
-                }
-            } else {
-                valor_agendamento.val(valor_procedimento);
+
+        if (valor_radio === 'Consulta') {
+            if (retorno == 'True') {
+                valor_agendamento.val('0.00');
                 valor_agendamento.focus(); valor_agendamento.blur();
+            } else if (medico_id && retorno) {
+                var csrfToken = $("[name=csrfmiddlewaretoken]").val();
+                var dados = {
+                    medico_id: medico_id,
+                }
+                $.ajax({
+                    url: '/valor-consulta',
+                    method: 'POST',
+                    data: JSON.stringify(dados),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    headers: {
+                        "X-CSRFToken": csrfToken
+                    },
+                    success: function (data) {
+                        valor_agendamento.val(data.valor_consulta);
+                        valor_agendamento.focus(); valor_agendamento.blur();
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Erro na requisição AJAX:', status);
+                        console.log('Erro: ', error);
+                        // Verifique a resposta completa para obter mais detalhes, se disponível
+                        console.log('Resposta completa:', xhr.responseText);
+                    }
+                });
+            } else {
+                valor_agendamento.val('');
             }
         }
     });

@@ -179,5 +179,10 @@ class Atendimento(models.Model):
     diagnostico = models.TextField(verbose_name="Diagnóstico")
     receituario = models.TextField(verbose_name="Receituário/Recomendações") 
 
+    def save(self, *args, **kwargs):
+        if not self.data:
+            self.data = date.today()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f'{self.nota_medico} {self.paciente} {self.medico}'

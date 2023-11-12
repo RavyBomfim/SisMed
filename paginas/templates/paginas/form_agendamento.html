@@ -45,7 +45,6 @@
 
         #btn-box {
             display: flex;
-            align-items: flex-end;
             justify-content: flex-end;
         }
 
@@ -53,7 +52,10 @@
             width: 150px;
             align-self: flex-end;
             justify-self: flex-end;
-            margin-bottom: -20px;
+            margin-top: -5px;
+            margin-bottom: 12px;
+            margin-right: 10px;
+            /* margin-bottom: -20px; */
         }
 
         #campo-data-box {
@@ -93,6 +95,9 @@
                     <div class="input-field col s6" id="procedimento_select">
                         {{ form.procedimento }}
                     </div>
+                    <div class="input-field col s6"  id="retorno_select">
+                        {{ form.retorno }}
+                    </div>
                 </div>
                 <div class="row campos-agendamento">
                     <div class="input-field col s6">
@@ -102,29 +107,40 @@
                         {{ form.medico }}
                     </div>
                     <div class="input-field col s3" id="campo-data-box">
-                        {{ form.data }}
+                        <input type="date" id="id_data" name="{{ form.data.name }}" value="{{ form.data.value|date:'Y-m-d' }}">
                         <label for="{{ form.data.id_for_label }}">Data</label>
                         <p class="error" id="erro-data">Data inválida! Esta data já passou.</p>
                     </div>
                     <div class="input-field col s3">
                         {{ form.horario }}
                     </div>
-                    <div class="input-field col s3">
+                    <div class="input-field col s4">
                         {{ form.tipo_pagamento }}
-                    </div>
-                    <div class="input-field col s3">
-                        {{ form.retorno }}
                     </div>
                     <div class="input-field col s2">
                         {{ form.valor }}
                         <label for="{{ form.valor.id_for_label }}">Valor</label>
                     </div>
-                    <div class="input-field col s10" id="btn-box">
+                    <div class="input-field col s12" id="btn-box">
                         <button type="submit" class="btn btn-form">Agendar</button>
                     </div>
                 </div>
             </form>
         </div> 
+    </div> 
+
+    {% if type_view == 'CreateView' %}
+        <script>
+            var type_view = 'CreateView';
+        </script>  
+    {% elif type_view == 'UpdateView' %} 
+        <script>
+            var type_view = 'UpdateView';
+            var horario_inicial = '{{ horario }}';
+            var procedimento_id = '{{ procedimento_id }}';
+        </script>
+    {% endif %}
+
 {% endblock %}
 
 {% block scripts %}

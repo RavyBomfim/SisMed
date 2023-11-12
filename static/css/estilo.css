@@ -132,6 +132,12 @@ h1 {
     color: #096661;
 }
 
+textarea {
+    resize: none;
+    outline: 0;
+    padding: 10px;
+}
+
 footer {
     background-color: #a8ccb6;
     padding-inline: 40px;

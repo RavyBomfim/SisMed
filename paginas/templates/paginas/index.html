@@ -68,6 +68,7 @@
         <li><a href="{% url 'listar-medicos' %}">Listar Médicos</a></li>
         <li><a href="{% url 'listar-pacientes' %}">Listar Pacientes</a></li>
         <li><a href="{% url 'listar-procedimentos' %}">Listar Procedimentos</a></li>
+        <li><a href="{% url 'listar-agendamentos' %}">Agendamentos</a></li>
     </ul>
     
     <ul id="dropdown2" class="dropdown-content">
@@ -78,6 +79,7 @@
         <li><a href="{% url 'cadastrar-paciente' %}">Paciente</a></li>
         <li><a href="{% url 'cadastrar-usuario' %}">Usuario</a></li>
         <li><a href="{% url 'cadastrar-procedimento' %}">Procedimento</a></li>
+        <li><a href="{% url 'agendar-consulta-procedimento' %}">Agendamento</a></li>
     </ul>
 
     <ul id="dropdown3" class="dropdown-content">
@@ -99,7 +101,7 @@
         {% block content %}
             <div class="row">
                 <div class="col s12 flex align-center" id="bem-vindo">
-                    <h4>Bem-vindo, <span>{{request.user}}</span>!</h4> &nbsp; <a class="btn" href="{% url 'agendar-consulta' %}">Agendar Atendimento</a>
+                    <h4>Bem-vindo, <span>{{request.user}}</span>!</h4> &nbsp; <a class="btn" href="{% url 'agendar-consulta-procedimento' %}">Agendar Atendimento</a>
                 </div>
             </div>
         
@@ -127,16 +129,6 @@
                     </div>
                 </div>
                 </a>
-        
-                <!-- <div class="col s12 m6 l4">
-                    <div class="card custom-card">
-                        <div class="card-content">
-                            <i class="fas fa-user-tie fa-3x"></i>
-                            <span class="card-title">Funcionários Cadastrados</span>
-                            <p>50</p>
-                        </div>
-                    </div>
-                </div> -->
                 
                 <a href="{% url 'pacientes-do-dia' %}">
                     <div class="col s12 m6 l4">

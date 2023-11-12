@@ -4,6 +4,7 @@
     
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/agenda.css' %}">
     <style>
 
         .container {
@@ -14,10 +15,12 @@
         }
         
         #detalha-agend {
+            width: 600px;
             background-color: #fff;
-            padding: 30px;
+            padding: 35px;
             border-radius: 3px;
-            box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            padding-bottom: 38px;
         }
 
         #detalha-agend h4 {
@@ -26,10 +29,34 @@
             padding: 15px;
             border-radius: 3px;
             font-size: 25px;
+            margin-bottom: 0;
         }
 
         #consultas-agend {
             padding-inline: 2px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #363636;
+        }
+
+        #consultas-agend p span {
+            font-weight: 500;
+            color: #5a5a5a;
+        }
+
+        #cabecalho {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -20px;
+            padding-inline: 10px;
+            padding-block: 3px;
+            background-color: #f7f5f5;
+        }
+
+        #cabecalho p {
+            font-size: 20px;
         }
 
         .error {
@@ -41,17 +68,37 @@
             position: absolute;
             color: #d84343;
             font-size: 15px;
-            bottom: 1px;
+            bottom: -10px;
         }
 
         .botoes-box {
             display: flex;
             justify-content: space-between;
             gap: 10px;
+            border-top: 1px dashed #363636;
         }
 
         .botoes-box .btn {
-            width: 50%;
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+        #btn_box {
+            display: flex;
+            gap: 15px;
+        }
+
+        .concluido {
+            cursor: default;
+        }
+
+        .concluido:hover {
+            background-color: #26a69a;
+        }
+
+        #form-box {
+            display: none;
         }
 
         @media (max-width: 520px) {
@@ -61,46 +108,92 @@
         }
 
     </style>
+
+    {% block estilo %}
+
+    {% endblock %}
+
 {% endblock %}
 
 {% block content %}
 
-<div class="row" id="detalha-agend">
-    <h4>Detalhes do Agendamento</h4> <br>
-    <div class="error">
-        {% for message in messages %}
-            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-            {# Limpa a mensagem após a exibição #}
-        {% endfor %}
-    </div> 
-    <div id="consultas-agend">
-        <p>Codigo: {{agendamento.id}}</p>
-        <p>Paciente: {{agendamento.paciente.nome_completo}}</p>
-        <p>
-        <p>Médico: {{agendamento.medico.nome_completo}}</p>
-        <p>Especialidade: {{agendamento.medico.especialidade.especialidade}}</p>
-        <p>
-        <p>Data: {{agendamento.data|date:'d/m/Y'}}</p>
-        <p>
-        <p>Horário: {{agendamento.horario}}</p>
-        <p>Tipo de Pagamento: {{agendamento.tipo_pagamento}}</p>
-        {% if agendamento.retorno == False %}
-            <p>Retorno: Não</p>
-        {% else %}
-            <p>Retorno: Sim</p>
-        {% endif %}
-        <p>Valor da consulta: R$ {{agendamento.valor}}</p>
-        {% if agendamento.concluido == False %}
-            <p>Concluído: Não</p>
-        {% else %}
-            <p>Concluído: Sim</p>
-        {% endif %}
+    <div class="row" id="detalha-agend">
+        <h4>Detalhes do Agendamento</h4> <br>
+        <div class="error">
+            {% for message in messages %}
+                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                {# Limpa a mensagem após a exibição #}
+            {% endfor %}
+        </div> 
+        <div id="cabecalho">
+            <p>{{agendamento.tipo_agendamento}}</p>
+        </div>
+        <div id="consultas-agend">
+            <p><span>Paciente: </span> {{agendamento.paciente.nome_completo}}</p>
+            <p><span>Médico: </span> {{agendamento.medico.nome_completo}}</p>
+            <p><span>Especialidade: </span> {{agendamento.medico.especialidade.especialidade}}</p>
+            {% if agendamento.tipo_agendamento == 'Procedimento' %}
+                <p><span>Tipo de procedimento: </span> {{agendamento.procedimento}}</p>
+            {% endif %}
+            <p><span>Data: </span> {{agendamento.data|date:'d/m/Y'}}</p>
+            <p><span>Horário: </span> {{agendamento.horario}}</p>
+            <p><span>Tipo de Pagamento: </span> {{agendamento.tipo_pagamento}}</p>
+            {% if agendamento.tipo_agendamento == 'Consulta' %}
+                {% if agendamento.retorno == False %}
+                    <p><span>Retorno: </span> Não</p>
+                {% else %}
+                    <p><span>Retorno: </span> Sim</p>
+                {% endif %}
+                <p><span>Valor da consulta: </span> R$ {{agendamento.valor}}</p>
+            {% else %}
+                <p><span>Valor do procedimento: </span> R$ {{agendamento.valor}}</p>
+            {% endif %}
+            <p><span>Concluído: </span> {{agendamento.concluido}}</p>
+        </div>
+        <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita perferendis tenetur recusandae quidem natus iure earum nesciunt obcaecati atque aperiam. -->
+        
+        <div class="botoes-box">
+            <div id="btn_box">
+                <a href="{% url 'editar-agendamento' agendamento.pk %}" class="btn btn-sm btn-editar">
+                    <i class="fa-solid fa-pencil"></i> Editar
+                </a> 
+                <a href="{% url 'excluir-agendamento' agendamento.pk %}" class="btn btn-sm btn-excluir">
+                    <i class="fa-solid fa-trash-can"></i> Excluir
+                </a> 
+            </div> &nbsp;
+            {% if agendamento.tipo_agendamento == 'Consulta' and not agendamento.concluido %}
+                <a href="{% url 'registrar-atendimento' agendamento.pk %}" class="btn btn-sm">Concluir  Consulta</a>
+            {% elif agendamento.tipo_agendamento == 'Consulta' and agendamento.concluido %}
+                <button class="btn btn-sm" class="concluido">Consulta Concluída</button>
+            {% elif agendamento.tipo_agendamento == 'Procedimento' and not agendamento.concluido %}
+                    <form action="{% url 'concluir-procedimento' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="agendamento_id" value="{{agendamento.id}}">
+                        <button type="submit" class="btn btn-sm" id="concluir-procedimento">Concluir Procedimento</button>
+                    </form>
+            {% else %}
+                <button class="btn btn-sm" class="concluido">Procedimento Concluído</button>
+            {% endif %}
+        </div>
     </div>
 
-    <br>
-    <div class="botoes-box">
-        <a href="{% url 'editar-agendamento' agendamento.pk %}" class="btn btn-sm btn-editar">Editar</a> &nbsp;
-        <a href="{% url 'excluir-agendamento' agendamento.pk %}" class="btn btn-sm btn-excluir">Excluir</a>
-    </div>
-</div>
+    {% block modal_atendimento %}
+
+    {% endblock %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $('document').ready(function() {
+
+            btn_concluir = $('#concluir-procedimento');
+
+            btn_concluir.click(function() {
+
+            });
+
+        });
+    </script>
+
 {% endblock %}

@@ -11,8 +11,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-top: -1px;
-            padding-top: 10px;
+            margin-top: 1px;
             border-left: 1px solid #7c7c7c;
             border-right: 1px solid #7c7c7c;
         } 
@@ -36,6 +35,10 @@
             align-self: flex-start;
         }
 
+        .tamanho_definido {
+            width: 100px;
+        }
+
         .botoes-box {
             align-self: flex-end;
         }
@@ -48,45 +51,48 @@
             min-width: 100%;
         }
     </style>
+
 {% endblock %}
 
 {% block content %}
 
-    {% block titulo %}
+    {% block titulo2 %}
         <h4>Agendamentos</h4> 
     {% endblock %}
 
     {% block btn_add %}
-        <a class="btn btn-add btn-sm" href="{% url 'agendar-consulta' %}">
+        <a class="btn btn-add btn-sm" href="{% url 'agendar-consulta-procedimento' %}">
             <!-- <i class="fas fa-plus"></i> -->
             <i class="material-symbols-outlined">add</i>
             Agendar Consulta
-        </a> <hr>
+        </a>
     {% endblock %}
     
     <div id="consultas-agend-container">
-        {% for agendamento in object_list %}
-        <div class="consultas-agend">
-            <div class="dados-agend">
-                <p>{{agendamento.data|date:'d/m/Y'}}</p>
-                <p>
-                <p>Paciente: {{agendamento.paciente.nome_completo}}</p>
-                <p>
-                <p>Médico: {{agendamento.medico.nome_completo}} ({{agendamento.medico.especialidade.especialidade}})</p>
-            </div>
-            <div class="botoes-box">
-                <a href="{% url 'detalhes_agendamento' agendamento.pk %}" class="btn btn-sm">Detalhes</a>
-            </div>
-        </div>
         <hr>
-        {% empty %}
-            <div id="agendamento-vazio">
-                {% block vazio %}
-                    <p>Ainda não há nenhum agendamento</p>
-                {% endblock %}
+        {% block campos-listagem %}
+            {% for agendamento in object_list %}
+            <div class="consultas-agend">
+                <div class="dados-agend">
+                    <p class='tamanho_definido'>{{agendamento.tipo_agendamento}}</p>
+                    <p>{{agendamento.data|date:'d/m/Y'}}</p>
+                    <p>Paciente: {{agendamento.paciente.nome_completo}}</p>
+                    <p>Médico: {{agendamento.medico.nome_completo}} ({{agendamento.medico.especialidade.especialidade}})</p>
+                </div>
+                <div class="botoes-box">
+                    <a href="{% url 'detalhes_agendamento' agendamento.pk %}" class="btn btn-sm">Detalhes</a>
+                </div>
             </div>
             <hr>
-        {% endfor %}
+            {% empty %}
+                <div id="agendamento-vazio">
+                    {% block vazio %}
+                        <p>Ainda não há nenhum agendamento</p>
+                    {% endblock %}
+                </div>
+                <hr>
+            {% endfor %}
+        {% endblock %}
     </div>
 
 {% endblock %}

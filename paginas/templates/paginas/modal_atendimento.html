@@ -1,0 +1,117 @@
+{% extends 'paginas/listas/detalhes_agendamento.html' %}
+
+{% load static %}
+
+{% block estilo %}
+
+    <style>
+
+        .titulo-form {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            font-size: 30px;
+        }
+
+        #paciente-box {
+            min-width: 100%;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        #paciente-box img {
+            width: 105px;
+            height: 105px;
+            border-radius: 100%;
+        }
+
+        #paciente {
+            width: 100%;
+            font-size: 19px;
+            padding-bottom: 10px;
+            padding-top: 0;
+            margin-bottom: 10px;
+            padding-inline: 5px;
+            margin-right: 3px;
+            color: #4d4d4d;
+            border-bottom: 1px dashed #149e97;
+        }
+
+        #paciente span {
+            color: #096661;
+        }
+
+        #btn-form-box {
+            margin-inline: 10px;
+            margin-top: -20px;
+        }
+        
+        #btn-cancel {
+            font-weight: 500;
+        }
+
+        #horario-form {
+            width: 700px;
+        }
+
+        .text-field  {
+            margin-bottom: 10px;
+        }
+
+        .text-field label {
+            font-size: 15px;
+            color: #096661;
+        }
+
+        textarea {
+            height: 80px;
+            border: 1px solid #149e97;
+            border-radius: 2px;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block modal_atendimento %}
+<div id="horario-form-container" class="form-container">
+    <div id="horario-form" class="form-box"> 
+
+        <h5 class="titulo-form">{{titulo}}</h5>
+
+        <form action="" method="POST" id="form-horario">
+            {% csrf_token %}
+            <div class="row">
+                <div class="input-field col s12" id="paciente-box">
+                    {% if agendamento.paciente.foto %}
+                    <img src="/media/{{agendamento.paciente.foto}}" alt="">
+                    {% else %}
+                        <img class="lista-foto" src="{% static 'img/perfil-generico.jpg' %}">
+                    {% endif %}
+                    <div id="paciente">Paciente: <span>{{agendamento.paciente}}</span></div> 
+                    <input type="hidden" id="id_consulta" name="{{ form.consulta.name }}" value="{{agendamento.id}}">
+                </div>
+                <div class="text-field col s12">
+                    <label for="{{ form.anamnese_paciente.id_for_label }}">Anamnese</label>
+                    {{ form.anamnese_paciente }}
+                </div>
+                <div class="text-field col s12">
+                    <label for="{{ form.diagnostico.id_for_label }}">Diagnóstico</label>
+                    {{ form.diagnostico }}
+                </div>
+                <div class="text-field col s12">
+                    <label for="{{ form.diagnostico.id_for_label }}">Receituario</label>
+                    {{ form.receituario }}
+                </div>
+            </div>
+            <div id="btn-form-box">
+                <button type="submit" class="btn btn-form">Salvar</button>
+                <a href="{% url 'detalhes_agendamento' agendamento.pk %}" type="button" class="btn btn-form white" id="btn-cancel">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

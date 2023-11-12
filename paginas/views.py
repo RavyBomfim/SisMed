@@ -1,17 +1,18 @@
 import json
 from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from cadastros.models import AgendaMedico, Agendamento, Especialidade, HorarioAtendimento, HorarioMedico, Medico, Paciente, Procedimento
+from cadastros.models import AgendaMedico, Agendamento, Atendimento, Especialidade, HorarioAtendimento, HorarioMedico, Medico, Paciente, Procedimento, Prontuario
 from django.db.models import Count
-from datetime import date, datetime, time
-from paginas.forms import AgendamentoForm
+from datetime import date, datetime
+from paginas.forms import AgendamentoForm, AtendimentoForm
+from django.utils import timezone
 
 # Create your views here.
 class GrupoMixin:
@@ -264,13 +265,18 @@ class VerAgendas(LoginRequiredMixin, GrupoMixin, TemplateView):
 
 # --------------- Views de Cadastro ---------------
 
-class AgendarConsulta(LoginRequiredMixin, GrupoMixin, CreateView):
+class AgendamentoCreate(LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
     model = Agendamento
     form_class = AgendamentoForm
     template_name = 'paginas/form_agendamento.html'
-    success_url = reverse_lazy('consultas-agendadas')
+    success_url = reverse_lazy('listar-agendamentos')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['type_view'] = 'CreateView'
+        return context
+    
 
 # --------------- Views para Edição ---------------
 
@@ -279,24 +285,49 @@ class AgendamentoUpdate(LoginRequiredMixin, GrupoMixin, UpdateView):
     model = Agendamento
     form_class = AgendamentoForm
     template_name = 'paginas/form_agendamento.html'
-    success_url = reverse_lazy('consultas-agendadas')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        agendamento = Agendamento.objects.get(pk=pk)
+
+        procedimento = ''
+        if agendamento.tipo_agendamento == 'Procedimento':
+            procedimento_nome = agendamento.procedimento
+            if (procedimento_nome):
+                procedimento = get_object_or_404(Procedimento, nome_procedimento=procedimento_nome)
+                context['procedimento_id'] = procedimento.id
+
+        #data = agendamento.data.strftime('%Y-%m-%d')
+        context['horario'] = agendamento.horario
+        context['type_view'] = 'UpdateView'
+        '''dados = get_horarios_disponiveis(agendamento.id, data)
+        print(f'Data {data}')
+        print(f'Dados {dados}')
+        horarios_disponiveis = json.dumps(dados[0])
+        context['dados'] = {'horarios_disponiveis': horarios_disponiveis}'''
+        return context
 
     def get(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
         agendamento = Agendamento.objects.get(pk=pk)
         
         if agendamento.concluido:
-            messages.error(request, 'Não é possível excluir consulta/procedimento concluído.')
+            messages.error(request, 'Não é possível editar consulta/procedimento concluído.')
             return redirect('detalhes_agendamento', pk=agendamento.id)
         return super().get(request, *args, **kwargs)
 
+    def get_success_url(self):
+        pk = self.kwargs.get('pk')
+        return reverse('detalhes_agendamento', kwargs={'pk': pk})
 
 # --------------- Views para excluir  ---------------
 
 class AgendamentoDelete(LoginRequiredMixin, GrupoMixin, DeleteView):
     login_url = reverse_lazy('login')
-    model = AgendamentoForm
+    model = Agendamento
     template_name = 'cadastros/form_excluir.html'
+    success_url = reverse_lazy('listar-agendamentos')
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -308,29 +339,24 @@ class AgendamentoDelete(LoginRequiredMixin, GrupoMixin, DeleteView):
         agendamento = Agendamento.objects.get(pk=pk)
 
         if agendamento.concluido:
-            messages.error(request, 'Não é possível editar consulta/procedimento concluído.')
+            messages.error(request, 'Não é possível excluir consulta/procedimento concluído.')
             return redirect('detalhes_agendamento', pk=agendamento.id)
         return super().get(request, *args, **kwargs)
-    
-    def get_success_url(self):
-        pk = self.kwargs.get('pk')
-        agendamento = Agendamento.objects.get(pk=pk)
-        return redirect('detalhes_agendamento', pk=agendamento.id)
+
 
 # --------------- Views para Listar ---------------
 
 class AgendamentoList(LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
     model = Agendamento
-    template_name = 'paginas/listas/consultas_agendadas.html'
+    template_name = 'paginas/listas/agendamentos.html'
+
 
 class PacientesDoDia(LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
     model = Agendamento
     template_name = 'paginas/listas/pacientes_do_dia.html'
-    # context_object_name = 'agendamentos'
     data_atual = date.today()
-
 
     def get_queryset(self):
         return Agendamento.objects.filter(data=self.data_atual)
@@ -342,8 +368,89 @@ class PacientesDoDia(LoginRequiredMixin, GrupoMixin, ListView):
         return context
     
 
+class AgendamentoList(LoginRequiredMixin, GrupoMixin, ListView):
+    login_url = reverse_lazy('login')
+    model = Agendamento
+    template_name = 'paginas/listas/agendamentos.html'
+
+
+class ProntuarioList(LoginRequiredMixin, GrupoMixin, ListView):
+    login_url = reverse_lazy('login')
+    model = Prontuario
+    template_name = 'paginas/listas/prontuarios.html'
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titulo'] = 'Prontuários'
+        return context
+    
+
 # --------------- Views para Detalhar ---------------
 class Detalhes_Agendamento(LoginRequiredMixin, GrupoMixin, DetailView):
     login_url = reverse_lazy('login')
     model = Agendamento
     template_name = 'paginas/listas/detalhes_agendamento.html'
+
+
+def calcular_idade(data_nascimento):
+    hoje = timezone.now().date()
+    idade = hoje.year - data_nascimento.year - ((hoje.month, hoje.day) < (data_nascimento.month, data_nascimento.day))
+    return idade
+
+
+class MostrarProntuario(LoginRequiredMixin, GrupoMixin, DetailView):
+    login_url = reverse_lazy('login')
+    model = Prontuario
+    template_name = 'paginas/listas/dados_prontuario.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        pk = self.kwargs.get('pk')
+        prontuario = Prontuario.objects.get(pk=pk)
+        paciente = prontuario.paciente
+        data_nascimento = paciente.data_nascimento
+        idade_paciente = calcular_idade(data_nascimento)
+
+        consultas = Agendamento.objects.filter(paciente=paciente.id, tipo_agendamento = 'Consulta', 
+        concluido=True)
+        procedimentos = Agendamento.objects.filter(paciente=paciente.id, tipo_agendamento = 'Procedimento', concluido=True)
+
+        print(idade_paciente)
+        context['paciente_idade'] = idade_paciente
+        context['paciente'] = paciente
+        context['titulo'] = 'Prontuário'
+        context['consultas'] = consultas
+        context['procedimentos'] = procedimentos
+        return context
+    
+
+class AtendimentoCreate(LoginRequiredMixin, GrupoMixin, CreateView):
+    login_url = reverse_lazy('login')
+    model = Atendimento
+    form_class = AtendimentoForm
+    template_name = 'paginas/modal_atendimento.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        agendamento = Agendamento.objects.get(pk=pk)
+        context['agendamento'] = agendamento
+        context['titulo'] = 'Informações de Atendimento'
+        return context
+    
+    def get_success_url(self):
+        pk = self.kwargs.get('pk')
+        agendamento = Agendamento.objects.get(pk=pk)
+        agendamento.concluido = True
+        agendamento.save()
+        return reverse('detalhes_agendamento', kwargs={'pk': pk})
+    
+
+def concluir_procedimento(request):
+    if request.method == 'POST':
+        agendamento_id = request.POST.get('agendamento_id')
+        agendamento = get_object_or_404(Agendamento, pk=agendamento_id)
+        # Marcar procedimento como concluído
+        agendamento.concluido = True
+        agendamento.save()
+        return redirect('detalhes_agendamento', pk=agendamento.id)

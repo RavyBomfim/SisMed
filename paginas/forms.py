@@ -1,6 +1,6 @@
 from datetime import datetime
 from django import forms
-from cadastros.models import Medico, Agendamento, Paciente, Procedimento, tipo_agendamento_opcoes, boolean_opcoes, tipo_pagamento_opcoes
+from cadastros.models import Atendimento, Medico, Agendamento, Paciente, Procedimento, tipo_agendamento_opcoes, boolean_opcoes, tipo_pagamento_opcoes
 
 class AgendamentoForm(forms.ModelForm):
     tipo_agendamento = forms.ChoiceField(choices=tipo_agendamento_opcoes, widget=forms.RadioSelect(attrs={'class': 'with-gap'}), initial='Consulta')
@@ -10,9 +10,7 @@ class AgendamentoForm(forms.ModelForm):
     data = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
     horario = forms.CharField(widget=forms.Select(attrs={'class': 'select'}))
     tipo_pagamento = forms.ChoiceField(choices=[('', 'Plano/Particular?')] + list(tipo_pagamento_opcoes), widget=forms.Select(attrs={'class': 'select'}))
-    retorno = forms.ChoiceField(choices=[('', 'Retorno?')] + list(boolean_opcoes), widget=forms.Select(attrs={'class': 'select'}))
-    """tipo_consulta = forms.ChoiceField(choices=tipo_consulta_opcoes, widget=forms.RadioSelect(attrs={'class': 'with-gap'}))
-    retorno = forms.BooleanField(label='Retorno', required=False, widget=forms.RadioSelect(choices=boolean_opcoes))"""
+    retorno = forms.ChoiceField(choices=[('', 'Retorno?')] + list(boolean_opcoes), widget=forms.Select(attrs={'class': 'select'}), required=False)
     valor = forms.DecimalField(label='Valor da Consulta')
 
     class Meta:
@@ -27,6 +25,9 @@ class AgendamentoForm(forms.ModelForm):
             return horario
         except ValueError:
             raise forms.ValidationError("Formato de horário inválido. Use HH:MM")
-
     
 
+class AtendimentoForm(forms.ModelForm):
+    class Meta:
+        model = Atendimento
+        fields = ['consulta', 'anamnese_paciente', 'diagnostico', 'receituario']

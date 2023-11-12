@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AgendamentoDelete, AgendamentoList, AgendamentoUpdate, AgendarConsulta, Detalhes_Agendamento, PacientesDoDia, Teste, IndexView, medicos_procedimento, retornar_horarios, valor_consulta
+from .views import AgendamentoCreate, AgendamentoDelete, AgendamentoList, AgendamentoUpdate, AtendimentoCreate, Detalhes_Agendamento, MostrarProntuario, PacientesDoDia, ProntuarioList, Teste, IndexView, concluir_procedimento, medicos_procedimento, retornar_horarios, valor_consulta
 
 urlpatterns = [
     #urls visualização
@@ -7,20 +7,25 @@ urlpatterns = [
     path('teste', Teste.as_view(), name='teste'),
 
     #urls cadastros
-    path('agendar/consulta', AgendarConsulta.as_view(), name='agendar-consulta'),
+    path('agendar/consulta/procedimento', AgendamentoCreate.as_view(),  name='agendar-consulta-procedimento'),
+    path('registrar/atendimento/consulta<int:pk>', AtendimentoCreate.as_view(), name='registrar-atendimento'),
+    
 
     #urls pada edição
     path('editar/agendamento/<int:pk>', AgendamentoUpdate.as_view(), name='editar-agendamento'),
+    path('concluir/procedimento', concluir_procedimento, name='concluir-procedimento'),
 
     #urls para deletar
-    path('deletar/agendamento/<int:pk>', AgendamentoDelete.as_view(), name='excluir-agendamento'),
+    path('excluir/agendamento/<int:pk>', AgendamentoDelete.as_view(), name='excluir-agendamento'),
 
     #urls para listagem
-    path('agendamentos', AgendamentoList.as_view(), name='agendamentos'),
+    path('listar/agendamentos', AgendamentoList.as_view(), name='listar-agendamentos'),
     path('pacientes-do-dia', PacientesDoDia.as_view(), name='pacientes-do-dia'),
+    path('listar/prontuarios', ProntuarioList.as_view(), name='listar-prontuarios'),
 
     #urls para detalhar
-    path('detalhes_agendamento/<int:pk>', Detalhes_Agendamento.as_view(), name='detalhes_agendamento'),
+    path('detalhes/agendamento/<int:pk>', Detalhes_Agendamento.as_view(), name='detalhes_agendamento'),
+    path('dados/prontuario/<int:pk>', MostrarProntuario.as_view(), name='dados_prontuario'),
 
     # Urls para requisições json
     path('medico_responsavel/<int:procedimento_id>/', medicos_procedimento, name='medicos_procedimento'),
