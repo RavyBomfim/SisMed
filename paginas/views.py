@@ -298,7 +298,8 @@ class AgendamentoUpdate(LoginRequiredMixin, GrupoMixin, UpdateView):
                 procedimento = get_object_or_404(Procedimento, nome_procedimento=procedimento_nome)
                 context['procedimento_id'] = procedimento.id
 
-        #data = agendamento.data.strftime('%Y-%m-%d')
+        data = agendamento.data.strftime('%Y-%m-%d')
+        context['data'] = data
         context['horario'] = agendamento.horario
         context['type_view'] = 'UpdateView'
         '''dados = get_horarios_disponiveis(agendamento.id, data)

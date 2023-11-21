@@ -51,14 +51,18 @@
         }
 
         .historico {
-            padding-block: 30px;
             border-top: 1px dashed #24beb7;
             border-bottom: 1px dashed #24beb7;
-            background-color: #e5eeee;
+            background-color: #fff;
         }
 
         .dados-box {
-            margin-bottom: 20px;
+            background-color: #e5eeee;
+            padding-block: 30px;
+        }
+
+        .dados-box:not(:last-child) {
+            margin-bottom: 15px;
         }
 
         .dados {
@@ -73,7 +77,7 @@
             padding-top: 15px;
         }
 
-        .atendimento-dados p {
+        .atendimento-dados .data-atend {
             width: 120px;
             padding-top: 8px;
             padding-bottom: 5px;
@@ -83,6 +87,7 @@
             color: #e0e0e0;
             font-size: 17px;
             align-self: flex-end;
+            margin-bottom: -10px;
         }
 
         .atendimento-dados div {
@@ -148,14 +153,14 @@
                             {% endif %}
                         </div> <br>
                         <div class="atendimento-dados dados">
-                            <p>{{ consulta.atendimento.data|date:'d/m/Y' }}</p>
+                            <span class="data-atend">{{ consulta.atendimento.data|date:'d/m/Y' }}</span>
                             <div>
                                 <span>Anamnese</span>
                                 {{ consulta.atendimento.anamnese_paciente }}
                             </div>
                             <div>
                                 <span>Diagnóstico</span>
-                                Médico: {{ consulta.atendimento.diagnostico }}
+                                {{ consulta.atendimento.diagnostico }}
                             </div>
                             <div>
                                 <span>Receituário</span>
@@ -169,6 +174,7 @@
             {% endif %}
 
             {% if procedimentos %}
+            <br>
             <div id="historico-procedimentos">
                 <div class="aviso titulo-aviso">
                     <p>Procedimentos do Paciente</p>

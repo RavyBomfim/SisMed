@@ -9,7 +9,6 @@ $(document).ready(function() {
     var valor_procedimento = 0.0;
     var valor_agendamento = $('#id_valor');
 
-    console.log(procedimento);
     $('.select').find("option:first").prop("disabled", true);
     $('.select').formSelect();
 
@@ -98,10 +97,13 @@ $(document).ready(function() {
 
         console.log('Data agend: ' + data_agend);
 
-        var dataSelecionada = new Date(data_agend);
-        var dataAtual = new Date();
+        var data_selecionada = new Date(data_agend);
+        var data_atual = new Date();
 
-        if (dataSelecionada + 1 < dataAtual) {
+        console.log('Data selecionada: ' + data_selecionada);
+        console.log('Data atual: ' + data_atual);
+
+        if (data_selecionada < data_atual) {
             $('#erro-data').css('display', 'block');
             horario_select.empty();
             horario_select.append('<option value="" selected disabled>Horário</option>');
