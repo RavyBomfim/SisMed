@@ -31,7 +31,7 @@ class UsuarioCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateVi
         return context
  
 
-@receiver(post_save, sender=User)
+'''@receiver(post_save, sender=User)
 def associar_usuario_a_medico(sender, instance, created, **kwargs):
     if created:
         medico = Medico.objects.latest('id')
@@ -39,7 +39,7 @@ def associar_usuario_a_medico(sender, instance, created, **kwargs):
             medico.usuario = instance
             medico.save()
             grupo_medico, _ = Group.objects.get_or_create(name='Medico')
-            instance.groups.add(grupo_medico)
+            instance.groups.add(grupo_medico)'''
 
 
 # --------------- Views para Edição ---------------

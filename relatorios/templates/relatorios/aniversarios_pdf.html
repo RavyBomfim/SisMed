@@ -1,0 +1,41 @@
+{% extends 'relatorios/cabecalho_pdf.html' %}
+
+{% load static %}
+
+{% block titulo_pagina %}
+    Sismed - {{titulo}}            
+{% endblock %}
+
+{% block css_PDF %}
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/aniversarios.css' %}">
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/tabela_pdf.css' %}">
+{% endblock %}
+
+{% block titulo_PDF %}
+    {{titulo}}
+{% endblock %}
+
+{% block content_PDF %}
+    <table class="table" id="tabela-aniversarios">
+        <tr>
+            {% block campos %}
+                <th>Nome</th>
+                <th>Aniversário</th>
+            {% endblock %}
+        </tr> 
+
+        {% block lista %} 
+            {% for paciente in object_list %}
+            <tr>
+                <td>{{paciente.nome_completo}}</td>
+                <td>{{paciente.data_nascimento|date:'j'}} de <span>{{paciente.data_nascimento|date:'F'}}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td id="aviso" colspan="12">{{aviso}}</td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    </table>
+{% endblock %}

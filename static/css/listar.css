@@ -2,31 +2,57 @@
     padding-block: 40px;
 }
 
-/* h4 {
-    color: #096661;
-} */
-
-/* .table-responsive {
-    width: fit-content;
-} */
+#btn_box_list {
+    display: flex;
+    gap: 10px;
+}
 
 .btn-sm {
     font-weight: 500;
 }
 
+.btn-aniversario {
+    background-color: #068ab3;
+}
+
+.btn-aniversario:hover {
+    background-color: #037a9e;
+}
+
 .btn-add {
-    background-color: #b3c4b7;
+    background-color: #a8ccb6;
     border-color: #096661;
     color: #096661;
-    font-size: 15px;
+    font-size: 14px;
+}
+
+.btn-add:hover {
+    background-color: rgb(112, 192, 168)
 }
 
 .lista-foto {
     width: 55px;
 }
 
+.foto-box {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
 .dados-foto {
-    width: 130px;  
+    width: 120px;  
+}
+
+.btn-gerar-ficha {
+    font-size: 13px;
+    padding-inline: 15px;
+}
+
+#nome {
+    font-size: 18px;
+    color: #078b85;
 }
 
 .btn-editar {
@@ -59,4 +85,33 @@
 
 .opcao {
     text-align: center;
+}
+
+@media (max-width: 340px) {
+
+    .dados-foto {
+        width: 90px;  
+    }
+
+    .btn-gerar-ficha {
+        font-size: 12px;
+        padding-inline: 12px;
+    }
+
+    .dados h4 {
+        font-size: 28px;
+    }
+
+}
+
+@media (max-width: 304px) {
+
+    .dados-foto {
+        width: 78px;  
+    }
+
+    .dados h4 {
+        font-size: 25px;
+    }
+
 }

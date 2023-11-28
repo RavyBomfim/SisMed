@@ -1,0 +1,99 @@
+{% extends 'relatorios/cabecalho_pdf.html' %}
+
+{% load static %}
+
+{% block titulo_pagina %}
+    Sismed - {{titulo}}            
+{% endblock %}
+
+{% block css_PDF %}
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/aniversarios.css' %}">
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/tabela_pdf.css' %}">
+    <style>
+        body {
+            padding: 10mm 5mm;
+        }
+
+        header, main {
+            width: 297mm; 
+        }
+
+        #cabecalho-pdf {
+            width: 297mm;
+            margin-left: 0;
+        }
+
+        .table {
+            width: 336.5mm;
+            border: 2px solid #a8ccb6;
+            margin-left: 1px;
+            padding-top: 0;
+        }
+
+        .table th, .table td {
+            padding: 7px 10px;
+        }
+
+        .table th {
+            padding-top: 14px;
+            font-size: 13.7pt;
+        }
+
+        .table td {
+            font-size: 13.2pt;
+        }
+
+        .table th:not(:last-child), .table td:not(:last-child) {
+            border-right: 1px solid #b8b8b8;
+        }
+    </style>
+{% endblock %}
+
+{% block titulo_PDF %}
+    {{titulo}}
+{% endblock %}
+
+{% block content_PDF %}
+    <table class="table">
+        <tr>
+            {% block campos %}
+                <th>Tipo</th>
+                <th>Paciente</th>
+                <th>Telefone</th>
+                <th>Médico</th>
+                <th>Especialidade</th>
+                <th>Data</th>
+                <th>Horário</th>
+                <th>Retorno</th>
+            {% endblock %}
+        </tr> 
+
+        {% block lista %} 
+            {% for agendamento in object_list %}
+            <tr>
+                <td>{{agendamento.tipo_agendamento}}</td>
+                <td>{{agendamento.paciente.nome_completo}}</td>
+                <td>{{agendamento.paciente.telefone}}</td>
+                <td>{{agendamento.medico.nome_completo}}</td>
+                <td>{{agendamento.medico.especialidade.especialidade}}</td>
+                <td>{{agendamento.data|date:'d/m/Y'}}</td>
+                <td>{{agendamento.horario}}</td>
+                {% if agendamento.tipo_agendamento == 'Consulta' %}
+                    {% if agendamento.retorno %}
+                        <td>Sim</td>
+                    {% else %}
+                        <td>Não</td>
+                    {% endif %}
+                {% else %}
+                    <td></td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td id="aviso" colspan="12">{{aviso}}</td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    </table>
+{% endblock %}

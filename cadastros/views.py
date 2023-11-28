@@ -1,15 +1,20 @@
+from typing import Any
+from django.db.models import F,  ExpressionWrapper, IntegerField
+from django.db.models.functions import ExtractDay, ExtractMonth
+from django.db.models.query import QuerySet
 from paginas.views import GrupoMixin
 from .forms import EnderecoForm, FuncionarioForm, HorarioMedicoForm, MedicoForm, PacienteForm, ProcedimentoForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from .models import AgendaMedico, Cargo, Funcionario, Especialidade, HorarioMedico, Medico, Paciente, Procedimento, Prontuario, dias_semana_opcoes
+from .models import AgendaMedico, Agendamento, Cargo, Funcionario, Especialidade, HorarioMedico, Medico, Paciente, Procedimento, Prontuario, dias_semana_opcoes
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from braces.views import GroupRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from .utils import nome_mes
 
 # Create your views here.
 
@@ -485,7 +490,7 @@ class CargoList(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
     group_required = u'Administrador'
     model = Cargo
-    template_name = 'cadastros/listas/cargo.html'
+    template_name = 'cadastros/listas/cargos.html'
     success_url = reverse_lazy('inicio')
 
 
@@ -493,7 +498,7 @@ class FuncionarioList(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListVi
     login_url = reverse_lazy('login')
     group_required = u'Administrador'
     model = Funcionario
-    template_name = 'cadastros/listas/funcionario.html'
+    template_name = 'cadastros/listas/funcionarios.html'
     success_url = reverse_lazy('inicio')
     
 
@@ -509,14 +514,14 @@ class EspecialidadeList(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, List
     login_url = reverse_lazy('login')
     group_required = u'Administrador'
     model = Especialidade
-    template_name = 'cadastros/listas/especialidade.html'
+    template_name = 'cadastros/listas/especialidades.html'
     success_url = reverse_lazy('listar-especialidades')
 
 
 class MedicoList(LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
     model = Medico
-    template_name = 'cadastros/listas/medico.html'
+    template_name = 'cadastros/listas/medicos.html'
     success_url = reverse_lazy('listar-medicos')
 
     def get_context_data(self, *args, **kwargs):
@@ -528,7 +533,7 @@ class MedicoList(LoginRequiredMixin, GrupoMixin, ListView):
 class PacienteList(LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
     model = Paciente
-    template_name = 'cadastros/listas/paciente.html'
+    template_name = 'cadastros/listas/pacientes.html'
     success_url = reverse_lazy('listar-pacientes')
 
     def get_context_data(self, *args, **kwargs):
@@ -537,10 +542,64 @@ class PacienteList(LoginRequiredMixin, GrupoMixin, ListView):
         return context
 
 
+class PacientesMedico(PacienteList):
+    def get_queryset(self):
+        medico_do_usuario = Medico.objects.get(usuario=self.request.user)
+        agendamentos_do_medico = Agendamento.objects.filter(medico=medico_do_usuario)
+
+        pacientes_do_medico = Paciente.objects.filter(agendamento__in=agendamentos_do_medico).distinct()
+        return pacientes_do_medico
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['titulo'] = 'Meus Pacientes'
+        return context
+
+class AniversariosPacientesList(LoginRequiredMixin, GrupoMixin, ListView):
+    login_url = reverse_lazy('login')
+    model = Paciente
+    template_name = 'cadastros/listas/aniversarios_pacientes.html'
+    # paginate_by = 2
+
+    def get_queryset(self):
+        day_expr = ExpressionWrapper(ExtractDay('data_nascimento'), output_field=IntegerField())
+        month_expr = ExpressionWrapper(ExtractMonth('data_nascimento'), output_field=IntegerField())
+
+        pacientes = Paciente.objects.annotate(day=day_expr, month=month_expr).order_by('month', 'day')
+
+        mes_selecionado = self.request.GET.get('mes')
+
+        if mes_selecionado and mes_selecionado != '0': 
+            pacientes = Paciente.objects.filter(data_nascimento__month=mes_selecionado).annotate(day=day_expr, month=month_expr).order_by('month', 'day')
+
+        return pacientes
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        valor = '0'
+        opcao = 'Filtrar pelo mês'
+        aviso = 'Ainda não há pacientes cadastrados'
+        mes_selecionado = self.request.GET.get('mes')
+
+        if mes_selecionado:
+            mes = nome_mes(mes_selecionado)
+            if mes != 'None':
+                valor = mes_selecionado
+                opcao = mes
+                aviso = f'Nenhum paciente faz aniversário no mês de {opcao}'
+            else:
+                opcao = 'Todos'
+
+        context['valor'] = valor
+        context['opcao'] = opcao
+        context['aviso'] = aviso
+        context['titulo'] = 'Aniversários dos Pacientes'
+        return context
+
 class ProcedimentoList(LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
     model = Procedimento
-    template_name = 'cadastros/listas/procedimento.html'
+    template_name = 'cadastros/listas/procedimentos.html'
     success_url = reverse_lazy('listar-procedimentos')
 
     def get_context_data(self, *args, **kwargs):
@@ -567,7 +626,7 @@ class MedicoDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailVie
 
 class PacienteDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailView):
     login_url = reverse_lazy('login')
-    group_required = u'Administrador'
+    group_required = [u'Administrador', 'Medico']
     model = Paciente
     template_name = 'cadastros/listas/dados_paciente.html'
     context_object_name = 'paciente'
@@ -575,7 +634,7 @@ class PacienteDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailV
 
 class AgendaDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailView):
     login_url = reverse_lazy('login')
-    group_required = u'Administrador'
+    group_required = [u'Administrador', 'Medico']
     model = AgendaMedico
     template_name = 'cadastros/agenda.html'
     context_object_name = 'agenda'
@@ -673,5 +732,3 @@ class HorarioDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteVi
 
     def get_success_url(self):
         return reverse('dados-agenda', args=[str(self.object.agenda.id)])
-
-

@@ -1,0 +1,175 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aniversarios.css' %}">
+
+    <style>
+
+        .dica {
+            width: fit-content;
+            margin-top: -5px;
+            font-style: italic;
+            padding-block: 5px;
+            padding-inline: 10px;
+            background-color: #e9e9e9;
+            color: #535353;
+            line-height: 20px;
+        }
+        
+        #form-pesquisar {
+            display: flex;
+            width: 396px;
+        } 
+
+        .input-container {
+            display: flex;
+            width: 350px;
+            gap: 5px;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .input-box {
+            position: relative;
+            width: 151px;
+            height: 40px;
+            border: 0 !important;
+        }
+
+        .input-box span {
+            position: absolute;
+            display: none;
+            align-items: center;
+            width: 100%;
+            background-color: #078b85;
+            padding-inline: 5px;
+            padding-top: 2px;
+            font-size: 13px;
+            top: -14px;
+            z-index: 0;
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
+        }
+
+        #form-pesquisar input {
+            position: relative;
+            width: 125px;
+            height: 33px;
+            /* height: 28px; */
+            border: 2px solid #078b85;
+            padding: 0;
+            padding-inline: 11px;
+            border-radius: 2px;
+            z-index: 1;
+        }
+
+        #form-pesquisar input:focus {
+            outline: 0 !important;
+            box-shadow: none !important;
+        }
+
+        /* #filtrar {
+            position: relative;
+            display: flex;
+            align-items: center;
+            top: -14px;
+            height: 50px;
+        } */
+
+        #filtrar {
+            display: flex;
+            align-items: center;
+            /* height: 35px; */
+        } 
+
+        th {
+            background-color: #bfdfcb;
+        }
+
+        .valor-total {
+            text-align: center;
+            vertical-align: top;
+            border-left: 1px solid #b8b8b8;
+        }
+
+        /* .total-th {
+            background-color: #a8ccb6;
+        } */
+
+        .total-td {
+            vertical-align: top;
+            padding-top: 20px;
+            font-size: 17px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    {% block titulo2 %}
+        <h4>{{titulo}}</h4> 
+        <p class="dica">Para obter o relatório finaceiro de um período específico, selecione a data inicial no primeiro campo e a data final no segundo.</p> <br>
+    {% endblock %}
+
+    <div id="btn_box_list">
+        {% block btn_add %}
+            <a class="btn btn-add btn-sm" href="{% url 'relatorio-financeiro-pdf' %}?periodo-inicial={{ data_inicial }}&periodo-final={{ data_final }}" id="gerarPDF">
+                Imprimir em PDF
+            </a>
+            <form action="?" method="GET" id="form-pesquisar">
+                <div class="input-container">
+                    <div class="input-box">
+                        <span>Período Inicial</span>
+                        <input type="date" name="periodo-inicial">
+                    </div>
+                    <div class="input-box">
+                        <span>Período Final</span>
+                        <input type="date" name="periodo-final">
+                    </div>
+                    <button type="submit" class="btn" id="filtrar">Buscar</button>
+                </div> 
+            </form>
+        {% endblock %}
+    </div>
+
+    <div class="table-responsive">
+        <table class="table">
+            <tr>
+                {% block campos %}
+                    <th>Especialidade</th>
+                    <th>Número de consultas</th>
+                    <th>Valor Arrecadado</th>
+                    <th>Retornos</th>
+                    <th class="valor-total total-th">Valor Total</th>
+                {% endblock %}
+            </tr>
+
+            {% block lista %}
+                {% for agendamento in consultas_por_especialidade %}
+                    <tr>
+                        <td>{{agendamento.especialidade}}</td>
+                        <td>{{agendamento.total_consultas}}</td>
+                        <td>R$ {{agendamento.valor_arrecadado|floatformat:2}}</td>
+                        <td>{{agendamento.total_retornos}}</td>
+                        {% if forloop.first %}
+                            <td class="valor-total total-td" rowspan="{{ consultas_por_especialidade|length }}" >R$ {% if total_valor %} {{total_valor|floatformat:2}} {% else %} 0,00 {% endif %}</td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="12">{{aviso}}</td>
+                    </tr>
+                {% endfor %}
+            {% endblock %}
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

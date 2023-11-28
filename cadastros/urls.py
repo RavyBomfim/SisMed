@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AgendaDetail, CargoCreate, CargoList, CargoUpdate, CargoDelete, EspecialidadeCreate, EspecialidadeDelete, EspecialidadeList, EspecialidadeUpdate, FuncionarioCreate, FuncionarioDelete, FuncionarioDetail, FuncionarioList, FuncionarioUpdate, HorarioCreate, HorarioDelete, HorarioUpdate, MedicoCreate, MedicoDelete, MedicoDetail, MedicoList, MedicoUpdate, PacienteCreate, PacienteDelete, PacienteDetail, PacienteList, PacienteUpdate, ProcedimentoCreate, ProcedimentoDelete, ProcedimentoList, ProcedimentoUpdate
+from .views import AgendaDetail, AniversariosPacientesList, CargoCreate, CargoList, CargoUpdate, CargoDelete, EspecialidadeCreate, EspecialidadeDelete, EspecialidadeList, EspecialidadeUpdate, FuncionarioCreate, FuncionarioDelete, FuncionarioDetail, FuncionarioList, FuncionarioUpdate, HorarioCreate, HorarioDelete, HorarioUpdate, MedicoCreate, MedicoDelete, MedicoDetail, MedicoList, MedicoUpdate, PacienteCreate, PacienteDelete, PacienteDetail, PacienteList, PacienteUpdate, PacientesMedico, ProcedimentoCreate, ProcedimentoDelete, ProcedimentoList, ProcedimentoUpdate
 
 urlpatterns = [
     path('cadastrar/cargo', CargoCreate.as_view(), name='cadastrar-cargo'),
@@ -8,7 +8,6 @@ urlpatterns = [
     path('cadastrar/medico', MedicoCreate.as_view(), name='cadastrar-medico'),
     path('cadastrar/paciente', PacienteCreate.as_view(), name='cadastrar-paciente'),
     path('cadastar/procedimento', ProcedimentoCreate.as_view(), name='cadastrar-procedimento'),
-    path('dados/agenda/<int:pk>', AgendaDetail.as_view(), name='dados-agenda'),
     
     path('cadastrar/horario/agenda<int:pk>', HorarioCreate.as_view(), name='cadastrar-horario'),
     path('editar/agenda<int:fk>/horario<int:pk>', HorarioUpdate.as_view(), name='editar-agenda'),
@@ -34,9 +33,13 @@ urlpatterns = [
     path('listar/especialidades', EspecialidadeList.as_view(), name='listar-especialidades'),
     path('listar/medicos', MedicoList.as_view(), name='listar-medicos'),
     path('listar/pacientes', PacienteList.as_view(), name='listar-pacientes'),
+    path('listar/pacientes/medico', PacientesMedico.as_view(), name='listar-pacientes-medico'),
+    path('aniversarios/pacientes', AniversariosPacientesList.as_view(), name='aniversarios-pacientes'),
+    path('aniversarios/mes', AniversariosPacientesList.as_view(), name='aniversarios-mes'),
     path('listar/procedimentos', ProcedimentoList.as_view(), name='listar-procedimentos'),
 
     path('dados/funcionario/<int:pk>', FuncionarioDetail.as_view(), name='dados-funcionario'),
     path('dados/medico/<int:pk>', MedicoDetail.as_view(), name='dados-medico'),
     path('dados/paciente/<int:pk>', PacienteDetail.as_view(), name='dados-paciente'),
+    path('dados/agenda/<int:pk>', AgendaDetail.as_view(), name='dados-agenda'),
 ]

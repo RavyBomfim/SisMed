@@ -1,0 +1,85 @@
+{% extends 'relatorios/cabecalho_pdf.html' %}
+
+{% load static %}
+
+{% block titulo_pagina %}
+    Sismed - {{titulo}}            
+{% endblock %}
+
+{% block css_PDF %}
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/aniversarios.css' %}">
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/tabela_pdf.css' %}">
+
+    <style>
+
+        .table {
+            padding-top: 0;
+        }
+
+        .table th, .table td {
+            padding: 7px 10px;
+        }
+
+        .table th {
+            padding-top: 14px;
+            font-size: 13.7pt;
+        }
+
+        .table td {
+            font-size: 13.2pt;
+        }
+
+        .table th:not(:last-child), .table td {
+            border-right: 1px solid #b8b8b8;
+        }
+
+        .valor-total {
+            text-align: center;
+            vertical-align: top;
+        }
+
+        .total-td {
+            vertical-align: top;
+            padding-top: 40px;
+            font-size: 17px;
+            border-right: 0 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block titulo_PDF %}
+    {{titulo}}
+{% endblock %}
+
+{% block content_PDF %}
+    <table class="table">
+        <tr>
+            {% block campos %}
+                <th>Especialidade</th>
+                <th>N° de consultas</th>
+                <th>Valor Arrecadado</th>
+                <th>Retornos</th>
+                <th class="valor-total total-th">Total</th>
+            {% endblock %}
+        </tr>
+
+        {% block lista %}
+            {% for agendamento in consultas_por_especialidade %}
+                <tr>
+                    <td>{{agendamento.especialidade}}</td>
+                    <td>{{agendamento.total_consultas}}</td>
+                    <td>R$ {{agendamento.valor_arrecadado|floatformat:2}}</td>
+                    <td>{{agendamento.total_retornos}}</td>
+                    {% if forloop.first %}
+                        <td class="valor-total total-td" rowspan="{{ consultas_por_especialidade|length }}" >R$ {% if total_valor %} {{total_valor|floatformat:2}} {% else %} 0,00 {% endif %}</td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="12">{{aviso}}</td>
+                </tr>
+            {% endfor %}
+        {% endblock %}
+    </table>
+{% endblock %}

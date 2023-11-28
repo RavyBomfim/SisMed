@@ -36,16 +36,21 @@ header #logo {
     justify-content: space-between;
 }
 
-/* .dropdown {
-    padding-left: 30px;
-} */
-
+#drop-user {
+    text-transform: capitalize;
+}
 
 /*Materialize*/
 .dropdown-trigger {
     display: flex;
     align-items: center;
     margin-left: 30px;
+    font-size: 17px;
+    color: #085c58 !important;
+}
+
+.dropdown-content {
+    min-width: max-content;
 } 
 
 
@@ -61,8 +66,12 @@ header #logo {
 }
 
 /*Materialize*/
-#view_list {
-    font-size: 19px;
+/* #view-cozy {
+    font-size: 17px;
+} */
+
+#add-box {
+    font-size: 18px;
 }
 
 /*Materialize*/
@@ -147,4 +156,8 @@ footer {
 #copyright {
     display: flex;
     justify-content: space-between;
+}
+
+.flex {
+    display: flex;
 }

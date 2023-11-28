@@ -1,0 +1,173 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SisMed - {{titulo}}</title>
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/tabela_pdf.css' %}">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            position: relative;
+            width: 100%;
+            padding-bottom: 0;
+        }
+
+        #cabecalho-recibo {
+            width: inherit;
+            display: flex;
+        }
+
+        #cabecalho-recibo img {
+            width: 150px;
+        }
+
+        .titulo {
+            text-align: center;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            color: #202020;
+            font-size: 30pt;
+        }
+
+        #dados-recibo {
+            width: 280mm;
+            /* border: 1px solid rgb(124, 124, 124); */
+            border-top: 1px dashed rgb(124, 124, 124);
+            border-bottom: 1px dashed rgb(124, 124, 124);
+            background-color: #a8ccb6;
+            background-color: #f2f2f2;
+            padding: 17px 27px;
+            font-size: 18pt;
+        }
+
+        .table {
+            width: 280mm;
+            border: 1px solid #b9b8b8;
+            padding: 0;
+            border-radius: 2px;
+        }
+
+        .table th {
+            width: 25%;
+        }
+
+        .table th,  .table td {
+            border: 1px solid #b9b8b8;
+            border-radius: 5px;
+            font-size: 18pt;
+        }
+
+        /* #dados-recibo p:not(:last-child) {
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 10px;
+        } */
+
+        #dados-clinica {
+            width: 100%;
+            border-top: 2px dashed #a8ccb6;
+            margin-top: 60px;
+            padding: 30px 0;
+            border-radius: 0;
+            font-size: 14pt;
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="container-recibo">
+        <div id="cabecalho-recibo">
+            <img src="http://127.0.0.1:8000/{% static 'img/Sismed-img.jpg' %}" alt=""> 
+        </div>
+        <!-- relatório de recibo da Consulta para o
+paciente, onde conste os seguintes dados: Cod. Da consulta, Data e
+Hora da consulta, Nome do Paciente, CPF, nome do médico,
+especialidade e valor da consulta -->
+        <h1 class="titulo">{{titulo}}</h1> <br>
+        <!-- <div id="dados-recibo">
+            <div>
+                <p>Paciente: &nbsp; {{agendamento.paciente.nome_completo}}</p>
+                <p>CPF: &nbsp; {{agendamento.paciente.cpf}}</p>
+            </div>
+        </div> -->
+        <table class="table">
+            <!-- <tr>
+                {% block campos %}
+                    <th>Paciente</th>
+                    <th>Telefone</th>
+                    <th>Médico</th>
+                    <th>Especialidade</th>
+                    <th>Data</th>
+                    <th>Horário</th>
+                    {% if agendamento.tipo_agendamento == 'Consulta' %}
+                        {% if agendamento.retorno %}
+                            <td>Sim</td>
+                        {% else %}
+                            <td>Não</td>
+                        {% endif %}
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <th>Retorno</th>
+                {% endblock %}
+            </tr>  -->
+            <tr>
+                <th>Código</th> <td>{{agendamento.id}}</td>
+            </tr>
+            <tr>
+                <th>Paciente</th> <td>{{agendamento.paciente.nome_completo}}</td>
+            </tr>
+            <tr>
+                <th>Telefone</th> <td>{{agendamento.paciente.telefone}}</td>
+            </tr>
+            <tr>
+                <th>Médico</th> <td>{{agendamento.medico.nome_completo}}</td>
+            </tr> 
+            <tr>
+                <th>Especialidade</th> <td>{{agendamento.medico.especialidade.especialidade}}</td>
+            </tr> 
+            <tr>
+                <th>Data</th> <td>{{agendamento.data|date:'d/m/Y'}}</td>
+            </tr>
+            <tr>
+                <th>Horário</th> <td>Às {{agendamento.horario}} horas</td>
+            </tr>
+            <tr>
+                <th>Valor Pago</th> <td>R$ {{agendamento.valor}}</td>
+            </tr>
+            <!-- <tr>
+                <th>Data</th> <td>{{agendamento.data|date:'d/m/Y'}}</td>
+            </tr>
+            <tr>
+                <th>Horário</th> <td>{{agendamento.horario}}</td>
+            </tr> -->
+            <!-- {% if agendamento.tipo_agendamento == 'Consulta' %}
+                <tr></tr>
+                    {% if agendamento.retorno %}
+                        <th>Retorno</th> <td>Sim</td>
+                    {% else %}
+                        <th>Retorno</th> <td>Não</td>
+                    {% endif %}
+                </tr>
+            {% endif %} -->
+
+        </table>
+        <div id="dados-clinica">
+            <span>CNPJ: 01.221.042/0000-54</span> |
+            <span>Rua Flores, nº 857 - Campos, Camões/MS</span> |
+            <span>Telefone: (45) 4587-6582</span>
+        </div>
+    </div>
+</body>
+</html>

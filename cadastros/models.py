@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from django.contrib.auth.models import User
 
 sexo_opcoes = (('M', 'Masculino'), ('F', 'Feminino'))
@@ -42,6 +42,11 @@ class Funcionario(models.Model):
     foto =  models.ImageField(upload_to='fotos_funcionarios', blank=True, null=True)
     usuario = models.OneToOneField(User, null=True, blank=True, on_delete=models.DO_NOTHING)
 
+    def get_idade(self):
+        hoje = datetime.now().date()
+        idade = hoje.year - self.data_nascimento.year - ((hoje.month, hoje.day) < (self.data_nascimento.month, self.data_nascimento.day))
+        return idade
+
     def __str__(self):
         return f'{self.nome_completo}'
 
@@ -76,6 +81,11 @@ class Medico(models.Model):
         if not self.data_cadastro:
             self.data_cadastro = date.today()
         super().save(*args, **kwargs)
+
+    def get_idade(self):
+        hoje = datetime.now().date()
+        idade = hoje.year - self.data_nascimento.year - ((hoje.month, hoje.day) < (self.data_nascimento.month, self.data_nascimento.day))
+        return idade
     
     def __str__(self):
         return f'{self.nome_completo} - {self.especialidade}'
@@ -101,6 +111,11 @@ class Paciente(models.Model):
         if not self.data_cadastro:
             self.data_cadastro = date.today()
         super().save(*args, **kwargs)
+
+    def get_idade(self):
+        hoje = datetime.now().date()
+        idade = hoje.year - self.data_nascimento.year - ((hoje.month, hoje.day) < (self.data_nascimento.month, self.data_nascimento.day))
+        return idade
 
     def __str__(self):
         return f'{self.nome_completo}'

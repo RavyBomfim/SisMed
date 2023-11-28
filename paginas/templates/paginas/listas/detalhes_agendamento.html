@@ -23,6 +23,15 @@
             padding-bottom: 38px;
         }
 
+        .btn-gerar-recibo {
+            align-self: flex-end;
+            background-color: #177080;
+        }
+
+        .btn-gerar-recibo:hover {
+            background-color: #238a9c;
+        }
+
         #detalha-agend h4 {
             margin: 0;
             background-color: #d7f5f3;
@@ -33,6 +42,8 @@
         }
 
         #consultas-agend {
+            display: flex;
+            justify-content: space-between;
             padding-inline: 2px;
             margin-top: 15px;
             margin-bottom: 20px;
@@ -129,26 +140,29 @@
             <p>{{agendamento.tipo_agendamento}}</p>
         </div>
         <div id="consultas-agend">
-            <p><span>Paciente: </span> {{agendamento.paciente.nome_completo}}</p>
-            <p><span>Médico: </span> {{agendamento.medico.nome_completo}}</p>
-            <p><span>Especialidade: </span> {{agendamento.medico.especialidade.especialidade}}</p>
-            {% if agendamento.tipo_agendamento == 'Procedimento' %}
-                <p><span>Tipo de procedimento: </span> {{agendamento.procedimento}}</p>
-            {% endif %}
-            <p><span>Data: </span> {{agendamento.data|date:'d/m/Y'}}</p>
-            <p><span>Horário: </span> {{agendamento.horario}}</p>
-            <p><span>Tipo de Pagamento: </span> {{agendamento.tipo_pagamento}}</p>
-            {% if agendamento.tipo_agendamento == 'Consulta' %}
-                {% if agendamento.retorno == False %}
-                    <p><span>Retorno: </span> Não</p>
-                {% else %}
-                    <p><span>Retorno: </span> Sim</p>
+            <div id="consultas-agend-box">
+                <p><span>Paciente: </span> {{agendamento.paciente.nome_completo}}</p>
+                <p><span>Médico: </span> {{agendamento.medico.nome_completo}}</p>
+                <p><span>Especialidade: </span> {{agendamento.medico.especialidade.especialidade}}</p>
+                {% if agendamento.tipo_agendamento == 'Procedimento' %}
+                    <p><span>Tipo de procedimento: </span> {{agendamento.procedimento}}</p>
                 {% endif %}
-                <p><span>Valor da consulta: </span> R$ {{agendamento.valor}}</p>
-            {% else %}
-                <p><span>Valor do procedimento: </span> R$ {{agendamento.valor}}</p>
-            {% endif %}
-            <p><span>Concluído: </span> {{agendamento.concluido}}</p>
+                <p><span>Data: </span> {{agendamento.data|date:'d/m/Y'}}</p>
+                <p><span>Horário: </span> {{agendamento.horario}}</p>
+                <p><span>Tipo de Pagamento: </span> {{agendamento.tipo_pagamento}}</p>
+                {% if agendamento.tipo_agendamento == 'Consulta' %}
+                    {% if agendamento.retorno == False %}
+                        <p><span>Retorno: </span> Não</p>
+                    {% else %}
+                        <p><span>Retorno: </span> Sim</p>
+                    {% endif %}
+                    <p><span>Valor da consulta: </span> R$ {{agendamento.valor}}</p>
+                {% else %}
+                    <p><span>Valor do procedimento: </span> R$ {{agendamento.valor}}</p>
+                {% endif %}
+                <p><span>Concluído: </span> {% if agendamento.concluido %} Sim {% else %} Não {% endif %}</p>
+            </div>
+            <!-- <a class="btn btn-gerar-recibo" href="{% url 'gerar-recibo-pdf' agendamento.pk %}" id="gerar-recibo">Gerar Recibo</a> -->
         </div>
         <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita perferendis tenetur recusandae quidem natus iure earum nesciunt obcaecati atque aperiam. -->
         
@@ -161,18 +175,22 @@
                     <i class="fa-solid fa-trash-can"></i> Excluir
                 </a> 
             </div> &nbsp;
-            {% if agendamento.tipo_agendamento == 'Consulta' and not agendamento.concluido %}
-                <a href="{% url 'registrar-atendimento' agendamento.pk %}" class="btn btn-sm">Concluir  Consulta</a>
-            {% elif agendamento.tipo_agendamento == 'Consulta' and agendamento.concluido %}
-                <button class="btn btn-sm" class="concluido">Consulta Concluída</button>
-            {% elif agendamento.tipo_agendamento == 'Procedimento' and not agendamento.concluido %}
-                    <form action="{% url 'concluir-procedimento' %}" method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="agendamento_id" value="{{agendamento.id}}">
-                        <button type="submit" class="btn btn-sm" id="concluir-procedimento">Concluir Procedimento</button>
-                    </form>
+            {% if is_medico %}
+                {% if agendamento.tipo_agendamento == 'Consulta' and not agendamento.concluido %}
+                    <a href="{% url 'registrar-atendimento' agendamento.pk %}" class="btn btn-sm">Concluir  Consulta</a>
+                {% elif agendamento.tipo_agendamento == 'Consulta' and agendamento.concluido %}
+                    <button class="btn btn-sm" class="concluido">Consulta Concluída</button>
+                {% elif agendamento.tipo_agendamento == 'Procedimento' and not agendamento.concluido %}
+                        <form action="{% url 'concluir-procedimento' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="agendamento_id" value="{{agendamento.id}}">
+                            <button type="submit" class="btn btn-sm" id="concluir-procedimento">Concluir Procedimento</button>
+                        </form>
+                {% else %}
+                    <button class="btn btn-sm" class="concluido">Procedimento Concluído</button>
+                {% endif %}
             {% else %}
-                <button class="btn btn-sm" class="concluido">Procedimento Concluído</button>
+                <a class="btn btn-gerar-recibo" href="{% url 'gerar-recibo-pdf' agendamento.pk %}" id="gerar-recibo">Gerar Recibo</a>
             {% endif %}
         </div>
     </div>

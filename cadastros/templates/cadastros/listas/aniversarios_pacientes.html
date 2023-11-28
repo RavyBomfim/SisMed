@@ -1,0 +1,89 @@
+{% extends 'paginas/index.html' %}
+
+{% load static %}
+    
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aniversarios.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+    {% block titulo2 %}
+        <h4>{{titulo}}</h4> 
+    {% endblock %}
+
+    <div id="btn_box_list">
+        {% block btn_add %}
+            <a class="btn btn-add btn-sm" href="{% url 'aniversarios-pacientes-pdf' %}?mes={{ valor }}" id="gerarPDF">
+                Imprimir em PDF
+            </a>
+            <form action="?" method="GET" id="form-mes">
+                <div class="btn btn-sm btn-select" id="select-btn">
+                    <input type="text"  value="{{opcao}}">
+                    <i class="fa-solid fa-caret-down"></i>
+                </div> 
+                <select name="mes" id="mes-aniversario">
+                    <option value="" selected desabled>Filtrar pelo mês</option>
+                    <option value="0">Todos</option>
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fevereiro</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary" id="filtrar">Filtrar</button>
+            </form>
+        {% endblock %}
+    </div>
+
+    <div class="table-responsive">
+        <table class="table" id="tabela-aniversarios">
+            <tr>
+                {% block campos %}
+                    <th>Nome</th>
+                    <th>Aniversário</th>
+                {% endblock %}
+            </tr>
+
+            {% block lista %}
+                {% for paciente in object_list %}
+                <tr>
+                    <td>{{paciente.nome_completo}}</td>
+                    <td>{{paciente.data_nascimento|date:'j'}} de {{paciente.data_nascimento|date:'F'}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="12">{{aviso}}</td>
+                </tr>
+                {% endfor %}
+            {% endblock %}
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script>
+        $(document).ready(function(){
+
+            $('#mes-aniversario').change(function() { 
+
+                $('#filtrar').click();
+
+            });
+            
+            $('select').formSelect();
+        });
+    </script>
+{% endblock %}

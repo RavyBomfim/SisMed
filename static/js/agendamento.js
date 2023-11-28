@@ -97,8 +97,14 @@ $(document).ready(function() {
 
         console.log('Data agend: ' + data_agend);
 
-        var data_selecionada = new Date(data_agend);
+        var partesData = data_agend.split('-');
+        var ano = parseInt(partesData[0]);
+        var mes = parseInt(partesData[1]) - 1;  // Meses em JavaScript são baseados em zero
+        var dia = parseInt(partesData[2]);
+
+        var data_selecionada = new Date(ano, mes, dia);
         var data_atual = new Date();
+        data_selecionada.setHours(data_atual.getHours(), data_atual.getMinutes(), data_atual.getSeconds(), data_atual.getMilliseconds());
 
         console.log('Data selecionada: ' + data_selecionada);
         console.log('Data atual: ' + data_atual);

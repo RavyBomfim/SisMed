@@ -1,28 +1,46 @@
-a {
-    color: #202020;
+.btn-agendar {
+    background-color: #439c86;
+}
+
+.btn-agendar:hover {
+    background-color: #4bb99e;
 }
 
 .custom-card {
-    background-color: #2bb9ab;
-    height: 204px;
+    /* background-color: #2bb9ab; */
+    height: 214px;
+    padding: 5px;
+    background-color: #9fceb1;
+    color: #085c58;
     transition: background-color 0.3s ease;
 }
 
 .custom-card:hover {
-    background-color: #24a799;
+    /* background-color: #24a799; */
+    background-color: #81b394;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     cursor: pointer; /* Altera o ponteiro do mouse no hover */
 }
 
 .card-content {
+    height: inherit;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
     text-align: center;
+}
+
+#card-agenda {
+    justify-content: start;
 }
 
 .card-content i {
     margin-bottom: 5px;
+}
+
+#card-agenda i {
+    margin-bottom: 20px;
 }
 
 .card-content p {
@@ -31,14 +49,16 @@ a {
 }
 
 .dynamic-card {
-    background-color: #2bb9ab;
-    /* background-color: #7be7d0; */
+    /* background-color: #2bb9ab; */
+    background-color: #9fceb1;
+    color: #085c58;
     transition: background-color 0.3s ease;
     overflow: hidden; /* Evita a barra de rolagem horizontal */
 }
 
 .dynamic-card:hover {
-    background-color: #24a799;
+    /* background-color: #24a799; */
+    background-color: #81b394;
     cursor: pointer;
 }
 
@@ -54,7 +74,8 @@ a {
 }
 
 .specialties-table tr:hover {
-    background-color: #4f9a94;
+    /* background-color: #4f9a94; */
+    background-color: #5b886c;
     cursor: pointer;
 }
 
@@ -87,5 +108,6 @@ body {
 }
 
 .specialties-table tbody tr:hover {
-    background-color: #64918d; /* Cor de fundo no hover */
+    /* background-color: #64918d; Cor de fundo no hover */
+    background-color: #5b886c;
 }

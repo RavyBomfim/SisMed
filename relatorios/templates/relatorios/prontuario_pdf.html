@@ -1,0 +1,125 @@
+{% extends 'relatorios/cabecalho_pdf.html' %}
+
+{% load static %}
+
+{% block titulo_pagina %}
+    Sismed - {{titulo}}            
+{% endblock %}
+
+{% block css_PDF %}
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/agenda.css' %}">
+    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/prontuario.css' %}">
+
+    <style>
+
+        body {
+            padding-top: 7mm;
+        }
+
+        #conteudo-pdf {
+            border: 0;
+        }
+
+        #cabecalho-pdf {
+            margin-bottom: 10px !important;
+        }
+
+        .agenda-container {
+            width: 820px;
+            margin-left: -20px;
+        }
+
+        #titulo {
+            font-weight: 400;
+            font-size: 38px;
+        }
+
+        .titulo-aviso p {
+            font-size: 19pt !important;
+        }
+    </style>
+{% endblock %}
+
+{% block container_titulo %}
+    
+{% endblock %}
+
+{% block content_PDF %}
+    <div class="agenda-container">
+        <div id="prontuario-header">
+            <h4 id="titulo">{{titulo}}</h4>
+            <div class="agenda-titulo">
+                <div id="agenda-medico"><span id="agenda-medico">{{prontuario.paciente.nome_completo}}</span></div> &nbsp; <div id="adicionar-horario" class="btn"> Data de cadastro: {{paciente.data_cadastro|date:'d/m/Y'}}</div>
+            </div> 
+            <!-- <i class="fa fa-plus"></i> -->
+            <hr>
+            <div id="cabecalho">
+                <p><span>Idade: </span> {{paciente_idade}} anos</p>
+                <p><span>CPF: </span> {{paciente.cpf}}</p>
+                <p><span>Telefone: </span> {{paciente.telefone}}</p>
+            </div>
+        </div>
+            {% if consultas %}
+            <div id="historico-consultas">
+                <div class="aviso titulo-aviso">
+                    <p>Consultas do Paciente</p>
+                </div>
+                <div id="historico-consultas-box" class="historico">
+                    {% for consulta in consultas %}
+                    <div class="consultas-box dados-box" >
+                        <div class="consulta-dados dados">
+                            <p>{{consulta.tipo_agendamento}} Médica</p>
+                            <p>Realizada em: {{consulta.atendimento.data|date:'d/m/Y'}} às {{consulta.horario}}</p>
+                            <p>Médico: {{consulta.medico.nome_completo}} ({{consulta.medico.especialidade.especialidade}})</p>
+                            {% if consulta.retorno == True %}
+                                <p>Retorno: Sim</p>
+                            {% else %}
+                                <p>Retorno: Não</p>
+                            {% endif %}
+                        </div> <br>
+                        <div class="atendimento-dados dados">
+                            <span class="data-atend">{{ consulta.atendimento.data|date:'d/m/Y' }}</span>
+                            <div>
+                                <span>Anamnese</span>
+                                {{ consulta.atendimento.anamnese_paciente }}
+                            </div>
+                            <div>
+                                <span>Diagnóstico</span>
+                                {{ consulta.atendimento.diagnostico }}
+                            </div>
+                            <div>
+                                <span>Receituário</span>
+                                {{ consulta.atendimento.receituario }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if procedimentos %}
+            <br>
+            <div id="historico-procedimentos">
+                <div class="aviso titulo-aviso">
+                    <p>Procedimentos do Paciente</p>
+                </div>
+                <div id="historico-procedimentos-box" class="historico">
+                    {% for procedimento in procedimentos %}
+                    <div class="consulta-dados dados-box dados">
+                        <p>{{procedimento.tipo_agendamento}}: {{procedimento.procedimento}}</p>
+                        <p>Realizado em: {{procedimento.data|date:'d/m/Y'}} às {{procedimento.horario}}</p>
+                        <p>Médico: {{procedimento.medico.nome_completo}} ({{procedimento.medico.especialidade.especialidade}})</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% elif not consultas and not procedimento %}
+            <div class="aviso">
+                <p>Ainda não há nenhum dado de consulta ou procedimento neste prontuário.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

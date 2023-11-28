@@ -1,0 +1,42 @@
+{% extends 'relatorios/cabecalho_pdf.html' %}
+
+{% load static %}
+
+{% block titulo_pagina %}
+    Sismed - Ficha do Funcionário            
+{% endblock %}
+
+{% block titulo_PDF %}
+    Ficha de Cadastro do Funcionário 
+{% endblock %}
+
+{% block content_PDF %}
+    <div id="informs-box">
+        <p id="nome">Nome: {{funcionario.nome_completo}}</p>
+        <p>Nascimento: {{funcionario.data_nascimento|date:'d/m/Y'}}</p>
+        <p>Idade: {{funcionario.get_idade}} anos</p>
+        <p>RG: {{funcionario.rg}}</p>
+        <p>CPF: {{funcionario.cpf}}</p>
+        {% if funcionario.sexo == Null %}
+            <p>Sexo: Não definido</p>
+        {% else %}
+            {% if funcionario.sexo == 'F' %}
+                <p>Sexo: Feminino</p>
+            {% else %}
+                <p>Sexo: Masculino</p>
+            {% endif %}
+        {% endif %}
+        <p>Telefone: {{funcionario.telefone}}</p>
+        <p>Email: {{funcionario.email}}</p>
+        <p>Rua: {{funcionario.endereco.rua}}</p>
+        <p>Número: {{funcionario.endereco.numero}}</p>
+        <p>Bairro: {{funcionario.endereco.bairro}}</p>
+        <p>Cidade: {{funcionario.endereco.cidade}}</p>
+        <p>Data de Admissão {{funcionario.data_admissao|date:'d/m/Y'}}</p>
+        {% if funcionario.data_demissao %}
+            <p>Data de Demissão: {{funcionario.data_demissao|date:'d/m/Y'}}</p>
+        {% else %}
+            <p>Data de Demissão: Ainda não definida</p>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'relatorios/cabecalho_pdf.html' %}
+
+{% load static %}
+
+{% block titulo_pagina %}
+    Sismed - Ficha do Paciente            
+{% endblock %}
+
+{% block css_PDF %} 
+    <style>
+        #informs-box {
+            padding-bottom: 12px;
+        }
+    </style> 
+{% endblock %}
+
+{% block titulo_PDF %}
+    Ficha de Cadastro do Paciente
+{% endblock %}
+
+{% block content_PDF %}
+    <div id="informs-box">
+        <p id="nome">Nome: {{paciente.nome_completo}}</p>
+        <p>Nascimento: {{paciente.data_nascimento|date:'d/m/Y'}}</p>
+        <p>Idade: {{paciente.get_idade}} anos</p>
+        <p>RG: {{paciente.rg}}</p>
+        <p>CPF: {{paciente.cpf}}</p>
+        {% if paciente.sexo == Null %}
+            <p>Sexo: Não definido</p>
+        {% else %}
+            {% if paciente.sexo == 'F' %}
+                <p>Sexo: Feminino</p>
+            {% else %}
+                <p>Sexo: Masculino</p>
+            {% endif %}
+        {% endif %}
+        <p>Telefone: {{paciente.telefone}}</p>
+        <p>Email: {{paciente.email}}</p>
+        <p>Rua: {{paciente.endereco.rua}}</p>
+        <p>Número: {{paciente.endereco.numero}}</p>
+        <p>Bairro: {{paciente.endereco.bairro}}</p>
+        <p>Cidade: {{paciente.endereco.cidade}}</p>
+        <p>Data de Cadastro {{paciente.data_cadastro|date:'d/m/Y'}}</p>
+    </div>
+    <fieldset class="fieldset">
+        <legend>Informacões Médicas</legend>
+        <p>{{paciente.informacoes_medicas}}</p>
+    </fieldset>
+{% endblock %}

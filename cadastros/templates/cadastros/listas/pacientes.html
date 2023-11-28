@@ -1,0 +1,41 @@
+{% extends 'cadastros/listas/funcionarios.html' %}
+
+{% load static %}
+    
+{% block btn_add %}
+    {% if not is_medico %}
+        <a class="btn btn-add btn-sm" href="{% url 'cadastrar-paciente' %}">
+            <i class="fas fa-plus"></i>
+            Cadastrar Paciente
+        </a>
+        <a class="btn btn-aniversario btn-sm" href="{% url 'aniversarios-pacientes' %}">Aniversários</a>
+    {% endif %}
+{% endblock %}
+    
+{% block campo3 %}
+    <th>CPF</th>
+{% endblock %}
+{% block opcao %}
+    <th>&nbsp; Opções</th>
+{% endblock %}
+
+{% block lista %}
+    {% for paciente in object_list %}
+    <tr> {% if paciente.foto %}
+        <td><img class="lista-foto" src="/media/{{paciente.foto}}"></td>
+        {% else %}
+        <td><img class="lista-foto" src="{% static 'img/perfil-generico.jpg' %}"></td>
+        {% endif %}
+        <td>{{paciente.nome_completo}}</td>
+        <td>{{paciente.cpf}}</td>
+        <td>
+            &nbsp;<a href="{% url 'dados-paciente' paciente.pk %}" class="btn btn-small btn-dados">Detalhes</a> &nbsp;
+            <a href="{% url 'dados_prontuario' paciente.pk %}" class="btn btn-small btn-agenda">Ver Prontuário</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="12">Ainda não há pacientes cadastrados</td>
+    </tr>
+    {% endfor %}
+{% endblock %}

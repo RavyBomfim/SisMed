@@ -9,15 +9,22 @@
 {% block content %}
 
     {% if funcionario.foto %}
-    <img class="dados-foto" src="/media/{{funcionario.foto}}"> <br>
+    <div class="foto-box">
+        <img class="dados-foto" src="/media/{{funcionario.foto}}"> 
+        <a href="{% url 'ficha-funcionario-pdf' funcionario.pk %}" class="btn btn-sm btn-gerar-ficha">Ficha em PDF</a>
+    </div>
     {% else %}
-    <img class="dados-foto" src="{% static 'img/perfil-generico.jpg' %}">
+    <div class="foto-box">
+        <img class="dados-foto" src="{% static 'img/perfil-generico.jpg' %}"> 
+        <a href="{% url 'ficha-funcionario-pdf' funcionario.pk %}" class="btn btn-sm btn-gerar-ficha">Ficha em PDF</a>
+    </div>
     {% endif %}
     <p>{{funcionario.nome_completo}}</p>
 
     <div class="dados">
         <div id="dados-pessoais">
             <h4>Dados Pessoais</h4>
+            <p>Idade: {{funcionario.get_idade}} anos</p>
             <p>Nascimento: {{funcionario.data_nascimento|date:'d/m/Y'}}</p>
             <p>RG: {{funcionario.rg}}</p>
             <p>CPF: {{funcionario.cpf}}</p>

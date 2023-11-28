@@ -5,6 +5,24 @@
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/listar.css' %}">
     <style>
+
+        .btn-gerar-pdf {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: #07828b;
+            height: 32px;
+            padding-inline: 10px;
+            border-radius: 3px;
+        }
+
+        .btn-gerar-pdf:hover {
+            background-color: #08929c;
+        }
+
+        .btn-gerar-pdf i {
+            font-size: 16px;
+        }
         
         #consultas-agend-container {
             width: 100%;
@@ -50,6 +68,59 @@
         hr {
             min-width: 100%;
         }
+
+        .btn_box_list {
+            align-items: flex-end;
+        }
+
+        #form-pesquisar {
+            width: 180px;
+            position: relative;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #form-pesquisar input {
+            width: 125px;
+            height: 28px;
+            margin: 0;
+            border: 2px solid #078b85;
+            padding-inline: 11px;
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+        }
+
+        #form-pesquisar input:focus {
+            outline: 0 !important;
+            box-shadow: none !important;
+        }
+
+        #form-pesquisar #filtrar {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 32px;
+            right: 0;
+            background-color: #096661;
+            border: 2px solid  #078b85;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
+            color: #e9e9e9;
+            cursor: pointer;
+        }
+
+        .dica {
+            width: fit-content;
+            margin-top: -5px;
+            font-style: italic;
+            padding-block: 5px;
+            padding-inline: 10px;
+            background-color: #e9e9e9;
+            color: #535353;
+        }
+
     </style>
 
 {% endblock %}
@@ -57,16 +128,25 @@
 {% block content %}
 
     {% block titulo2 %}
-        <h4>Agendamentos</h4> 
+        <h4>{{titulo}}</h4> 
+        <p class="dica">No campo de pesquisa, pesquise pelas consultas agendadas para datas específicas.</p> <br>
     {% endblock %}
 
-    {% block btn_add %}
-        <a class="btn btn-add btn-sm" href="{% url 'agendar-consulta-procedimento' %}">
-            <!-- <i class="fas fa-plus"></i> -->
-            <i class="material-symbols-outlined">add</i>
-            Agendar Consulta
-        </a>
-    {% endblock %}
+    <div id="btn_box_list">
+        {% block btn_add %}
+            <a class="btn btn-add btn-sm" href="{% url 'agendar-consulta-procedimento' %}">
+                <i class="fas fa-plus"></i>
+                Agendar Consulta
+            </a>
+            <form action="?" method="GET" id="form-pesquisar" class="flex">
+                <input type="date" name="data-pesquisada" id="data-agend"> 
+                <button type="submit" id="filtrar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+            <a class="btn btn-gerar-pdf btn-sm" href="{% url 'agendamentos-pdf' %}?data-pesquisada={{data}}"><i class="fa-regular fa-file-pdf"></i>GERAR PDF</a>
+        {% endblock %}
+    </div>
     
     <div id="consultas-agend-container">
         <hr>
@@ -87,7 +167,7 @@
             {% empty %}
                 <div id="agendamento-vazio">
                     {% block vazio %}
-                        <p>Ainda não há nenhum agendamento</p>
+                        <p>Ainda não há registros de agendamentos</p>
                     {% endblock %}
                 </div>
                 <hr>

@@ -1,0 +1,139 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block titulo_pagina %}
+            Sismed           
+        {% endblock %}
+    </title> 
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%; 
+            font-family: Arial, Helvetica;
+            padding: 15mm;
+            padding-top: 8mm;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        header, main {
+            width: 210mm; 
+            margin-inline: auto;
+        }
+
+        #cabecalho-pdf {
+            width: 210mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            margin-left: -26px;
+        }
+
+        #cabecalho-pdf img {
+            width: 250px;
+            /* margin-inline: auto; */
+        }
+
+        #dados-clinica {
+            width: 100%;
+            font-size: 13pt;
+            color: #2b2a2a;
+        }
+
+        .titulo, #conteudo-pdf {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .titulo {
+            padding: 10px;
+            text-align: center;
+            font-weight: 500;
+            background-color: #a8ccb6;
+            color: #04524e;
+        }
+
+        #conteudo-pdf {
+            width: 207.8mm;
+            border: 2px solid #a8ccb6;
+            margin-left: -1px;
+        }
+
+        #informs-box {
+            padding: 14px;
+        }
+
+        #conteudo-pdf p {
+            margin-bottom: 5px;
+            font-size: 14pt;
+        }
+
+        .fieldset {
+            padding: 10px 12px;
+            border: 0;
+            border-top: 2px solid #a8ccb6;
+            border-radius: 2px;
+            padding-bottom: 15px;
+        }
+
+        .fieldset legend {
+            font-size: 15pt;
+            background-color: #a8ccb6;
+            border: 2px solid #065c58;
+            color: #065c58;
+            padding: 7px 11px;
+            border-radius: 3px;
+            margin-left: 2px;
+        }
+
+    </style>
+    {% block css_PDF %}
+         
+    {% endblock %}
+</head>
+<body>
+    <header>
+        {% block header_PDF %}
+            <div id="cabecalho-pdf">
+                <img src="http://127.0.0.1:8000/{% static 'img/Sismed-img.jpg' %}" alt=""> 
+                <div id="dados-clinica">
+                    <span>CNPJ: 01.221.042/0000-54</span> |
+                    <span>Rua Flores, nº 857 - Campos, Camões/MS</span> |
+                    <span>Telefone: (45) 4587-6582</span>
+                </div>
+            </div>
+        {% endblock %}
+    </header>
+    <main>
+        <div class="container">
+            {% block container_titulo %}
+                <h1 class="titulo">
+                    {% block titulo_PDF %}
+                        
+                    {% endblock %}
+                </h1>
+            {% endblock %}
+            <div id="conteudo-pdf">
+                {% block content_PDF %}
+
+                {% endblock %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

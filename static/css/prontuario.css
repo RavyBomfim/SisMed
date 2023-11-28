@@ -1,0 +1,134 @@
+.agenda-container {
+    width: 750px;
+}
+
+#titulo {
+    background-color: #f7f5f5;
+    text-align: center;
+    margin-top: 0;
+    padding: 7px;
+    margin-bottom: 25px;
+    border-radius: 2px;
+    color: #535353;
+}
+
+#prontuario-header {
+    background-color: #f7f5f5;
+    padding: 20px;
+}
+
+.titulo-aviso {
+    font-size: 20px;
+    font-style: normal;
+    margin-bottom: 0;
+    padding: 10px;
+}
+
+.titulo-aviso p {
+    margin: 0;
+}
+
+.agenda-titulo {
+    justify-content: space-between;
+}
+
+#cabecalho {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+#cabecalho p {
+    margin-bottom: 3px;
+}
+
+#cabecalho span {
+    font-weight: 600;
+    color: #535353;
+}
+
+.historico {
+    border-top: 1px dashed #24beb7;
+    border-bottom: 1px dashed #24beb7;
+    background-color: #fff;
+}
+
+.dados-box {
+    background-color: #e5eeee;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.dados-box:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+.dados {
+    padding-left: 30px;
+    padding-right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.atendimento-dados {
+    border-top: 1px dashed #24beb7;
+    padding-top: 15px;
+}
+
+.atendimento-dados .data-atend {
+    width: 120px;
+    padding-top: 8px;
+    padding-bottom: 5px;
+    text-align: center;
+    border-radius: 2px;
+    background-color: #24beb7;
+    color: #e0e0e0;
+    font-size: 17px;
+    align-self: flex-end;
+    margin-bottom: -10px;
+}
+
+.atendimento-dados div {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border: 1px solid #24beb7;
+    margin-top: 32px;
+    padding: 15px;
+    padding-top: 23px;
+    letter-spacing: 1px;
+    color: #1b1b1b;
+    border-radius: 2px;
+}
+
+.atendimento-dados div span {
+    width: 120px;
+    text-align: center;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    position: absolute;
+    top: -22px;
+    left: 10px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    background-color: #bbbbbb;
+}
+
+#pdf-btn-box {
+    display: flex;
+    justify-content: right;
+    width: 750px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.btn-pdf {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #0b726d;
+}
+
+.btn-pdf:hover {
+    background-color: #0d807a;
+}

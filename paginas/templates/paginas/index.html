@@ -30,9 +30,8 @@
 
 {% block head %}
 <header>
-  <a href="#" class="brand-logo">
-    <img id="logo" src="{% static 'img/SisMed-logo.png' %}" alt="SisMed logo" class="responsive-img"
-         style="max-height: 60px;">
+    <a href="#" class="brand-logo">
+        <img id="logo" src="{% static 'img/SisMed-logo.png' %}" alt="SisMed logo" class="responsive-img" style="max-height: 60px;">
     </a>
 
   <nav class="navbar-nav">
@@ -42,12 +41,13 @@
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 {% if request.user.is_authenticated %}
                     <li class="dropdown-trigger black-text" data-target="dropdown1">
-                            <span id="view_list" class="icons material-symbols-outlined">view_list</span>
-                            Listar cadastros
+                        <!-- <i class="fa-solid fa-border-all"></i> -->
+                        <span class="icons material-symbols-outlined" id="view-cozy">View_Cozy</span>
+                        Menu
                     </li>
                     {% if is_admin or request.user.is_superuser %}
                     <li class="dropdown-trigger black-text" data-target="dropdown2">
-                            <span class="icons material-symbols-outlined">add_box</span>
+                            <span class="icons material-symbols-outlined" id="add-box">add_box</span>
                             Cadastrar
                     </li>
                     {% endif %}
@@ -62,13 +62,22 @@
     </nav>
 
     <ul id="dropdown1" class="dropdown-content">
-        <li><a href="{% url 'listar-cargos' %}">Listar Cargos</a></li>
-        <li><a href="{% url 'listar-especialidades' %}">Listar Especialidades</a></li>
-        <li><a href="{% url 'listar-funcionarios' %}">Listar Funcionários</a></li>
-        <li><a href="{% url 'listar-medicos' %}">Listar Médicos</a></li>
-        <li><a href="{% url 'listar-pacientes' %}">Listar Pacientes</a></li>
-        <li><a href="{% url 'listar-procedimentos' %}">Listar Procedimentos</a></li>
-        <li><a href="{% url 'listar-agendamentos' %}">Agendamentos</a></li>
+        {% if is_medico %}
+            <li><a href="{% url 'dados-agenda' request.user.medico.agendamedico.pk %}">Minha Agenda</a></li>
+            <li><a href="{% url 'listar-pacientes-medico' %}">Meus Pacientes</a></li>
+            <li><a href="{% url 'agendamentos-com-medico' %}">Agendamentos</a></li>
+            <li><a href="{% url 'pacientes-do-dia-medico' %}">Pacientes do Dia</a></li>
+        {% else %}
+            <li><a href="{% url 'listar-cargos' %}">Listar Cargos</a></li>
+            <li><a href="{% url 'listar-especialidades' %}">Listar Especialidades</a></li>
+            <li><a href="{% url 'listar-funcionarios' %}">Listar Funcionários</a></li>
+            <li><a href="{% url 'listar-medicos' %}">Listar Médicos</a></li>
+            <li><a href="{% url 'listar-pacientes' %}">Listar Pacientes</a></li>
+            <li><a href="{% url 'listar-procedimentos' %}">Listar Procedimentos</a></li>
+            <li><a href="{% url 'listar-agendamentos' %}">Agendamentos</a></li>
+            <li><a href="{% url 'pacientes-do-dia' %}">Pacientes do Dia</a></li>
+            <li><a href="{% url 'relatorio-financeiro' %}">Relatório Financeiro</a></li>
+        {% endif %}
     </ul>
     
     <ul id="dropdown2" class="dropdown-content">
@@ -79,7 +88,6 @@
         <li><a href="{% url 'cadastrar-paciente' %}">Paciente</a></li>
         <li><a href="{% url 'cadastrar-usuario' %}">Usuario</a></li>
         <li><a href="{% url 'cadastrar-procedimento' %}">Procedimento</a></li>
-        <li><a href="{% url 'agendar-consulta-procedimento' %}">Agendamento</a></li>
     </ul>
 
     <ul id="dropdown3" class="dropdown-content">
@@ -101,36 +109,49 @@
         {% block content %}
             <div class="row">
                 <div class="col s12 flex align-center" id="bem-vindo">
-                    <h4>Bem-vindo, <span>{{request.user}}</span>!</h4> &nbsp; <a class="btn" href="{% url 'agendar-consulta-procedimento' %}">Agendar Atendimento</a>
+                    <h4>Bem-vindo, <span>{{request.user}}</span>!</h4> &nbsp; <a class="btn btn-agendar" href="{% url 'agendar-consulta-procedimento' %}">Agendar Atendimento</a>
                 </div>
             </div>
         
             <div class="row">
-                <a href="{% url 'listar-medicos' %}">
-                <div class="col s12 m6 l4">
-                    <div class="card custom-card">
-                        <div class="card-content">
-                            <i class="fas fa-user-md fa-3x"></i>
-                            <span class="card-title">Médicos <br>Cadastrados</span>
-                            <p class="card-data">{{qtd_medicos}}</p>
+                {% if is_medico %}
+                    <a href="{% url 'dados-agenda' request.user.medico.agendamedico.pk %}">
+                        <div class="col s12 m6 l4">
+                            <div class="card custom-card">
+                                <div class="card-content" id="card-agenda">
+                                    <i class="fa-regular fa-calendar-check fa-7x"></i>
+                                    <span class="card-title">Minha Agenda</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                </a>
+                    </a>
+                {% else %}
+                    <a href="{% url 'listar-medicos' %}">
+                        <div class="col s12 m6 l4">
+                            <div class="card custom-card">
+                                <div class="card-content">
+                                    <i class="fas fa-user-md fa-3x"></i>
+                                    <span class="card-title">Médicos <br>Cadastrados</span>
+                                    <p class="card-data">{{qtd_medicos}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                {% endif %}
         
-                <a href="{% url 'listar-pacientes' %}">
-                <div class="col s12 m6 l4">
-                    <div class="card custom-card">
-                        <div class="card-content">
-                            <i class="fas fa-user fa-3x"></i>
-                            <span class="card-title">Pacientes Cadastrados</span>
-                            <p class="card-data">{{qtd_pacientes}}</p>
+                <a href="{% if is_medico %} {% url 'listar-pacientes-medico' %} {% else %} {% url 'listar-pacientes' %} {% endif %}"> 
+                    <div class="col s12 m6 l4">
+                        <div class="card custom-card">
+                            <div class="card-content">
+                                <i class="fas fa-user fa-3x"></i>
+                                <span class="card-title">{{titulo_card_pacientes}}</span>
+                                <p class="card-data">{{qtd_pacientes}}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </a>
                 
-                <a href="{% url 'pacientes-do-dia' %}">
+                <a href="{% if is_medico %} {% url 'pacientes-do-dia-medico' %} {% else %} {% url 'pacientes-do-dia' %} {% endif %}">
                     <div class="col s12 m6 l4">
                         <div class="card custom-card">
                             <div class="card-content">
@@ -143,7 +164,6 @@
                     </div>
                 </a>
             </div>
-
             <div class="col s12 m6 l6">
                 <div class="card dynamic-card">
                     <div class="card-content">
