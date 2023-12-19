@@ -1,9 +1,7 @@
 from datetime import datetime
-import subprocess
 from django.db.models import F, ExpressionWrapper, IntegerField
 from django.db.models.functions import ExtractDay, ExtractMonth
 from utils.config import get_wkhtmltopdf_path
-from django.shortcuts import render
 from django.urls import reverse_lazy
 #from .utils import GeradorDePDF
 from cadastros.models import Agendamento, Funcionario, Paciente, Prontuario
