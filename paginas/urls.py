@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AgendamentoCreate, AgendamentoDelete, AgendamentoList, AgendamentoUpdate, AgendamentosComMedico, AtendimentoCreate, Detalhes_Agendamento, MostrarProntuario, PacientesDoDia, PacientesDoDiaMedico, ProntuarioList, RelatorioFinanceiro, IndexView, concluir_procedimento, medicos_procedimento, retornar_horarios, valor_consulta
+from .views import AgendamentoCreate, AgendamentoDelete, AgendamentoList, AgendamentoUpdate, AgendamentosComMedico, AtendimentoCreate, Detalhes_Agendamento, MostrarProntuario, PacientesDoDia, PacientesDoDiaMedico, RelatorioFinanceiro, IndexView, concluir_procedimento, medicos_procedimento, retornar_horarios, valor_consulta
 
 urlpatterns = [
     #urls visualização
@@ -23,7 +23,6 @@ urlpatterns = [
     path('listar/agendamentos/medico', AgendamentosComMedico.as_view(), name='agendamentos-com-medico'),
     path('pacientes/dia', PacientesDoDia.as_view(), name='pacientes-do-dia'),
     path('pacientes/dia/medico', PacientesDoDiaMedico.as_view(), name='pacientes-do-dia-medico'),
-    path('listar/prontuarios', ProntuarioList.as_view(), name='listar-prontuarios'),
 
     #urls para detalhar
     path('detalhes/agendamento/<int:pk>', Detalhes_Agendamento.as_view(), name='detalhes_agendamento'),

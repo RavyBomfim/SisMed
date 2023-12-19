@@ -160,36 +160,38 @@
                 {% else %}
                     <p><span>Valor do procedimento: </span> R$ {{agendamento.valor}}</p>
                 {% endif %}
-                <p><span>Concluído: </span> {% if agendamento.concluido %} Sim {% else %} Não {% endif %}</p>
+                {% if not is_medico %}
+                    <p><span>Concluído: </span> {% if agendamento.concluido %} Sim {% else %} Não {% endif %}</p>
+                {% endif %}
             </div>
-            <!-- <a class="btn btn-gerar-recibo" href="{% url 'gerar-recibo-pdf' agendamento.pk %}" id="gerar-recibo">Gerar Recibo</a> -->
         </div>
-        <!-- Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita perferendis tenetur recusandae quidem natus iure earum nesciunt obcaecati atque aperiam. -->
-        
+  
         <div class="botoes-box">
+            {% if is_admin or request.user.is_superuser %}
             <div id="btn_box">
-                <a href="{% url 'editar-agendamento' agendamento.pk %}" class="btn btn-sm btn-editar">
-                    <i class="fa-solid fa-pencil"></i> Editar
-                </a> 
-                <a href="{% url 'excluir-agendamento' agendamento.pk %}" class="btn btn-sm btn-excluir">
-                    <i class="fa-solid fa-trash-can"></i> Excluir
-                </a> 
+                    <a href="{% url 'editar-agendamento' agendamento.pk %}" class="btn btn-sm btn-editar">
+                        <i class="fa-solid fa-pencil"></i> Editar
+                    </a> 
+                    <a href="{% url 'excluir-agendamento' agendamento.pk %}" class="btn btn-sm btn-excluir">
+                        <i class="fa-solid fa-trash-can"></i> Excluir
+                    </a> 
             </div> &nbsp;
+            {% endif %}
             {% if is_medico %}
                 {% if agendamento.tipo_agendamento == 'Consulta' and not agendamento.concluido %}
-                    <a href="{% url 'registrar-atendimento' agendamento.pk %}" class="btn btn-sm">Concluir  Consulta</a>
+                    <a href="{% url 'registrar-atendimento' agendamento.pk %}" class="btn btn-sm concluir">Concluir  Consulta</a>
                 {% elif agendamento.tipo_agendamento == 'Consulta' and agendamento.concluido %}
-                    <button class="btn btn-sm" class="concluido">Consulta Concluída</button>
+                    <button class="btn btn-sm concluido">Consulta Concluída</button>
                 {% elif agendamento.tipo_agendamento == 'Procedimento' and not agendamento.concluido %}
                         <form action="{% url 'concluir-procedimento' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="agendamento_id" value="{{agendamento.id}}">
-                            <button type="submit" class="btn btn-sm" id="concluir-procedimento">Concluir Procedimento</button>
+                            <button type="submit" class="btn btn-sm concluir" id="concluir-procedimento">Concluir Procedimento</button>
                         </form>
                 {% else %}
-                    <button class="btn btn-sm" class="concluido">Procedimento Concluído</button>
+                    <button class="btn btn-sm concluido">Procedimento Concluído</button>
                 {% endif %}
-            {% else %}
+            {% elif is_admin or request.user.is_superuser %}
                 <a class="btn btn-gerar-recibo" href="{% url 'gerar-recibo-pdf' agendamento.pk %}" id="gerar-recibo">Gerar Recibo</a>
             {% endif %}
         </div>

@@ -1,7 +1,6 @@
 from typing import Any
 from django.db.models import F,  ExpressionWrapper, IntegerField
 from django.db.models.functions import ExtractDay, ExtractMonth
-from django.db.models.query import QuerySet
 from paginas.views import GrupoMixin
 from .forms import EnderecoForm, FuncionarioForm, HorarioMedicoForm, MedicoForm, PacienteForm, ProcedimentoForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -15,6 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from .utils import nome_mes
+from django.core.cache import cache
 
 # Create your views here.
 
@@ -110,12 +110,16 @@ class MedicoCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateVie
         context['titulo'] = 'Cadastro de Médicos'
         return context
     
-# Signal para criação de agenda do médico
+# Signal para criação de agenda do médico e envio do id do médico recém criado para o signsls de criação de usuário.
 @receiver(post_save, sender=Medico)
 def associar_usuario_a_medico(sender, instance, created, **kwargs):
     if created:
-        # Criando uma agenda e associando ao médico recém criado
-        AgendaMedico.objects.create(medico=instance)
+        try:
+            medico = Medico.objects.get(pk=instance.pk)
+            cache.set('instancia_medico_id', medico.id)
+            AgendaMedico.objects.create(medico=medico)
+        except Medico.DoesNotExist:
+            medico = None
 
 
 class PacienteCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView):

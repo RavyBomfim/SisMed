@@ -24,7 +24,7 @@ class Cargo(models.Model):
     salario = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='Salário')
 
     def __str__(self):
-        return f'{self.nome_cargo} {self.salario}'
+        return f'{self.nome_cargo}'
 
 
 class Funcionario(models.Model):
@@ -48,7 +48,7 @@ class Funcionario(models.Model):
         return idade
 
     def __str__(self):
-        return f'{self.nome_completo}'
+        return f'{self.nome_completo} - {self.cargo}'
 
     """def __str__(self):
         return f'{self.nome_completo} {self.data_nascimento} {self.rg} {self.cpf} {self.endereco} {self.telefone} {self.email} {self.data_admissao} {self.data_demissao} {self.cargo}'"""

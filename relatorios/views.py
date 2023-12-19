@@ -1,19 +1,18 @@
 from datetime import datetime
 import subprocess
-from django.db.models import F,  ExpressionWrapper, IntegerField
+from django.db.models import F, ExpressionWrapper, IntegerField
 from django.db.models.functions import ExtractDay, ExtractMonth
 from utils.config import get_wkhtmltopdf_path
 from django.shortcuts import render
 from django.urls import reverse_lazy
 #from .utils import GeradorDePDF
-from django.shortcuts import get_object_or_404
 from cadastros.models import Agendamento, Funcionario, Paciente, Prontuario
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from braces.views import GroupRequiredMixin
-from paginas.views import GrupoMixin, MostrarProntuario, RelatorioFinanceiro
+from paginas.views import AgendamentoList, GrupoMixin, MostrarProntuario, RelatorioFinanceiro
 from django.http import HttpResponse
 from django.template.loader import get_template
 import pdfkit
@@ -144,35 +143,8 @@ class AniversariosPacientes_PDF(LoginRequiredMixin, GrupoMixin, ListView):
             return HttpResponse(f"Erro ao gerar PDF: {e}", status=500)
         
     
-class Agendamentos_PDF(LoginRequiredMixin, GrupoMixin, ListView):
-    login_url = reverse_lazy('login')
-    model = Agendamento
+class Agendamentos_PDF(AgendamentoList):
     template_name = 'relatorios/agendamentos_pdf.html'
-
-    def get_queryset(self):
-        data_agend = self.request.GET.get('data-pesquisada')
-        
-        if data_agend and data_agend != 'None':
-            agendamentos = Agendamento.objects.filter(data=data_agend)
-        else: 
-            agendamentos = Agendamento.objects.all()
-
-        return agendamentos
-    
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        titulo = 'Agendamentos'
-        aviso = 'Ainda não há nenhum registro de agendamento de consultas ou procedimentos'
-        data_agend = self.request.GET.get('data-pesquisada')
-
-        if data_agend and data_agend != '' and data_agend != 'None':
-            data = datetime.strptime(data_agend, '%Y-%m-%d').strftime('%d/%m/%Y')
-            titulo = f'Agendamentos do dia {data}'
-            aviso = 'Não há consultas ou procedimentos registrados para esta data'
-
-        context['titulo'] = titulo
-        context['aviso'] = aviso
-        return context
     
     def render_to_response(self, context, **response_kwargs):
         return self.render_to_pdf(context)
@@ -186,7 +158,13 @@ class Agendamentos_PDF(LoginRequiredMixin, GrupoMixin, ListView):
 
         titulo = 'Agendamentos'
         data_agend = self.request.GET.get('data-pesquisada')
+        especialidade_agend = self.request.GET.get('especialidade-pesquisada')
 
+        if data_agend and data_agend != '' and data_agend != 'None' and especialidade_agend and especialidade_agend != '' and especialidade_agend != 'None':
+            data = datetime.strptime(data_agend, '%Y-%m-%d').strftime('%d/%m/%Y')
+            titulo = f'Agendamentos do dia {data} para {especialidade_agend}s'
+        elif especialidade_agend and especialidade_agend != '' and especialidade_agend != 'None':
+            titulo = f'Agendamentos para {especialidade_agend}s'
         if data_agend and data_agend != '' and data_agend != 'None':
             data = datetime.strptime(data_agend, '%Y-%m-%d').strftime('%d/%m/%Y')
             titulo = f'Agendamentos do dia {data}'
@@ -208,6 +186,22 @@ class Agendamentos_PDF(LoginRequiredMixin, GrupoMixin, ListView):
 class RelatorioFinanceiroPDF(RelatorioFinanceiro):
     template_name = "relatorios/relatorio_financeiro_pdf.html"
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+
+        titulo = 'Relatório Financeiro Geral'
+        periodo_inicial = self.request.GET.get('periodo-inicial')
+        periodo_final = self.request.GET.get('periodo-final')
+
+        if periodo_inicial and periodo_final and periodo_inicial != '' and periodo_final != '' and periodo_inicial != 'None' and periodo_final != 'None':
+            data_inicial = datetime.strptime(periodo_inicial, '%Y-%m-%d').strftime('%d/%m/%Y')
+            data_final = datetime.strptime(periodo_final, '%Y-%m-%d').strftime('%d/%m/%Y')
+            titulo = f'Relatório Financeiro de {data_inicial} a {data_final}'
+
+        context['titulo'] = titulo
+        return context
+
+
     def render_to_response(self, context, **response_kwargs):
         return self.render_to_pdf(context)
 
@@ -220,7 +214,7 @@ class RelatorioFinanceiroPDF(RelatorioFinanceiro):
         wkhtmltopdf_path = get_wkhtmltopdf_path()
         pdfkit_config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
 
-        titulo = 'Relatório Financeiro'
+        titulo = 'Relatório Financeiro Geral'
         periodo_inicial = self.request.GET.get('periodo-inicial')
         periodo_final = self.request.GET.get('periodo-final')
 

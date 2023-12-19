@@ -14,6 +14,7 @@
             height: 32px;
             padding-inline: 10px;
             border-radius: 3px;
+            margin-left: 10px;
         }
 
         .btn-gerar-pdf:hover {
@@ -74,13 +75,21 @@
         }
 
         #form-pesquisar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: fit-content;
+            margin-bottom: 10px;
+        }
+
+        #pesquisar-box {
             width: 180px;
             position: relative;
             padding: 0;
             box-sizing: border-box;
         }
 
-        #form-pesquisar input {
+        #pesquisar-box input {
             width: 125px;
             height: 28px;
             margin: 0;
@@ -90,12 +99,12 @@
             border-bottom-left-radius: 30px;
         }
 
-        #form-pesquisar input:focus {
+        #pesquisar-box input:focus {
             outline: 0 !important;
             box-shadow: none !important;
         }
 
-        #form-pesquisar #filtrar {
+        #pesquisar-box #filtrar {
             position: absolute;
             display: flex;
             justify-content: center;
@@ -103,6 +112,7 @@
             width: 40px;
             height: 32px;
             right: 0;
+            bottom: 0;
             background-color: #096661;
             border: 2px solid  #078b85;
             border-top-right-radius: 30px;
@@ -129,22 +139,37 @@
 
     {% block titulo2 %}
         <h4>{{titulo}}</h4> 
-        <p class="dica">No campo de pesquisa, pesquise pelas consultas agendadas para datas específicas.</p> <br>
+        {% if is_medico %}
+            <p class="dica">No campo de pesquisa, pesquise pelas consultas agendadas para datas específicas.</p> <br>
+        {% else %}
+            <p class="dica">No campo de pesquisa, pesquise pelas consultas agendadas para datas e/ou especialidades específicas.</p> <br>
+        {% endif %}
     {% endblock %}
 
     <div id="btn_box_list">
         {% block btn_add %}
-            <a class="btn btn-add btn-sm" href="{% url 'agendar-consulta-procedimento' %}">
-                <i class="fas fa-plus"></i>
-                Agendar Consulta
-            </a>
             <form action="?" method="GET" id="form-pesquisar" class="flex">
-                <input type="date" name="data-pesquisada" id="data-agend"> 
-                <button type="submit" id="filtrar">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                {% if not is_medico %}
+                    <a class="btn btn-add btn-sm" href="{% url 'agendar-consulta-procedimento' %}">
+                        <i class="fas fa-plus"></i>
+                        Agendar Consulta
+                    </a>
+                    <select name="especialidade-pesquisada" id="especialidade-agend">
+                        <option value="">Especialidade</option>
+                        <option value="">Todas</option>
+                        {% for especialidade in especialidades %}
+                            <option value="{{ especialidade.especialidade }}">{{ especialidade.especialidade }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+                <div id="pesquisar-box">
+                    <input type="date" name="data-pesquisada" id="data-agend"> 
+                    <button type="submit" id="filtrar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+                <a class="btn btn-gerar-pdf btn-sm" href="{% url 'agendamentos-pdf' %}?data-pesquisada={{data}}&especialidade-pesquisada={{especialidade_pesq}}"><i class="fa-regular fa-file-pdf"></i>GERAR PDF</a>
             </form>
-            <a class="btn btn-gerar-pdf btn-sm" href="{% url 'agendamentos-pdf' %}?data-pesquisada={{data}}"><i class="fa-regular fa-file-pdf"></i>GERAR PDF</a>
         {% endblock %}
     </div>
     
@@ -167,7 +192,7 @@
             {% empty %}
                 <div id="agendamento-vazio">
                     {% block vazio %}
-                        <p>Ainda não há registros de agendamentos</p>
+                        {{aviso}}
                     {% endblock %}
                 </div>
                 <hr>
@@ -175,4 +200,27 @@
         {% endblock %}
     </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    M.AutoInit();
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Preencher o select com as especialidades
+        var especialidades = '{{ todas_especialidades|safe }}';
+        var select_especialidade = $('#especialidade-agend');
+
+        especialidades.forEach(function(especialidade) {
+            select_especialidade.append($('<option>', {
+                value: especialidade.especialidade,
+                text: especialidade.especialidade
+            }));
+        });
+
+        $('select').formSelect();
+    });
+</script>
 {% endblock %}

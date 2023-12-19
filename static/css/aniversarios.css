@@ -63,8 +63,8 @@ th {
     top: 8px;
 }
 
-.select-wrapper input {
-    color: transparent;
+.select-wrapper input.dropdown-trigger {
+    color: transparent !important;
     border: 0 !important;
 }
 

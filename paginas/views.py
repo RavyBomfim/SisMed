@@ -14,6 +14,7 @@ from django.db.models import Count
 from datetime import date, datetime
 from paginas.forms import AgendamentoForm, AtendimentoForm
 from django.utils import timezone
+from django.contrib.auth.decorators import user_passes_test
 
 # Create your views here.
 class GrupoMixin:
@@ -25,6 +26,10 @@ class GrupoMixin:
         context['is_admin'] = is_admin
         context['is_medico'] = is_medico
         return context
+
+
+def is_medico(user):
+    return user.groups.filter(name='Medico').exists()
 
 
 def medicos_procedimento(request, procedimento_id):
@@ -80,9 +85,6 @@ def retornar_aviso(arg):
 def get_horarios_disponiveis(medico_id, data, agendados=False):
     # Obtenha os horários de atendimento da model HorarioAtendimento
     horarios_atendimento = HorarioAtendimento.objects.all().values_list('horario_atendimento', flat=True)
-
-    # Mapeamento dos números para os nomes dos dias da semana
-    dia_semana_opcoes = {0: 'Segunda-feira', 1: 'Terça-feira', 2: 'Quarta-feira', 3: 'Quinta-feira', 4: 'Sexta-feira', 5: 'Sábado'}
 
     # Convertendo a data fornecida em um objeto de data
     data_obj = datetime.strptime(data, '%Y-%m-%d')
@@ -211,68 +213,11 @@ class IndexView(LoginRequiredMixin, GrupoMixin, TemplateView):
         context['especialidades_mais_requisitadas'] = Especialidade.objects.annotate(num_consultas=Count('medico__agendamento')).order_by('-num_consultas')[:3]
         return context
 
-
-'''class VerAgendas(LoginRequiredMixin, GrupoMixin, TemplateView):
-    login_url = reverse_lazy('login')
-    template_name = 'paginas/agendas.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        # Obtenha os horários de atendimento da model HorarioAtendimento
-        horarios_atendimento = HorarioAtendimento.objects.all().values_list('horario_atendimento', flat=True)
-
-        # Mapeamento dos números para os nomes dos dias da semana
-        dia_semana_opcoes = {0: 'Segunda-feira', 1: 'Terça-feira', 2: 'Quarta-feira', 3: 'Quinta-feira', 4: 'Sexta-feira', 5: 'Sábado'}
-
-        # Dicionário para armazenar horários disponíveis por médico e dia da semana
-        horarios_por_medico = {}
-
-        for dia in range(6):  # 0 a 5 representa de segunda a sábado
-            horarios_medico_manha = HorarioMedico.objects.filter(
-                dia_semana=dia,
-                horario_inicial_manha__isnull=False,
-            )
-
-            horarios_medico_tarde = HorarioMedico.objects.filter(
-                dia_semana=dia,
-                horario_inicial_tarde__isnull=False,
-            )
-
-            for horario_medico in horarios_medico_manha:
-                medico = horario_medico.agenda.medico
-                inicio_manha = horario_medico.horario_inicial_manha
-                final_manha = horario_medico.horario_final_manha
-                chave = (medico.nome_completo, dia_semana_opcoes[dia])
-
-                if chave not in horarios_por_medico:
-                    horarios_por_medico[chave] = []
-
-                for horario in horarios_atendimento:
-                    if inicio_manha <= horario < final_manha:
-                        horarios_por_medico[chave].append(horario.strftime("%H:%M"))
-
-            for horario_medico in horarios_medico_tarde:
-                medico = horario_medico.agenda.medico
-                inicio_tarde = horario_medico.horario_inicial_tarde
-                final_tarde = horario_medico.horario_final_tarde
-                chave = (medico.nome_completo, dia_semana_opcoes[dia])
-
-                if chave not in horarios_por_medico:
-                    horarios_por_medico[chave] = []
-
-                for horario in horarios_atendimento:
-                    if inicio_tarde <= horario < final_tarde:
-                        horarios_por_medico[chave].append(horario.strftime("%H:%M"))
-
-        context['horarios_disponiveis'] = horarios_por_medico
-        return context'''
-
-
 # --------------- Views de Cadastro ---------------
 
 class AgendamentoCreate(LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
+    group_required = u'Administrador'
     model = Agendamento
     form_class = AgendamentoForm
     template_name = 'paginas/form_agendamento.html'
@@ -288,6 +233,7 @@ class AgendamentoCreate(LoginRequiredMixin, GrupoMixin, CreateView):
 
 class AgendamentoUpdate(LoginRequiredMixin, GrupoMixin, UpdateView):
     login_url = reverse_lazy('login')
+    group_required = u'Administrador'
     model = Agendamento
     form_class = AgendamentoForm
     template_name = 'paginas/form_agendamento.html'
@@ -327,6 +273,7 @@ class AgendamentoUpdate(LoginRequiredMixin, GrupoMixin, UpdateView):
 
 class AgendamentoDelete(LoginRequiredMixin, GrupoMixin, DeleteView):
     login_url = reverse_lazy('login')
+    group_required = u'Administrador'
     model = Agendamento
     template_name = 'cadastros/form_excluir.html'
     success_url = reverse_lazy('listar-agendamentos')
@@ -355,11 +302,16 @@ class AgendamentoList(LoginRequiredMixin, GrupoMixin, ListView):
 
     def get_queryset(self):
         data_agend = self.request.GET.get('data-pesquisada')
+        especialidade_agend = self.request.GET.get('especialidade-pesquisada')
+
+        agendamentos = Agendamento.objects.all()
         
-        if data_agend:
-            agendamentos = Agendamento.objects.filter(data=data_agend)
-        else: 
-            agendamentos = Agendamento.objects.all()
+        if data_agend and especialidade_agend:
+            agendamentos = agendamentos.filter(data=data_agend, medico__especialidade__especialidade=especialidade_agend)
+        elif data_agend:
+            agendamentos = agendamentos.filter(data=data_agend)
+        elif especialidade_agend:
+            agendamentos = agendamentos.filter(medico__especialidade__especialidade=especialidade_agend)
 
         return agendamentos
     
@@ -368,19 +320,31 @@ class AgendamentoList(LoginRequiredMixin, GrupoMixin, ListView):
         titulo = 'Agendamentos'
         aviso = 'Ainda não há nenhum registro de agendamento de consultas ou procedimentos'
         data_agend = self.request.GET.get('data-pesquisada')
+        especialidade_agend = self.request.GET.get('especialidade-pesquisada')
 
-        if data_agend and data_agend != '' and data_agend != 'None':
+        if data_agend and data_agend != '' and data_agend != 'None' and especialidade_agend and especialidade_agend != '' and especialidade_agend != 'None':
+            data = datetime.strptime(data_agend, '%Y-%m-%d').strftime('%d/%m/%Y')
+            titulo = f'Agendamentos do dia {data} para {especialidade_agend}s'
+            aviso = 'Não há consultas ou procedimentos registrados para esta data e especialidade'
+        elif especialidade_agend and especialidade_agend != '' and especialidade_agend != 'None':
+            titulo = f'Agendamentos para {especialidade_agend}s'
+            aviso = 'Não há consultas ou procedimentos registrados para esta especialidade'
+        elif data_agend and data_agend != '' and data_agend != 'None':
             data = datetime.strptime(data_agend, '%Y-%m-%d').strftime('%d/%m/%Y')
             titulo = f'Agendamentos do dia {data}'
             aviso = 'Não há consultas ou procedimentos registrados para esta data'
 
+        context['especialidades'] = Especialidade.objects.all()
         context['titulo'] = titulo
         context['aviso'] = aviso
         context['data'] = data_agend
+        context['especialidade_pesq'] = especialidade_agend
         return context
 
 
 class AgendamentosComMedico(AgendamentoList):
+    group_required = u'Medico'
+
     def get_queryset(self):
         data_agend = self.request.GET.get('data-pesquisada')
         
@@ -412,19 +376,10 @@ class PacientesDoDia(LoginRequiredMixin, GrupoMixin, ListView):
 
 
 class PacientesDoDiaMedico(PacientesDoDia):
+    group_required = u'Medico'
+
     def get_queryset(self):
         return Agendamento.objects.filter(data=self.data_atual, medico__usuario=self.request.user)
-
-
-class ProntuarioList(LoginRequiredMixin, GrupoMixin, ListView):
-    login_url = reverse_lazy('login')
-    model = Prontuario
-    template_name = 'paginas/listas/prontuarios.html'
-    
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context['titulo'] = 'Prontuários'
-        return context
     
 
 # --------------- Views para Detalhar ---------------
@@ -441,6 +396,7 @@ def calcular_idade(data_nascimento):
 
 
 class MostrarProntuario(LoginRequiredMixin, GrupoMixin, DetailView):
+    group_required = u'[Administrador, Medico]'
     login_url = reverse_lazy('login')
     model = Prontuario
     template_name = 'paginas/prontuario.html'
@@ -468,6 +424,7 @@ class MostrarProntuario(LoginRequiredMixin, GrupoMixin, DetailView):
 
 class AtendimentoCreate(LoginRequiredMixin, GrupoMixin, CreateView):
     login_url = reverse_lazy('login')
+    group_required = u'Medico'
     model = Atendimento
     form_class = AtendimentoForm
     template_name = 'paginas/modal_atendimento.html'
@@ -487,7 +444,7 @@ class AtendimentoCreate(LoginRequiredMixin, GrupoMixin, CreateView):
         agendamento.save()
         return reverse('detalhes_agendamento', kwargs={'pk': pk})
     
-
+@user_passes_test(is_medico)
 def concluir_procedimento(request):
     if request.method == 'POST':
         agendamento_id = request.POST.get('agendamento_id')
@@ -500,11 +457,14 @@ def concluir_procedimento(request):
 
 class RelatorioFinanceiro(LoginRequiredMixin, GrupoMixin, TemplateView):
     login_url = reverse_lazy('login')
+    group_required = u'Administrador'
     template_name = "paginas/relatorio_financeiro.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         valor_total = Agendamento.objects.filter(concluido=True).aggregate(Sum('valor'))['valor__sum']
+
+        titulo ='Relatório Financeiro Geral'
 
         especialidades = Especialidade.objects.all()
         lista_consultas_por_especialidade = []
@@ -515,6 +475,10 @@ class RelatorioFinanceiro(LoginRequiredMixin, GrupoMixin, TemplateView):
         if periodo_inicial and periodo_final and periodo_inicial != '' and periodo_final != '' and periodo_inicial != 'None' and periodo_final != 'None':
             valor_total = Agendamento.objects.filter(concluido=True,
                 data__range=[periodo_inicial, periodo_final]).aggregate(Sum('valor'))['valor__sum']
+            
+            data_inicial = datetime.strptime(periodo_inicial, '%Y-%m-%d').strftime('%d/%m/%Y')
+            data_final = datetime.strptime(periodo_final, '%Y-%m-%d').strftime('%d/%m/%Y')
+            titulo = f'Relatório Financeiro de {data_inicial} a {data_final}'
 
         especialidades = Especialidade.objects.all()
 
@@ -554,7 +518,7 @@ class RelatorioFinanceiro(LoginRequiredMixin, GrupoMixin, TemplateView):
             })
 
         lista_consultas_por_especialidade = sorted(lista_consultas_por_especialidade, key=lambda x: x['valor_arrecadado'], reverse=True)
-        context['titulo'] = 'Relatório Financeiro'
+        context['titulo'] = titulo
         context['consultas_por_especialidade'] = lista_consultas_por_especialidade
         context['total_valor'] = valor_total
         context['data_inicial'] = periodo_inicial

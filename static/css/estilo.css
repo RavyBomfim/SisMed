@@ -65,11 +65,6 @@ header #logo {
   font-size: 16px; 
 }
 
-/*Materialize*/
-/* #view-cozy {
-    font-size: 17px;
-} */
-
 #add-box {
     font-size: 18px;
 }
@@ -86,6 +81,7 @@ header #logo {
 #login-option {
     font-size: 18px;
     font-weight: 500;
+    color: #085c58 !important;
 }
 
 #login-option:hover {

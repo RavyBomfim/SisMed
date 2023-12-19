@@ -32,6 +32,7 @@
                     <div class="input-field">
                         {{ form.username }}
                         <label for="{{ form.username.id_for_label }}">Usuário</label>
+                        <div style=" color: #d84343;">{{ form.username.errors }}</div>
                     </div>
                 {% endblock %}
 
@@ -46,14 +47,25 @@
                     <div class="input-field">
                         {{ form.password2 }}
                         <label for="{{ form.password2.id_for_label }}">Confirmar Senha</label>
-                        {% for error in form.password2.errors %}
-                            <p class="error"> {{ error }}</p>
-                        {% endfor %}
+                        {% if form.password1.errors %}
+                            {% for error in form.password1.errors %}
+                                <p class="error"> {{ error }}</p>
+                            {% endfor %}
+                        {% elif form.password2.errors %}
+                            {% for error in form.password2.errors %}
+                                <p class="error"> {{ error }}</p>
+                            {% endfor %}
+                        {% endif %} 
                     </div>
                 {% endblock %}
-
                 <button type="submit" class="btn">Confirmar</button>
             </form> 
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        M.AutoInit();
+    </script>
 {% endblock %}

@@ -202,8 +202,6 @@ h3 {
 
 .titulo-form {
     margin: 0;
-    /* margin-top: 0;
-    margin-bottom: 5px; */
     text-align: center;
 }
 
@@ -256,8 +254,3 @@ h3 {
     bottom: -20px;
     left: 1px;
 }
-
-/* #day-error {
-    bottom: -20px;
-    left: 1px;
-} */

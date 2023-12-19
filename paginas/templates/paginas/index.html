@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
     <link rel="stylesheet" href="{% static 'css/style_dash.css' %}">
 
+    
     {% block styles %}
 
     {% endblock %}
@@ -55,7 +56,7 @@
                         <span class="material-symbols-outlined">arrow_drop_down</span>
                     </li>
                 {% else %}
-                    <li><a class="black-text" id="login-option" href="{% url 'login' %}">Login</a></li>
+                    <li><a id="login-option" href="{% url 'login' %}">Login</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -74,6 +75,7 @@
             <li><a href="{% url 'listar-medicos' %}">Listar Médicos</a></li>
             <li><a href="{% url 'listar-pacientes' %}">Listar Pacientes</a></li>
             <li><a href="{% url 'listar-procedimentos' %}">Listar Procedimentos</a></li>
+            <li><a href="{% url 'agendar-consulta-procedimento' %}">Agendar Atendimento</a></li>
             <li><a href="{% url 'listar-agendamentos' %}">Agendamentos</a></li>
             <li><a href="{% url 'pacientes-do-dia' %}">Pacientes do Dia</a></li>
             <li><a href="{% url 'relatorio-financeiro' %}">Relatório Financeiro</a></li>

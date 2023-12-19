@@ -29,34 +29,29 @@
 
     <div class="form-container">
         <div class="form-box"> 
+            
+            <h2 class="titulo-form">Login</h2>
+            <p>Digite os seus dados de acesso nos campos abaixo.</p> <br>
 
-            {% if request.user.is_authenticated %}
-                <h4>Você não tem permissão para acessar esta página!</h4>
-            {% else %}
+            <form action="" method="POST">
+                {% csrf_token %}
 
-                <h2 class="titulo-form">Login</h2>
-                <p>Digite os seus dados de acesso nos campos abaixo.</p> <br>
-    
-                <form action="" method="POST">
-                    {% csrf_token %}
+                <div class="input-field">
+                    {{ form.username }}
+                    <label for="{{ form.username.id_for_label }}">Usuario</label>
+                </div>
 
-                    <div class="input-field">
-                        {{ form.username }}
-                        <label for="{{ form.username.id_for_label }}">Usuario</label>
-                    </div>
+                <div class="input-field">
+                    {{ form.password }}
+                    <label for="{{ form.password.id_for_label }}">Senha</label>
+                </div>
 
-                    <div class="input-field">
-                        {{ form.password }}
-                        <label for="{{ form.password.id_for_label }}">Senha</label>
-                    </div>
+                {% if form.non_field_errors %}
+                    <p class="error">{{ form.non_field_errors.as_text|slice:":52"  }}</p>
+                {% endif %}
 
-                    {% if form.non_field_errors %}
-                        <p class="error">{{ form.non_field_errors.as_text|slice:":52"  }}</p>
-                    {% endif %}
-
-                    <button type="submit" class="btn">Login</button>
-                </form>
-            {% endif %}
+                <button type="submit" class="btn">Login</button>
+            </form>
         </div>
     </div>
     <!-- <div class="page">
