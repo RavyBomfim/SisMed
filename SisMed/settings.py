@@ -42,13 +42,7 @@ INSTALLED_APPS = [
     'cadastros.apps.CadastrosConfig',
     'usuarios.apps.UsuariosConfig',
     'relatorios.apps.RelatoriosConfig',
-    'crispy_forms',
-    'crispy_bootstrap5',
 ]
-
-# Crispy Forms
-CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
-CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
