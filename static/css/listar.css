@@ -1,10 +1,76 @@
 .container {
-    padding-block: 40px;
+    padding-top: 10px;
+    padding-bottom: 40px;
+}
+
+.table-responsive {
+    min-height: 390px;
+}
+
+.table td {
+    padding: 10px;
 }
 
 #btn_box_list {
     display: flex;
     gap: 10px;
+}
+
+#pesquisar-box {
+    width: 300px;
+    position: relative;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#pesquisar-box input {
+    width: 255px;
+    height: 28px;
+    margin: 0;
+    border: 2px solid #078b85;
+    padding-inline: 11px;
+    border-radius: 30px;
+}
+
+#pesquisar-box input:focus {
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+#pesquisar-box input::placeholder {
+    color: #8f8f8f;
+}
+
+#pesquisar-box #filtrar, #pesquisar-box #reset {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 32px;
+    right: 1px;
+    bottom: 0;
+    cursor: pointer;
+}
+
+#pesquisar-box #filtrar {
+    background-color: #096661;
+    border: 2px solid  #078b85;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    color: #e9e9e9;
+}
+
+#pesquisar-box #reset {
+    border: 0;
+    right: 32px;
+    background-color: transparent;
+    border-top: 2px solid  #078b85;
+    border-bottom: 2px solid  #078b85;
+}
+
+#pesquisar-box #reset i {
+    color: #085751;
 }
 
 .btn-sm {
@@ -31,7 +97,8 @@
 }
 
 .lista-foto {
-    width: 55px;
+    width: 50px;
+    margin-top: 5px;
 }
 
 .foto-box {
@@ -86,6 +153,29 @@
 .opcao {
     text-align: center;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    padding-inline: 10px;
+    padding-top: 10px;
+    padding-bottom: 0;
+}
+
+.pagination li a {
+    /* background-color: #a8ccb6; */
+    background-color: #c0d4c8;
+    /* color: #096661; */
+    color: #05534f;
+}
+
+.pagination li a:hover:not(.pagination .disabled a:hover), 
+.pagination .active a {
+    background-color: #0b807a;
+    color: #fff;
+}
+
 
 @media (max-width: 340px) {
 

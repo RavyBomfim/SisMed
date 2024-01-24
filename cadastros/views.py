@@ -1,6 +1,8 @@
 from typing import Any
 from django.db.models import F,  ExpressionWrapper, IntegerField
 from django.db.models.functions import ExtractDay, ExtractMonth
+from django.db.models.query import QuerySet
+from django.forms.models import BaseModelForm
 from paginas.views import GrupoMixin
 from .forms import EnderecoForm, FuncionarioForm, HorarioMedicoForm, MedicoForm, PacienteForm, ProcedimentoForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -26,14 +28,16 @@ class CargoCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, CreateView
     fields = ['nome_cargo', 'salario']
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-cargos')
-    
+
+    def get_form(self, form_class=None):
+        form = super(CargoCreate, self).get_form(form_class)
+        form.fields['nome_cargo'].widget.attrs.update({'autofocus': 'autofocus'})
+        return form
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-
         context['form'].fields['salario'].widget.attrs['class'] = 'preco'
         context['titulo'] = 'Cadastro de Cargos'
-
         return context
 
 
@@ -73,12 +77,15 @@ class EspecialidadeCreate(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, Cr
     template_name = 'cadastros/form.html'
     success_url = reverse_lazy('listar-especialidades')
 
+    def get_form(self, form_class=None):
+        form = super(EspecialidadeCreate, self).get_form(form_class)
+        form.fields['especialidade'].widget.attrs.update({'autofocus': 'autofocus'})
+        return form
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-
         context['form'].fields['valor_consulta'].widget.attrs['class'] = 'preco'
         context['titulo'] = 'Cadastro de Especialidades'
-
         return context
 
 
@@ -504,12 +511,30 @@ class FuncionarioList(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListVi
     model = Funcionario
     template_name = 'cadastros/listas/funcionarios.html'
     success_url = reverse_lazy('inicio')
+    paginate_by = 4
+
+    def get_queryset(self):
+        nome = self.request.GET.get('nome')
+
+        if nome:
+            funcionarios = Funcionario.objects.filter(nome_completo__contains=nome).order_by('nome_completo')
+        else:
+            funcionarios = Funcionario.objects.all().order_by('nome_completo')
+        
+        return funcionarios
     
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+
+        nome = self.request.GET.get('nome')
+        if nome:
+            aviso = 'Funcionário não encontrado'
+        else:
+            aviso = 'Ainda não há funcionários cadastrados'
     
         context['titulo'] = 'Funcionários'
+        context['aviso'] = aviso
 
         return context
 
@@ -527,10 +552,30 @@ class MedicoList(LoginRequiredMixin, GrupoMixin, ListView):
     model = Medico
     template_name = 'cadastros/listas/medicos.html'
     success_url = reverse_lazy('listar-medicos')
+    paginate_by = 4
+
+    def get_queryset(self):
+        nome = self.request.GET.get('nome')
+
+        if nome:
+            medicos = Medico.objects.filter(nome_completo__icontains=nome).order_by('nome_completo')
+        else:
+            medicos = Medico.objects.all().order_by('nome_completo')
+
+        return medicos
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+
+        nome = self.request.GET.get('nome')
+        if nome:
+            aviso = 'Médico não encontrado'
+        else:
+            aviso = 'Ainda não há médicos cadastrados'
+
         context['titulo'] = 'Médicos'
+        context['aviso'] = aviso
+
         return context
 
 
@@ -539,24 +584,58 @@ class PacienteList(LoginRequiredMixin, GrupoMixin, ListView):
     model = Paciente
     template_name = 'cadastros/listas/pacientes.html'
     success_url = reverse_lazy('listar-pacientes')
+    paginate_by = 4
+
+    def get_queryset(self):
+        nome = self.request.GET.get('nome')
+
+        if nome:
+            pacientes = Paciente.objects.filter(nome_completo__icontains=nome).order_by('nome_completo')
+        else:
+            pacientes = Paciente.objects.all().order_by('nome_completo')
+
+        return pacientes
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+
+        nome = self.request.GET.get('nome')
+        if nome:
+            aviso = 'Paciente não encontrado'
+        else:
+            aviso = 'Ainda não há pacientes cadastrados'
+
         context['titulo'] = 'Pacientes'
+        context['aviso'] = aviso
+        
         return context
 
 
 class PacientesMedico(PacienteList):
+    
     def get_queryset(self):
-        medico_do_usuario = Medico.objects.get(usuario=self.request.user)
-        agendamentos_do_medico = Agendamento.objects.filter(medico=medico_do_usuario)
+        id_medico = Medico.objects.get(usuario=self.request.user)
+        agendamentos_do_medico = Agendamento.objects.filter(medico=id_medico)
 
+        nome = self.request.GET.get('nome')
         pacientes_do_medico = Paciente.objects.filter(agendamento__in=agendamentos_do_medico).distinct()
+
+        if nome:
+            pacientes_do_medico = pacientes_do_medico.filter(nome_completo__icontains=nome).order_by('nome_completo')
+
         return pacientes_do_medico
     
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+
+        nome = self.request.GET.get('nome')
+        if nome:
+            aviso = 'Paciente não encontrado'
+        else:
+            aviso = 'Ainda não há pacientes cadastrados'
+
         context['titulo'] = 'Meus Pacientes'
+        context['aviso'] = aviso
         return context
 
 class AniversariosPacientesList(LoginRequiredMixin, GrupoMixin, ListView):

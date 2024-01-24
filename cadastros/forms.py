@@ -121,6 +121,10 @@ class ProcedimentoForm(forms.ModelForm):
         model = Procedimento
         fields = ['nome_procedimento', 'especialidade_responsavel', 'descricao', 'valor_procedimento']
 
+    def __init__(self, *args, **kwargs):
+        super(ProcedimentoForm, self).__init__(*args, **kwargs)
+        self.fields['nome_procedimento'].widget.attrs['autofocus'] = 'autofocus'
+
 
 """class AgendamentoConsulta(forms.ModelForm):
     paciente = forms.ModelChoiceField(queryset=Cargo.objects.all(), empty_label="Selecione o paciente",widget=forms.Select(attrs={'class': 'select'}))

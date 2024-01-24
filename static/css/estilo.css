@@ -104,10 +104,6 @@ main {
     padding-block: 20px;
 }
 
-/* #main-container {
-    position: relative;
-} */
-
 .flex {
     display: flex;
 }

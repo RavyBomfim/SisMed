@@ -10,6 +10,19 @@
         </a>
         <a class="btn btn-aniversario btn-sm" href="{% url 'aniversarios-pacientes' %}">Aniversários</a>
     {% endif %}
+
+    <form action="?" method="GET" {% if is_medico %} style=" width: 100%; margin-top: -43px; margin-bottom: 12px; display: flex; justify-content: center;" {% endif %}>
+        <div id="pesquisar-box">
+            <input type="search" name="nome" value="{{request.GET.nome}}" placeholder="Pesquise pelo nome..."> 
+            <a href="{% if not is_medico %} {% url 'listar-pacientes' %} {% else %} {% url 'listar-pacientes-medico' %} {% endif %}" id="reset">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+            <button type="submit" id="filtrar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+    </form>
+
 {% endblock %}
     
 {% block campo3 %}
@@ -35,7 +48,7 @@
     </tr>
     {% empty %}
     <tr>
-        <td colspan="12">Ainda não há pacientes cadastrados</td>
+        <td colspan="12">{{aviso}}</td>
     </tr>
     {% endfor %}
 {% endblock %}

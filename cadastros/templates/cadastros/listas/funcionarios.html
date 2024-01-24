@@ -16,6 +16,18 @@
             <i class="fas fa-plus"></i> 
             Cadastrar Funcionário
             </a>
+
+            <form action="?" method="GET">
+                <div id="pesquisar-box">
+                    <input type="search" name="nome" value="{{request.GET.nome}}" placeholder="Pesquise pelo nome..."> 
+                    <a href="{% url 'listar-funcionarios' %}" id="reset">
+                        <i class="fa-solid fa-xmark"></i>
+                    </a>
+                    <button type="submit" id="filtrar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+            </form>
         {% endblock %}
     </div> <hr>
     
@@ -49,11 +61,104 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="12">Ainda não há funcionários cadastrados</td>
+                    <td colspan="12">{{aviso}}</td>
                 </tr>
                 {% endfor %}
             {% endblock %}
         </table>
     </div>
 
+    {% if page_obj.paginator.num_pages > 1 %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                {% if request.GET.nome %}
+                    <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}&nome={{request.GET.nome}}">Anterior</a></li>
+                {% else %}
+                    <li class="waves-effect"><a href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
+                {% endif %}
+            {% else %}
+                {% if request.GET.nome %}
+                    <li class="waves-effect disabled"><a href="?page={{ page_obj.number }}&nome={{request.GET.nome}}">Anterior</a></li>
+                {% else %} 
+                    <li class="waves-effect disabled"><a href="?page={{ page_obj.number }}">Anterior</a></li>
+                {% endif %}
+            {% endif %}
+
+            {% for pg in page_obj.paginator.page_range %}
+                {% if request.GET.nome %}
+                    <li class="waves-effect number-button"><a href="?page={{pg}}&nome={{request.GET.nome}}">{{pg}}</a></li>
+                {% else %}
+                    <li class="waves-effect number-button"><a href="?page={{pg}}">{{pg}}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                {% if request.GET.nome %}
+                    <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}&nome={{ request.GET.nome }}">Próximo</a></li>
+                {% else %}
+                    <li class="waves-effect"><a href="?page={{ page_obj.next_page_number }}">Próximo</a></li>
+                {% endif %}
+            {% else %}
+                {% if request.GET.nome %}
+                    <li class="waves-effect disabled"><a href="?page={{ page_obj.number }}&nome={{ request.GET.nome }}">Próximo</a></li>
+                {% else %}
+                    <li class="waves-effect disabled"><a href="?page={{ page_obj.number }}">Próximo</a></li>
+                {% endif %}
+            {% endif %}
+        </ul>
+      {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function(){
+
+            var num_paginas = `{{ page_obj.paginator.num_pages }}`;
+            var pagina_atual = parseInt(pegarParametroPeloNome('page'));
+
+            $('ul.pagination li a').filter(function() {
+                return $(this).text() !== 'Anterior' && $(this).text() !== 'Próximo' && parseInt($(this).attr('href').split('=')[1]) === pagina_atual;
+            }).parent('li').addClass('active');
+
+
+            if (!pagina_atual) {
+                if (num_paginas > 1) {
+                    $('ul.pagination .number-button:first').addClass('active');
+                    adiconarParametroNaUrl('page', 1) 
+                }
+            }
+
+        });
+
+        function pegarParametroPeloNome(nome, url) {
+            if (!url) url = window.location.href;
+            nome = nome.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + nome + '(=([^&#]*)|&|#|$)'),
+                resultado = regex.exec(url);
+            if (!resultado) return null;
+            if (!resultado[2]) return '';
+            return decodeURIComponent(resultado[2].replace(/\+/g, ' '));
+        }
+
+        function adiconarParametroNaUrl(parametro, valor) {
+            // Pegando o valor da URL atual
+            var url_atual = window.location.href;
+
+            // Criando um objeto URLSearchParams para pegar os parâmetros da URL
+            var params_url = new URLSearchParams(window.location.search);
+            var params_url_str = params_url.toString();
+
+            // Adicionando um novo parâmetro à URL 
+            var nova_url = url_atual.split('?')[0] + `?${parametro}=${valor}`;
+
+            // Verificando se existem outros parâmtros na url e, se existir, adicioná-los após o novo parâmetro.
+            if (params_url_str) {
+                nova_url += '&' + params_url_str;
+            }
+
+            // Atualizando a URL
+            window.history.replaceState({}, document.title, nova_url);
+        }
+    </script>
 {% endblock %}

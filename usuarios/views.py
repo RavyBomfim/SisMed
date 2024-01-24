@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import  ListView
+from django.views.generic.detail import DetailView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User, Group
 from cadastros.models import Medico
@@ -108,14 +109,6 @@ class UsuarioDelete(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DeleteVi
 class UsuarioList(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListView):
     login_url = reverse_lazy('login')
     group_required = u'Administrador'
-    model = User
-    template_name = 'usuarios/lista/usuario.html'
-    success_url = reverse_lazy('listar-usuarios')
-
-
-class MeusPacientes(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, ListView):
-    login_url = reverse_lazy('login')
-    group_required = u'Medico'
     model = User
     template_name = 'usuarios/lista/usuario.html'
     success_url = reverse_lazy('listar-usuarios')
