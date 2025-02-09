@@ -22,15 +22,80 @@
 Sistema de Clínica Médica Completo em Django.
 Projeto requisitado na disciplina de Programação Web II da graduação em Análise e Desenvolvimento de Sistemas.
 
+O Sistema possui níveis e controle de acesso, com funcionaldades e acesso à informações específicas de acordo com o tipo de usuário logado (Administrador ou Médico).
 
 <h2 id="funcionalidades">Funcionalidades</h2>
 
-- [x] `Funcionalidade 1:` Cadastro de Cargos
-- [x] `Funcionalidade 2:` Cadastro de Especialidades
-- [x] `Funcionalidade 3:` Cadastro de Funcionários
-- [x] `Funcionalidade 4:` Cadastro de Médicos
-- [x] `Funcionalidade 5:` Cadastro de Pacientes
-- [x] `Funcionalidade 6:` Cadastro de Procedimentos
+<h4>Administradores podem:</h4>
+
+- [x] `Funcionalidade 1:` Cadastrar Cargo
+- [x] `Funcionalidade 2:` Cadastrar Especialidade
+- [x] `Funcionalidade 3:` Cadastrar Funcionário
+- [x] `Funcionalidade 4:` Cadastrar Médico
+- [x] `Funcionalidade 5:` Cadastrar Paciente
+- [x] `Funcionalidade 6:` Cadastrar Procedimento
+- [x] `Funcionalidade 7:` Cadastrar Usuário
+- [x] `Funcionalidade 8:` Agendar Atendimento (Consulta/Procedimento)
+- [x] `Funcionalidade 9:` Listar Cargos
+- [x] `Funcionalidade 10:` Listar Especialidades
+- [x] `Funcionalidade 11:` Listar Funcionários
+- [x] `Funcionalidade 12:` Pesquisar Funcionários pelo nome
+- [x] `Funcionalidade 13:` Ver detalhes de cadastro de Funcionário
+- [x] `Funcionalidade 14:` Imprimir Dados do Funcionário em PDF
+- [x] `Funcionalidade 15:` Listar Médicos
+- [x] `Funcionalidade 16:` Pesquisar Médicos pelo nome
+- [x] `Funcionalidade 17:` Ver detalhes de cadastro de Médico
+- [x] `Funcionalidade 18:` Listar Pacientes
+- [x] `Funcionalidade 19:` Pesquisar Pacientes pelo nome
+- [x] `Funcionalidade 20:` Visualizar Aniversários dos Pacientes
+- [x] `Funcionalidade 21:` Filtrar Aniversários pelo mês de nascimento
+- [x] `Funcionalidade 22:` Imprimir Aniversários em PDF
+- [x] `Funcionalidade 23:` Ver detalhes de cadastro de Paciente
+- [x] `Funcionalidade 24:` Imprimir Ficha do Paciente em PDF
+- [x] `Funcionalidade 25:` Acessar Prontuário do Paciente
+- [x] `Funcionalidade 26:` Imprimir Prontuário em PDF
+- [x] `Funcionalidade 27:` Listar Procedimentos
+- [x] `Funcionalidade 28:` Acessar Agendamentos
+- [x] `Funcionalidade 29:` Ver detalhes de Agendamento
+- [x] `Funcionalidade 30:` Acessar Pacientes do Dia
+- [x] `Funcionalidade 31:` Editar Cargo
+- [x] `Funcionalidade 32:` Editar Especialidade
+- [x] `Funcionalidade 33:` Editar Funcionário
+- [x] `Funcionalidade 34:` Editar Médico
+- [x] `Funcionalidade 35:` Editar Paciente
+- [x] `Funcionalidade 36:` Editar Procedimento
+- [x] `Funcionalidade 37:` Editar Agendamento
+- [x] `Funcionalidade 38:` Excluir Cargo
+- [x] `Funcionalidade 39:` Excluir Especialidade
+- [x] `Funcionalidade 40:` Excluir Cadastro de Funcionário
+- [x] `Funcionalidade 41:` Excluir Cadastro de Médico
+- [x] `Funcionalidade 42:` Excluir Cadastro de Paciente
+- [x] `Funcionalidade 43:` Excluir Procedimento
+- [x] `Funcionalidade 44:` Excluir Agendamento
+- [x] `Funcionalidade 45:` Acessar Agenda dos Médicos
+- [x] `Funcionalidade 46:` Editar Agendas dos Médicos
+- [x] `Funcionalidade 47:` Ver especialidades mais requisitadas
+- [x] `Funcionalidade 48:` Gerar Relatório Financeiro Geral mostrando Valores arrecadados por Especialidade e Valor Total arrecadado
+- [x] `Funcionalidade 49:` Gerar Relatório Financeiro de um período específico
+- [x] `Funcionalidade 50:` Imprimir Relatório Financeiro em PDF
+- [x] `Funcionalidade 51:` Imprimir Relatório Financeiro em PDF
+
+<h4>Médicos podem:</h4>
+
+- [x] `Funcionalidade 1:` Acessar a própria Agenda
+- [x] `Funcionalidade 2:` Editar a própria Agendas
+- [x] `Funcionalidade 3:` Visualizar seus Pacientes do dia
+- [x] `Funcionalidade 4:` Visualizar todos os seus Pacientes
+- [x] `Funcionalidade 5:` Pesquisar seus Pacientes pelo nome
+- [x] `Funcionalidade 6:` Ver detalhes de Cadastro de seus Pacientes
+- [x] `Funcionalidade 7:` Imprimir Ficha do Paciente em PDF
+- [x] `Funcionalidade 8:` Ver Agendamentos (Consultas/Procedimentos) onde ele (o usuário) é o médico
+- [x] `Funcionalidade 9:` Filtrar  Agendamentos por data
+- [x] `Funcionalidade 10:` Gerar PDF com os Agendamentos
+- [x] `Funcionalidade 11:` Marcar Agendamento (Consulta/Procedimento) como concluído
+- [x] `Funcionalidade 12:` Adicionar Informações de Anamnese do Paciente ao concluir consulta
+- [x] `Funcionalidade 13:` Acessar Prontuário do Paciente
+- [x] `Funcionalidade 14:` Imprimir Prontuário em PDF
 
 <hr>
 
