@@ -65,7 +65,7 @@
         </div>
     </div>
 
-    {% if is_admin %}
+    {% if is_admin or request.user.is_superuser %}
     <div id="btn-box">
         <a href="{% url 'editar-paciente' paciente.pk %}" class="btn btn-sm btn-editar">Editar</a> &nbsp;
         <a href="{% url 'excluir-paciente' paciente.pk %}" class="btn btn-sm btn-excluir">Excluir</a>

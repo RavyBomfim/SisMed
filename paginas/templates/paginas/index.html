@@ -68,7 +68,7 @@
             <li><a href="{% url 'listar-pacientes-medico' %}">Meus Pacientes</a></li>
             <li><a href="{% url 'agendamentos-com-medico' %}">Agendamentos</a></li>
             <li><a href="{% url 'pacientes-do-dia-medico' %}">Pacientes do Dia</a></li>
-        {% else %}
+        {% elif is_admin or request.user.is_superuser %}
             <li><a href="{% url 'listar-cargos' %}">Listar Cargos</a></li>
             <li><a href="{% url 'listar-especialidades' %}">Listar Especialidades</a></li>
             <li><a href="{% url 'listar-funcionarios' %}">Listar Funcionários</a></li>
@@ -79,6 +79,13 @@
             <li><a href="{% url 'listar-agendamentos' %}">Agendamentos</a></li>
             <li><a href="{% url 'pacientes-do-dia' %}">Pacientes do Dia</a></li>
             <li><a href="{% url 'relatorio-financeiro' %}">Relatório Financeiro</a></li>
+        {% else %}
+            <li><a href="{% url 'listar-medicos' %}">Listar Médicos</a></li>
+            <li><a href="{% url 'listar-pacientes' %}">Listar Pacientes</a></li>
+            <li><a href="{% url 'listar-procedimentos' %}">Listar Procedimentos</a></li>
+            <li><a href="{% url 'agendar-consulta-procedimento' %}">Agendar Atendimento</a></li>
+            <li><a href="{% url 'listar-agendamentos' %}">Agendamentos</a></li>
+            <li><a href="{% url 'pacientes-do-dia' %}">Pacientes do Dia</a></li>
         {% endif %}
     </ul>
     
@@ -166,6 +173,8 @@
                     </div>
                 </a>
             </div>
+
+            {% if is_admin or request.user1.is_superuser %}
             <div class="col s12 m6 l6">
                 <div class="card dynamic-card">
                     <div class="card-content">
@@ -191,6 +200,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         {% endblock %}
     </div>
 </main>
