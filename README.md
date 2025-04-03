@@ -133,12 +133,6 @@ Django - Framework Web
 <hr>
 
 
-<h2 id="como-utilizar">Como utilizá-lo❔</h2>
-
-<p></p>
-
-<hr>
-
 <h2 id="desenvolvedores">Desenvolvedores</h2>
 
 | <a href="https://github.com/RavyBomfim"> <img alt="Foto de Ravieli" src="https://github.com/user-attachments/assets/ee73852a-a805-4814-b988-8b1cca7a23ca" width=110> <br> Ravieli Bomfim <a/> <br> Front e Back-end | <a href="https://github.com/BrianOrmund"> <img alt="Foto de Brian" src="https://github.com/user-attachments/assets/33703dde-49a0-4935-9d9a-5a3756310cfc" width=110> <br> Brian Ormund <a/>  <br> Front-end |
