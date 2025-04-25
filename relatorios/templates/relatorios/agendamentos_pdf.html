@@ -7,9 +7,9 @@
 {% endblock %}
 
 {% block css_PDF %}
-    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/listar.css' %}">
-    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/aniversarios.css' %}">
-    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/tabela_pdf.css' %}">
+    <link rel="stylesheet" href="{{ request.scheme }}://{{ request.get_host }}{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="{{ request.scheme }}://{{ request.get_host }}{% static 'css/aniversarios.css' %}">
+    <link rel="stylesheet" href="{{ request.scheme }}://{{ request.get_host }}{% static 'css/tabela_pdf.css' %}">
     <style>
         body {
             padding: 10mm 5mm;
@@ -72,7 +72,11 @@
         {% block lista %} 
             {% for agendamento in object_list %}
             <tr>
-                <td>{{agendamento.tipo_agendamento}}</td>
+                {% if agendamento.tipo_agendamento == 'Consulta' %}
+                    <td>{{agendamento.tipo_agendamento}}</p>
+                {% else %} 
+                    <td>{{agendamento.procedimento}}</p> 
+                {% endif %} 
                 <td>{{agendamento.paciente.nome_completo}}</td>
                 <td>{{agendamento.paciente.telefone}}</td>
                 <td>{{agendamento.medico.nome_completo}}</td>
@@ -86,7 +90,7 @@
                         <td>Não</td>
                     {% endif %}
                 {% else %}
-                    <td></td>
+                    <td>Não</td>
                 {% endif %}
             </tr>
             {% empty %}

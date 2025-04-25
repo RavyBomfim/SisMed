@@ -26,13 +26,7 @@
         }
         
         #consultas-agend-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 1px;
-            border-left: 1px solid #7c7c7c;
-            border-right: 1px solid #7c7c7c;
+            border: 1px solid #d5d5d5;
         } 
 
         #consultas-agend-container hr {
@@ -50,16 +44,24 @@
 
         .dados-agend {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-self: flex-start;
         }
 
         .tamanho_definido {
-            width: 100px;
+            width: 120px;
         }
 
         .botoes-box {
             align-self: flex-end;
+        }
+
+        .botoes-box .btn {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            padding: 10px;
+            height: 30px;
         }
 
         #agendamento-vazio {
@@ -137,37 +139,54 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
                 </div>
-                <a class="btn btn-gerar-pdf btn-sm" href="{% url 'agendamentos-pdf' %}?data-pesquisada={{data}}&especialidade-pesquisada={{especialidade_pesq}}"><i class="fa-regular fa-file-pdf"></i>GERAR PDF</a>
+                {% if data and especialidade_pesq %}
+                    <a class="btn btn-gerar-pdf btn-sm"
+                    href="{% url 'agendamentos-pdf' %}?data-pesquisada={{ data }}&especialidade-pesquisada={{ especialidade_pesq }}">
+                        <i class="fa-regular fa-file-pdf"></i>GERAR PDF
+                    </a>
+                {% elif data %}
+                    <a class="btn btn-gerar-pdf btn-sm"
+                    href="{% url 'agendamentos-pdf' %}?data-pesquisada={{ data }}">
+                        <i class="fa-regular fa-file-pdf"></i>GERAR PDF
+                    </a>
+                {% elif especialidade_pesq %}
+                    <a class="btn btn-gerar-pdf btn-sm"
+                    href="{% url 'agendamentos-pdf' %}?especialidade-pesquisada={{ especialidade_pesq }}">
+                        <i class="fa-regular fa-file-pdf"></i>GERAR PDF
+                    </a>
+                {% else %}
+                    <a class="btn btn-gerar-pdf btn-sm"
+                    href="{% url 'agendamentos-pdf' %}">
+                        <i class="fa-regular fa-file-pdf"></i>GERAR PDF
+                    </a>
+                {% endif %}
             </form>
         {% endblock %}
     </div>
     
-    <div id="consultas-agend-container">
-        <hr>
-        {% block campos-listagem %}
+    <table id="consultas-agend-container" class="table">
+        {% block lista %} 
             {% for agendamento in object_list %}
-            <div class="consultas-agend">
-                <div class="dados-agend">
-                    <p class='tamanho_definido'>{{agendamento.tipo_agendamento}}</p>
-                    <p>{{agendamento.data|date:'d/m/Y'}}</p>
-                    <p>Paciente: {{agendamento.paciente.nome_completo}}</p>
-                    <p>Médico: {{agendamento.medico.nome_completo}} ({{agendamento.medico.especialidade.especialidade}})</p>
-                </div>
-                <div class="botoes-box">
+            <tr>
+                {% if agendamento.tipo_agendamento == 'Consulta' %}
+                    <td>{{agendamento.tipo_agendamento}}</p>
+                {% else %} 
+                    <td>{{agendamento.procedimento}}</p> 
+                {% endif %} 
+                <td>{{agendamento.data|date:'d/m/Y'}}</td>
+                <td>Paciente: {{agendamento.paciente.nome_completo}} Souza Santos</td>
+                <td>Médico: {{agendamento.medico.nome_completo}} Souza Santos ({{agendamento.medico.especialidade.especialidade}})</td>
+                <td class="botoes-box">
                     <a href="{% url 'detalhes_agendamento' agendamento.pk %}" class="btn btn-sm">Detalhes</a>
-                </div>
-            </div>
-            <hr>
+                </td>
+            </tr>
             {% empty %}
-                <div id="agendamento-vazio">
-                    {% block vazio %}
-                        {{aviso}}
-                    {% endblock %}
-                </div>
-                <hr>
+                <tr>
+                    <td id="aviso" colspan="12">{{aviso}}</td>
+                </tr>
             {% endfor %}
         {% endblock %}
-    </div>
+    </table>
 
 {% endblock %}
 

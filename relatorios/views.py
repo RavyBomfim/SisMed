@@ -30,7 +30,7 @@ class GerarFichaPacientePDF(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, 
         paciente = self.get_object()
         template = get_template(self.template_name)
         context = {'paciente': paciente}
-        html_content = template.render(context)
+        html_content = template.render(context, request=self.request)
 
         # Caminho para o executável wkhtmltopdf
         wkhtmltopdf_path = get_wkhtmltopdf_path()
@@ -60,7 +60,7 @@ class GerarFichaFuncionarioPDF(GroupRequiredMixin, LoginRequiredMixin, GrupoMixi
         funcionario = self.get_object()
         template = get_template(self.template_name)
         context = {'funcionario': funcionario}
-        html_content = template.render(context)
+        html_content = template.render(context, request=self.request)
 
         # Caminho para o executável wkhtmltopdf
         wkhtmltopdf_path = get_wkhtmltopdf_path()
@@ -125,7 +125,7 @@ class AniversariosPacientes_PDF(LoginRequiredMixin, GrupoMixin, ListView):
 
     def render_to_pdf(self, context):
         template = get_template(self.template_name)
-        html_content = template.render(context)
+        html_content = template.render(context, request=self.request)
 
         wkhtmltopdf_path = get_wkhtmltopdf_path()
         pdfkit_config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
@@ -149,7 +149,7 @@ class Agendamentos_PDF(AgendamentoList):
 
     def render_to_pdf(self, context):
         template = get_template(self.template_name)
-        html_content = template.render(context)
+        html_content = template.render(context, request=self.request)
 
         wkhtmltopdf_path = get_wkhtmltopdf_path()
         pdfkit_config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
@@ -163,9 +163,10 @@ class Agendamentos_PDF(AgendamentoList):
             titulo = f'Agendamentos do dia {data} para {especialidade_agend}s'
         elif especialidade_agend and especialidade_agend != '' and especialidade_agend != 'None':
             titulo = f'Agendamentos para {especialidade_agend}s'
-        if data_agend and data_agend != '' and data_agend != 'None':
+        elif data_agend and data_agend != '' and data_agend != 'None':
             data = datetime.strptime(data_agend, '%Y-%m-%d').strftime('%d/%m/%Y')
             titulo = f'Agendamentos do dia {data}'
+
 
         # Configura a orientação para horizontal
         options = {'page-size': 'A4', 'orientation': 'Landscape'}
@@ -205,7 +206,7 @@ class RelatorioFinanceiroPDF(RelatorioFinanceiro):
 
     def render_to_pdf(self, context):
         template = get_template(self.template_name)
-        html_content = template.render(context)
+        html_content = template.render(context, request=self.request)
         periodo_inicial = 'None' 
         periodo_final = 'None'
 
@@ -259,7 +260,7 @@ class GerarReciboPDF(LoginRequiredMixin, GrupoMixin, TemplateView):
 
     def render_to_pdf(self, context):
         template = get_template(self.template_name)
-        html_content = template.render(context)
+        html_content = template.render(context, request=self.request)
 
         wkhtmltopdf_path = get_wkhtmltopdf_path()
         pdfkit_config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
@@ -294,9 +295,11 @@ class ProntuarioPDF(MostrarProntuario):
 
     def render_to_pdf(self, context):
         template = get_template(self.template_name)
-        html_content = template.render(context)
+        html_content = template.render(context, request=self.request)
 
         wkhtmltopdf_path = get_wkhtmltopdf_path()
+        print("USANDO WKHTMLTOPDF EM:", wkhtmltopdf_path)
+
         pdfkit_config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
 
         pk = self.kwargs.get('pk')

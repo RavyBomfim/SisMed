@@ -184,7 +184,7 @@ class Agendamento(models.Model):
     concluido = models.BooleanField(default=False, null=True)
 
     def __str__(self):
-        return f'{self.tipo} {self.data} {self.horario} {self.paciente} {self.medico} {self.concluido}' 
+        return f'{self.tipo_agendamento} {self.data} {self.horario} {self.paciente} {self.medico} {self.concluido}' 
 
 
 class Atendimento(models.Model):

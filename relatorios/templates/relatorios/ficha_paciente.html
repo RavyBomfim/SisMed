@@ -20,27 +20,27 @@
 
 {% block content_PDF %}
     <div id="informs-box">
-        <p id="nome">Nome: {{paciente.nome_completo}}</p>
-        <p>Nascimento: {{paciente.data_nascimento|date:'d/m/Y'}}</p>
-        <p>Idade: {{paciente.get_idade}} anos</p>
-        <p>RG: {{paciente.rg}}</p>
-        <p>CPF: {{paciente.cpf}}</p>
+        <p id="nome"><span>Nome:</span> {{paciente.nome_completo}}</p>
+        <p><span>Nascimento:</span> {{paciente.data_nascimento|date:'d/m/Y'}}</p>
+        <p><span>Idade:</span> {{paciente.get_idade}} anos</p>
+        <p><span>RG:</span> {{paciente.rg}}</p>
+        <p><span>CPF:</span> {{paciente.cpf}}</p>
         {% if paciente.sexo == Null %}
-            <p>Sexo: Não definido</p>
+            <p><span>Sexo:</span> Não definido</p>
         {% else %}
             {% if paciente.sexo == 'F' %}
-                <p>Sexo: Feminino</p>
+                <p><span>Sexo:</span> Feminino</p>
             {% else %}
-                <p>Sexo: Masculino</p>
+                <p><span>Sexo:</span> Masculino</p>
             {% endif %}
         {% endif %}
-        <p>Telefone: {{paciente.telefone}}</p>
-        <p>Email: {{paciente.email}}</p>
-        <p>Rua: {{paciente.endereco.rua}}</p>
-        <p>Número: {{paciente.endereco.numero}}</p>
-        <p>Bairro: {{paciente.endereco.bairro}}</p>
-        <p>Cidade: {{paciente.endereco.cidade}}</p>
-        <p>Data de Cadastro {{paciente.data_cadastro|date:'d/m/Y'}}</p>
+        <p><span>Telefone:</span> {{paciente.telefone}}</p>
+        <p><span>Email:</span> {{paciente.email}}</p>
+        <p><span>Rua:</span> {{paciente.endereco.rua}}</p>
+        <p><span>Número:</span> {{paciente.endereco.numero}}</p>
+        <p><span>Bairro:</span> {{paciente.endereco.bairro}}</p>
+        <p><span>Cidade:</span> {{paciente.endereco.cidade}}</p>
+        <p><span>Data de Cadastro:</span> {{paciente.data_cadastro|date:'d/m/Y'}}</p>
     </div>
     <fieldset class="fieldset">
         <legend>Informacões Médicas</legend>

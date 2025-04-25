@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SisMed - {{titulo}}</title>
-    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/tabela_pdf.css' %}">
+    <link rel="stylesheet" href="{{ request.scheme }}://{{ request.get_host }}{% static 'css/tabela_pdf.css' %}">
 
     <style>
 
@@ -41,7 +41,6 @@
 
         #dados-recibo {
             width: 280mm;
-            /* border: 1px solid rgb(124, 124, 124); */
             border-top: 1px dashed rgb(124, 124, 124);
             border-bottom: 1px dashed rgb(124, 124, 124);
             background-color: #a8ccb6;
@@ -88,7 +87,7 @@
 <body>
     <div class="container-recibo">
         <div id="cabecalho-recibo">
-            <img src="http://127.0.0.1:8000/{% static 'img/Sismed-img.jpg' %}" alt=""> 
+            <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'img/Sismed-img.jpg' %}" alt=""> 
         </div>
         <!-- relatório de recibo da Consulta para o
 paciente, onde conste os seguintes dados: Cod. Da consulta, Data e

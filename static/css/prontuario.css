@@ -29,6 +29,7 @@
 }
 
 .agenda-titulo {
+    gap: 20px;
     justify-content: space-between;
 }
 
@@ -62,6 +63,11 @@
     margin-bottom: 15px;
 }
 
+.consulta-dados span {
+    font-weight: 600;
+    color: #525252;
+}
+
 .dados {
     padding-left: 30px;
     padding-right: 30px;
@@ -75,20 +81,24 @@
     padding-top: 15px;
 }
 
+.tipo-consulta {
+    font-size: 17px;
+}
+
 .atendimento-dados .data-atend {
     width: 120px;
-    padding-top: 8px;
-    padding-bottom: 5px;
+    padding: 5px 15px;
     text-align: center;
-    border-radius: 2px;
+    border-radius: 3px;
     background-color: #24beb7;
     color: #e0e0e0;
     font-size: 17px;
     align-self: flex-end;
-    margin-bottom: -10px;
+    margin-top: -5px;
+    margin-bottom: -28px;
 }
 
-.atendimento-dados div {
+.atendimento-dados .anamnese-container {
     display: flex;
     flex-direction: column;
     position: relative;
@@ -101,7 +111,7 @@
     border-radius: 2px;
 }
 
-.atendimento-dados div span {
+.atendimento-dados .anamnese-container span {
     width: 120px;
     text-align: center;
     padding-top: 7px;

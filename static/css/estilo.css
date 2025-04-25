@@ -143,11 +143,13 @@ footer {
     background-color: #a8ccb6;
     padding-inline: 40px;
     padding-block: 30px;
+    /* text-align: center; */
 }
 
 #copyright {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    text-align: center;
 }
 
 .flex {

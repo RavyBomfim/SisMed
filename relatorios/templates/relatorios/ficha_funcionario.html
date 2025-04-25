@@ -12,31 +12,31 @@
 
 {% block content_PDF %}
     <div id="informs-box">
-        <p id="nome">Nome: {{funcionario.nome_completo}}</p>
-        <p>Nascimento: {{funcionario.data_nascimento|date:'d/m/Y'}}</p>
-        <p>Idade: {{funcionario.get_idade}} anos</p>
-        <p>RG: {{funcionario.rg}}</p>
-        <p>CPF: {{funcionario.cpf}}</p>
+        <p id="nome"><span>Nome:</span> {{funcionario.nome_completo}}</p>
+        <p><span>Nascimento:</span> {{funcionario.data_nascimento|date:'d/m/Y'}}</p>
+        <p><span>Idade:</span> {{funcionario.get_idade}} anos</p>
+        <p><span>RG:</span> {{funcionario.rg}}</p>
+        <p><span>CPF:</span> {{funcionario.cpf}}</p>
         {% if funcionario.sexo == Null %}
-            <p>Sexo: Não definido</p>
+            <p><span>Sexo:</span> Não definido</p>
         {% else %}
             {% if funcionario.sexo == 'F' %}
-                <p>Sexo: Feminino</p>
+                <p><span>Sexo:</span> Feminino</p>
             {% else %}
-                <p>Sexo: Masculino</p>
+                <p><span>Sexo:</span> Masculino</p>
             {% endif %}
         {% endif %}
-        <p>Telefone: {{funcionario.telefone}}</p>
-        <p>Email: {{funcionario.email}}</p>
-        <p>Rua: {{funcionario.endereco.rua}}</p>
-        <p>Número: {{funcionario.endereco.numero}}</p>
-        <p>Bairro: {{funcionario.endereco.bairro}}</p>
-        <p>Cidade: {{funcionario.endereco.cidade}}</p>
-        <p>Data de Admissão {{funcionario.data_admissao|date:'d/m/Y'}}</p>
+        <p><span>Telefone:</span> {{funcionario.telefone}}</p>
+        <p><span>Email:</span> {{funcionario.email}}</p>
+        <p><span>Rua:</span> {{funcionario.endereco.rua}}</p>
+        <p><span>Número:</span> {{funcionario.endereco.numero}}</p>
+        <p><span>Bairro:</span> {{funcionario.endereco.bairro}}</p>
+        <p><span>Cidade:</span> {{funcionario.endereco.cidade}}</p>
+        <p><span>Data de Admissão {{funcionario.data_admissao|date:'d/m/Y'}}</p>
         {% if funcionario.data_demissao %}
-            <p>Data de Demissão: {{funcionario.data_demissao|date:'d/m/Y'}}</p>
+            <p><span>Data de Demissão:</span> {{funcionario.data_demissao|date:'d/m/Y'}}</p>
         {% else %}
-            <p>Data de Demissão: Ainda não definida</p>
+            <p><span>Data de Demissão:</span> Ainda não definida</p>
         {% endif %}
     </div>
 {% endblock %}

@@ -1,9 +1,10 @@
 from typing import Any
 from django.db.models import F,  ExpressionWrapper, IntegerField
 from django.db.models.functions import ExtractDay, ExtractMonth
-from django.db.models.query import QuerySet
-from django.forms.models import BaseModelForm
+# from django.db.models.query import QuerySet
+# from django.forms.models import BaseModelForm
 from paginas.views import GrupoMixin
+from django.core.exceptions import PermissionDenied
 from .forms import EnderecoForm, FuncionarioForm, HorarioMedicoForm, MedicoForm, PacienteForm, ProcedimentoForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
@@ -714,6 +715,8 @@ class PacienteDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailV
     template_name = 'cadastros/listas/dados_paciente.html'
     context_object_name = 'paciente'
 
+from django.shortcuts import redirect
+from django.contrib import messages
 
 class AgendaDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailView):
     login_url = reverse_lazy('login')
@@ -721,6 +724,19 @@ class AgendaDetail(GroupRequiredMixin, LoginRequiredMixin, GrupoMixin, DetailVie
     model = AgendaMedico
     template_name = 'cadastros/agenda.html'
     context_object_name = 'agenda'
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+
+        user = self.request.user
+        is_medico = user.groups.filter(name='Medico').exists()
+
+        if is_medico and obj.medico.usuario.id != user.id:
+            # Se o médico tentar acessar agenda de outro médico
+            raise PermissionDenied("Você não tem permissão para acessar esta agenda.")
+
+        # Os administradores têm acesso a qualquer agenda
+        return obj
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

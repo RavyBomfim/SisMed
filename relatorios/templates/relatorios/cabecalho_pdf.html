@@ -10,6 +10,15 @@
             Sismed           
         {% endblock %}
     </title> 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
     <style>
 
         * {
@@ -19,8 +28,7 @@
         }
 
         body {
-            width: 100%; 
-            font-family: Arial, Helvetica;
+            width: 210mm;
             padding: 15mm;
             padding-top: 8mm;
         }
@@ -30,22 +38,22 @@
         }
 
         header, main {
-            width: 210mm; 
-            margin-inline: auto;
+            width: 210mm;
+            margin: 0;
         }
 
         #cabecalho-pdf {
-            width: 210mm;
+            width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
             text-align: center;
-            margin-left: -26px;
         }
 
         #cabecalho-pdf img {
             width: 250px;
-            /* margin-inline: auto; */
+            margin-bottom: 20px;
         }
 
         #dados-clinica {
@@ -58,6 +66,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 0;
         }
 
         .titulo {
@@ -69,13 +78,20 @@
         }
 
         #conteudo-pdf {
-            width: 207.8mm;
+            width: 210mm;
+            display: flex;
             border: 2px solid #a8ccb6;
-            margin-left: -1px;
+            margin: auto;
+            /* background-color: #04524e; */
         }
 
         #informs-box {
             padding: 14px;
+        }
+
+        #informs-box p span {
+            font-weight: 600;
+            color: #525252;
         }
 
         #conteudo-pdf p {
@@ -110,7 +126,7 @@
     <header>
         {% block header_PDF %}
             <div id="cabecalho-pdf">
-                <img src="http://127.0.0.1:8000/{% static 'img/Sismed-img.jpg' %}" alt=""> 
+                <img src="{{ request.scheme }}://{{ request.get_host }}{% static 'img/Sismed-img.jpg' %}">
                 <div id="dados-clinica">
                     <span>CNPJ: 01.221.042/0000-54</span> |
                     <span>Rua Flores, nº 857 - Campos, Camões/MS</span> |
@@ -135,5 +151,12 @@
             </div>
         </div>
     </main>
+
+    <script src="{{ request.scheme }}://{{ request.get_host }}{% static 'js/jquery-3.7.0.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+    <script src="{{ request.scheme }}://{{ request.get_host }}{% static 'js/jquery.mask.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="{{ request.scheme }}://{{ request.get_host }}{% static 'js/fontawesome.js' %}"></script>
+
 </body>
 </html>

@@ -7,9 +7,9 @@
 {% endblock %}
 
 {% block css_PDF %}
-    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/listar.css' %}">
-    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/agenda.css' %}">
-    <link rel="stylesheet" href="http://127.0.0.1:8000/{% static 'css/prontuario.css' %}">
+    <link rel="stylesheet" href="{{ request.scheme }}://{{ request.get_host }}{% static 'css/listar.css' %}">
+    <link rel="stylesheet" href="{{ request.scheme }}://{{ request.get_host }}{% static 'css/agenda.css' %}">
+    <link rel="stylesheet" href="{{ request.scheme }}://{{ request.get_host }}{% static 'css/prontuario.css' %}">
 
     <style>
 
@@ -25,9 +25,26 @@
             margin-bottom: 10px !important;
         }
 
-        .agenda-container {
-            width: 820px;
-            margin-left: -20px;
+        .agenda-container { 
+            width: 210mm;
+            margin: auto;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        .agenda-titulo {
+            width: 199mm;
+            padding: 0;
+        }
+
+        #agenda-medico {
+            padding: 0;
+            text-align: left;
+        }
+
+        #adicionar-horario {
+            text-align: right;
+            margin-top: -40px;
         }
 
         #titulo {
@@ -35,9 +52,30 @@
             font-size: 38px;
         }
 
-        .titulo-aviso p {
-            font-size: 19pt !important;
+        .tipo-consulta {
+            font-size: 16pt !important;
         }
+
+        #data-atend-container {
+            margin-top: 5px;
+            margin-bottom: -15px;
+            text-align: right;
+        }
+
+        .atendimento-dados .data-atend {
+            padding: 10px 15px 8px;
+        }
+
+        .atendimento-dados .anamnese-container span {
+            width: 128px;
+            border-radius: 3px;
+            font-size: 14pt;
+        }
+
+        .titulo-aviso p {
+            font-size: 20pt !important;
+        }
+
     </style>
 {% endblock %}
 
@@ -50,9 +88,13 @@
         <div id="prontuario-header">
             <h4 id="titulo">{{titulo}}</h4>
             <div class="agenda-titulo">
-                <div id="agenda-medico"><span id="agenda-medico">{{prontuario.paciente.nome_completo}}</span></div> &nbsp; <div id="adicionar-horario" class="btn"> Data de cadastro: {{paciente.data_cadastro|date:'d/m/Y'}}</div>
+                <div id="agenda-medico">
+                    <span id="agenda-medico">{{prontuario.paciente.nome_completo}}</span>
+                </div> 
+                <div id="adicionar-horario">
+                    <span class="btn">Data de cadastro: {{paciente.data_cadastro|date:'d/m/Y'}}</span>
+                </div>
             </div> 
-            <!-- <i class="fa fa-plus"></i> -->
             <hr>
             <div id="cabecalho">
                 <p><span>Idade: </span> {{paciente_idade}} anos</p>
@@ -69,28 +111,30 @@
                     {% for consulta in consultas %}
                     <div class="consultas-box dados-box" >
                         <div class="consulta-dados dados">
-                            <p>{{consulta.tipo_agendamento}} Médica</p>
-                            <p>Realizada em: {{consulta.atendimento.data|date:'d/m/Y'}} às {{consulta.horario}}</p>
-                            <p>Médico: {{consulta.medico.nome_completo}} ({{consulta.medico.especialidade.especialidade}})</p>
+                            <p class="tipo-consulta">{{consulta.tipo_agendamento}} Médica</p>
+                            <p><span>Realizada em:</span> {{consulta.atendimento.data|date:'d/m/Y'}} às {{consulta.horario}}</p>
+                            <p><span>Médico:</span> {{consulta.medico.nome_completo}} ({{consulta.medico.especialidade.especialidade}})</p>
                             {% if consulta.retorno == True %}
-                                <p>Retorno: Sim</p>
+                                <p><span>Retorno:</span> Sim</p>
                             {% else %}
-                                <p>Retorno: Não</p>
+                                <p><span>Retorno:</span> Não</p>
                             {% endif %}
                         </div> <br>
                         <div class="atendimento-dados dados">
-                            <span class="data-atend">{{ consulta.atendimento.data|date:'d/m/Y' }}</span>
-                            <div>
+                            <div id="data-atend-container">
+                                <span class="data-atend">{{ consulta.atendimento.data|date:'d/m/Y' }}</span>
+                            </div>
+                            <div class="anamnese-container">
                                 <span>Anamnese</span>
-                                {{ consulta.atendimento.anamnese_paciente }}
+                                <p>{{ consulta.atendimento.anamnese_paciente }}</p>
                             </div>
-                            <div>
+                            <div class="anamnese-container">
                                 <span>Diagnóstico</span>
-                                {{ consulta.atendimento.diagnostico }}
+                                <p>{{ consulta.atendimento.diagnostico }}</p>
                             </div>
-                            <div>
+                            <div class="anamnese-container">
                                 <span>Receituário</span>
-                                {{ consulta.atendimento.receituario }}
+                                <p>{{ consulta.atendimento.receituario }}</p>
                             </div>
                         </div>
                     </div>

@@ -33,9 +33,7 @@ h3 {
 #aviso, .aviso {
     margin-top: 28px;
     margin-bottom: 15px;
-    padding-block: 5px;
-    padding-inline: 10px;
-    /* transform: skew(15deg); */
+    padding: 10px 5px;
     background-color: #f7f5f5;
     border-radius: 2px;
     color: #3a3a3a;

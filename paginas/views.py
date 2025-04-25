@@ -312,7 +312,6 @@ class AgendamentoList(LoginRequiredMixin, GrupoMixin, ListView):
             agendamentos = agendamentos.filter(data=data_agend)
         elif especialidade_agend:
             agendamentos = agendamentos.filter(medico__especialidade__especialidade=especialidade_agend)
-
         return agendamentos
     
     def get_context_data(self, *args, **kwargs):

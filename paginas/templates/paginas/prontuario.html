@@ -19,9 +19,13 @@
         <div id="prontuario-header">
             <h4 id="titulo">{{titulo}}</h4>
             <div class="agenda-titulo">
-                <div id="agenda-medico"><span id="agenda-medico">{{prontuario.paciente.nome_completo}}</span></div> &nbsp; <div id="adicionar-horario" class="btn"> Data de cadastro: {{paciente.data_cadastro|date:'d/m/Y'}}</div>
+                <div id="agenda-medico">
+                    <span>{{prontuario.paciente.nome_completo}}</span>
+                </div>  
+                <div id="adicionar-horario" class="btn">
+                    Data de cadastro: {{paciente.data_cadastro|date:'d/m/Y'}}
+                </div>
             </div> 
-            <!-- <i class="fa fa-plus"></i> -->
             <hr>
             <div id="cabecalho">
                 <p><span>Idade: </span> {{paciente_idade}} anos</p>
@@ -38,28 +42,28 @@
                     {% for consulta in consultas %}
                     <div class="consultas-box dados-box" >
                         <div class="consulta-dados dados">
-                            <p>{{consulta.tipo_agendamento}} Médica</p>
-                            <p>Realizada em: {{consulta.atendimento.data|date:'d/m/Y'}} às {{consulta.horario}}</p>
-                            <p>Médico: {{consulta.medico.nome_completo}} ({{consulta.medico.especialidade.especialidade}})</p>
+                            <p class="tipo-consulta">{{consulta.tipo_agendamento}} Médica</p>
+                            <p><span>Realizada em:</span> {{consulta.atendimento.data|date:'d/m/Y'}} às {{consulta.horario}}</p>
+                            <p><span>Médico:</span> {{consulta.medico.nome_completo}} ({{consulta.medico.especialidade.especialidade}})</p>
                             {% if consulta.retorno == True %}
-                                <p>Retorno: Sim</p>
+                                <p><span>Retorno:</span> Sim</p>
                             {% else %}
-                                <p>Retorno: Não</p>
+                                <p><span>Retorno:</span> Não</p>
                             {% endif %}
                         </div> <br>
                         <div class="atendimento-dados dados">
                             <span class="data-atend">{{ consulta.atendimento.data|date:'d/m/Y' }}</span>
-                            <div>
+                            <div class="anamnese-container">
                                 <span>Anamnese</span>
-                                {{ consulta.atendimento.anamnese_paciente }}
+                                <p>{{ consulta.atendimento.anamnese_paciente }}</p>
                             </div>
-                            <div>
+                            <div class="anamnese-container">
                                 <span>Diagnóstico</span>
-                                {{ consulta.atendimento.diagnostico }}
+                                <p>{{ consulta.atendimento.diagnostico }}</p>
                             </div>
-                            <div>
+                            <div class="anamnese-container">
                                 <span>Receituário</span>
-                                {{ consulta.atendimento.receituario }}
+                                <p>{{ consulta.atendimento.receituario }}</p>
                             </div>
                         </div>
                     </div>
