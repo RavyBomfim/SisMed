@@ -1,6 +1,6 @@
 # SisMed
-![Logo do Sismed](https://github.com/user-attachments/assets/16886df0-0f7c-4bea-a18c-03778d89be37)
- Sistema de Clínica Médica
+<a><img src="https://github.com/user-attachments/assets/16886df0-0f7c-4bea-a18c-03778d89be37" alt="Sismed Logo" width=190></a>
+<br> Sistema de Clínica Médica
 
 <hr>
 
@@ -124,15 +124,15 @@ Django - Framework Web
 
 <h2 id="acesso-ao-projeto">Acesso ao projeto</h2>
 
-<p>Você pode acessar o código fonte do projeto ou baixá-lo clicando nos links abaixo:<a/> <br>
+<p>Você pode acessar o código fonte do projeto ou baixá-lo clicando nos links abaixo:</a> <br>
 
-- <a href="https://github.com/RavyBomfim/SisMed">Acessar o código fonte do projeto<a/> <br>
-- <a href="https://github.com/RavyBomfim/SisMed/archive/refs/heads/main.zip">Baixar Projeto<a/>
+- <a href="https://github.com/RavyBomfim/SisMed">Acessar o código fonte do projeto</a> <br>
+- <a href="https://github.com/RavyBomfim/SisMed/archive/refs/heads/main.zip">Baixar Projeto</a>
 
 <hr>
 
 
 <h2 id="desenvolvedores">Desenvolvedores</h2>
 
-| <a href="https://github.com/RavyBomfim"> <img alt="Foto de Ravieli" src="https://github.com/user-attachments/assets/ee73852a-a805-4814-b988-8b1cca7a23ca" width=110> <br> Ravieli Bomfim <a/> <br> Front e Back-end | <a href="https://github.com/BrianOrmund"> <img alt="Foto de Brian" src="https://github.com/user-attachments/assets/33703dde-49a0-4935-9d9a-5a3756310cfc" width=110> <br> Brian Ormund <a/>  <br> Front-end |
+| <a href="https://github.com/RavyBomfim"> <img alt="Foto de Ravieli" src="https://github.com/user-attachments/assets/ee73852a-a805-4814-b988-8b1cca7a23ca" width=110> <br> Ravieli Bomfim </a> <br> Front e Back-end | <a href="https://github.com/BrianOrmund"> <img alt="Foto de Brian" src="https://github.com/user-attachments/assets/33703dde-49a0-4935-9d9a-5a3756310cfc" width=110> <br> Brian Ormund </a>  <br> Front-end |
 --- | --- |
