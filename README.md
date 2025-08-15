@@ -11,7 +11,6 @@
 * [Funcionalidades](#funcionalidades)
 * [Tecnologias utilizadas](#tecnologias-utilizadas)
 * [Acesso ao projeto](#acesso-ao-projeto)
-* [Como utilizá-lo](#como-utilizar)
 * [Desenvolvedores](#desenvolvedores)
 
 <hr>
